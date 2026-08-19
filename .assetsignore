@@ -1,0 +1,7 @@
+README.md
+wrangler.jsonc
+.assetsignore
+.git
+.github
+_headers
+*.zip
