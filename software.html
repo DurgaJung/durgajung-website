@@ -1,1 +1,201 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Software Projects | Durga Jung Kunwar</title><meta name="description" content="Christian Ministry, Translation and Software Projects"><link rel="icon" href="assets/images/favicon.webp"><link rel="stylesheet" href="assets/css/style.css"></head><body><a class="skip" href="#main">Skip to content</a><header class="site-header"><img class="brand-banner" src="assets/images/banner.webp" alt="Durga Jung Kunwar — Ministry, Translation, Projects"></header><div class="nav-wrap"><nav class="nav container" aria-label="Main navigation"><a class="brand-mini" href="index.html">Durga Jung <span>Kunwar</span></a><button class="menu-btn" aria-expanded="false" aria-label="Toggle navigation">☰ Menu</button><ul class="nav-links"><li><a class="" href="index.html">Home</a></li><li><a class="" href="about.html">About Me</a></li><li><a class="" href="ministry.html">Ministry</a></li><li><a class="" href="books.html">Books & Translations</a></li><li><a class="" href="sermons.html">Sermons</a></li><li><a class="active" href="software.html">Software Projects</a></li><li><a class="" href="gallery.html">Gallery</a></li><li><a class="" href="contact.html">Contact</a></li></ul></nav></div><main id="main"><section class="page-hero"><div class="container"><h1>Software Projects</h1><p class="nepali">सफ्टवेयर परियोजनाहरू</p></div></section><section class="content"><div class="container"><div class="bilingual"><div class="panel"><p>am involved in developing practical software tools for churches, Christian ministries, and Nepali-speaking communities. These projects are designed to make Bible teaching, worship presentation, church administration, and ministry activities easier and more effective.</p><p>Current projects include church presentation software, Bible quiz software, digital ministry resources, and other tools created for ministry use. Some software may be available for free, while others may require purchase or permission before downloading.</p></div><div class="panel nepali"><p>म मण्डलीहरू, ख्रीष्टियन सेवकाईहरू तथा नेपालीभाषी समुदायका लागि उपयोगी सफ्टवेयर साधनहरू विकास गर्ने कार्यमा संलग्न छु। यी परियोजनाहरू बाइबल शिक्षण, आराधना प्रस्तुति, मण्डली प्रशासन तथा सेवकाईसम्बन्धी कार्यहरूलाई अझ सरल र प्रभावकारी बनाउन तयार गरिएका हुन्।</p><p>हालका परियोजनाहरूमा मण्डली प्रस्तुति सफ्टवेयर, बाइबल प्रश्नोत्तरी सफ्टवेयर, डिजिटल सेवकाई सामग्री तथा सेवकाईका लागि तयार गरिएका अन्य उपयोगी साधनहरू समावेश छन्। केही सफ्टवेयर निःशुल्क उपलब्ध हुन सक्छन् भने केही डाउनलोड गर्नुअघि खरिद वा अनुमति आवश्यक पर्न सक्छ।</p></div></div><div class="project-list"><article class="info-card"><span class="status">In development</span><h3>Mero Mandali</h3><p>Church presentation and ministry software designed for songs, Bible verses, programmes, media, timers, and live projection.</p></article><article class="info-card"><span class="status">In development</span><h3>Nepali Bible Quiz</h3><p>Offline Bible quiz software with bilingual questions, team scoring, pass timers, audience chance, and projection support.</p></article></div></div></section></main><footer class="site-footer"><div class="container"><p class="rights">© 2026 Durga Jung Kunwar. All rights reserved.</p><p class="footer-nav"><a href="ministry.html">Ministry</a> • <a href="books.html">Translation</a> • <a href="sermons.html">Sermons</a> • <a href="software.html">Software Projects</a></p></div></footer><script src="assets/js/main.js"></script></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Software Projects | Durga Jung Kunwar</title>
+  <meta name="description" content="Software projects developed for churches, Christian ministries and Nepali-speaking communities by Durga Jung Kunwar.">
+  <link rel="icon" href="/assets/images/favicon.webp">
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <style>
+    .software-intro{margin-bottom:38px}
+    .software-grid{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:28px;
+      margin-top:30px
+    }
+    .software-card{
+      overflow:hidden;
+      border:1px solid #ddd9d1;
+      border-radius:14px;
+      background:#fff;
+      box-shadow:0 10px 28px rgba(0,0,0,.05);
+      display:flex;
+      flex-direction:column
+    }
+    .software-logo-wrap{
+      min-height:330px;
+      padding:34px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background:#fbfbfa;
+      border-bottom:1px solid #ece9e2
+    }
+    .software-logo{
+      width:100%;
+      height:260px;
+      object-fit:contain
+    }
+    .software-body{
+      padding:26px;
+      display:flex;
+      flex-direction:column;
+      flex:1
+    }
+    .software-status{
+      align-self:flex-start;
+      display:inline-flex;
+      align-items:center;
+      gap:7px;
+      padding:5px 10px;
+      border-radius:999px;
+      background:#f3e7cf;
+      color:#765115;
+      font-size:12px;
+      font-weight:800;
+      letter-spacing:.03em;
+      text-transform:uppercase
+    }
+    .software-status::before{
+      content:"";
+      width:7px;
+      height:7px;
+      border-radius:50%;
+      background:#a8741e
+    }
+    .software-body h2{
+      margin:14px 0 5px;
+      font-family:Georgia,"Times New Roman",serif;
+      font-size:30px;
+      line-height:1.15;
+      color:#222
+    }
+    .software-local{
+      color:#986719;
+      font-size:20px;
+      font-weight:700;
+      margin-bottom:15px
+    }
+    .software-body p{
+      margin:0 0 16px;
+      color:#474747
+    }
+    .software-meta{
+      margin-top:auto;
+      padding-top:16px;
+      border-top:1px solid #eeeae3;
+      color:#686868;
+      font-size:13px;
+      font-weight:650
+    }
+    .coming-note{
+      margin-top:32px;
+      border-left:4px solid #a8741e;
+      background:#fbf7ef;
+      padding:18px 20px;
+      border-radius:8px;
+      color:#584a31
+    }
+    @media(max-width:850px){
+      .software-grid{grid-template-columns:1fr}
+      .software-logo-wrap{min-height:280px}
+      .software-logo{height:220px}
+    }
+    @media(max-width:520px){
+      .software-logo-wrap{padding:22px;min-height:230px}
+      .software-logo{height:190px}
+      .software-body{padding:22px}
+      .software-body h2{font-size:26px}
+    }
+  </style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <img class="brand-banner" src="/assets/images/banner.webp" alt="Durga Jung Kunwar — Ministry, Translation, Projects">
+</header>
+
+<div class="nav-wrap">
+  <nav class="nav container" aria-label="Main navigation">
+    <a class="brand-mini" href="/index.html">Durga Jung <span>Kunwar</span></a>
+    <button class="menu-btn" aria-expanded="false" aria-label="Toggle navigation">☰ Menu</button>
+    <ul class="nav-links">
+      <li><a href="/index.html">Home</a></li>
+      <li><a href="/about.html">About Me</a></li>
+      <li><a href="/ministry.html">Ministry</a></li>
+      <li><a href="/books.html">Books &amp; Translations</a></li>
+      <li><a href="/sermons.html">Sermons</a></li>
+      <li><a class="active" href="/software.html">Software Projects</a></li>
+      <li><a href="/gallery.html">Gallery</a></li>
+      <li><a href="/contact.html">Contact</a></li>
+    </ul>
+  </nav>
+</div>
+
+<main id="main">
+  <section class="page-hero">
+    <div class="container">
+      <h1>Software Projects</h1>
+      <p class="nepali">सफ्टवेयर परियोजनाहरू</p>
+    </div>
+  </section>
+
+  <section class="content">
+    <div class="container">
+      <div class="bilingual software-intro">
+        <div class="panel">
+          <p>I am developing practical software tools to support churches, Christian ministries, Bible teaching, worship presentation, and ministry activities. The projects below are currently under development and will be expanded as they become ready for wider use.</p>
+        </div>
+        <div class="panel nepali">
+          <p>म मण्डली, ख्रीष्टियन सेवकाई, बाइबल शिक्षण, आराधना प्रस्तुति तथा सेवकाईसम्बन्धी कार्यहरूलाई सहयोग पुर्‍याउने व्यावहारिक सफ्टवेयर साधनहरू विकास गर्दैछु । तलका परियोजनाहरू हाल विकासको क्रममा छन् र प्रयोगका लागि तयार हुँदै जाँदा थप जानकारी उपलब्ध गराइनेछ ।</p>
+        </div>
+      </div>
+
+      <div class="software-grid">
+        <article class="software-card">
+          <div class="software-logo-wrap">
+            <img class="software-logo" src="/assets/images/software/mero-mandali-logo.png" alt="Mero Mandali church presentation software logo">
+          </div>
+          <div class="software-body">
+            <span class="software-status">In Development</span>
+            <h2>Mero Mandali</h2>
+            <div class="software-local nepali">मेरो मण्डली</div>
+            <p>Church presentation software designed for songs, Bible verses, programmes, media, timers, and live projection in church services.</p>
+            <div class="software-meta">Church Presentation Software • More details coming soon</div>
+          </div>
+        </article>
+
+        <article class="software-card">
+          <div class="software-logo-wrap">
+            <img class="software-logo" src="/assets/images/software/nepali-bible-quiz-logo.png" alt="Nepali Bible Quiz software logo">
+          </div>
+          <div class="software-body">
+            <span class="software-status">In Development</span>
+            <h2>Nepali Bible Quiz</h2>
+            <div class="software-local nepali">नेपाली बाइबल हाजिरीजवाफ</div>
+            <p>Bilingual Bible quiz software for churches and Christian programmes with team scoring, pass timers, audience chance, and projection support.</p>
+            <div class="software-meta">Bible Quiz &amp; Projection System • More details coming soon</div>
+          </div>
+        </article>
+      </div>
+
+      <div class="coming-note">
+        These projects are still under active development. Screenshots, features, release information, and download availability will be added as each project becomes ready.
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <p class="rights">© 2026 Durga Jung Kunwar. All rights reserved.</p>
+    <p class="footer-nav"><a href="/ministry.html">Ministry</a> • <a href="/books.html">Translation</a> • <a href="/sermons.html">Sermons</a> • <a href="/software.html">Software Projects</a></p>
+  </div>
+</footer>
+
+<script src="/assets/js/main.js"></script>
+</body>
+</html>
