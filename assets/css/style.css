@@ -1,6 +1,15 @@
-/* FINAL GLOBAL BRAND STYLE */
+/* =========================================================
+   GLOBAL BRAND FIX — Durga Jung Kunwar
+   Apply to: assets/css/style.css
+   Keep this block at the VERY BOTTOM of the file.
+   ========================================================= */
+
+a.brand-mini,
+a.brand-mini:visited,
 .brand-mini,
-.brand-mini span {
+.brand-mini span,
+.nav .brand-mini,
+.nav .brand-mini span {
     font-family: Georgia, "Times New Roman", serif !important;
     font-size: 24px !important;
     font-weight: 700 !important;
@@ -11,14 +20,22 @@
     white-space: nowrap !important;
 }
 
+a.brand-mini:hover,
+a.brand-mini:focus,
 .brand-mini:hover,
-.brand-mini:hover span {
+.brand-mini:focus,
+.brand-mini:hover span,
+.brand-mini:focus span {
     color: #744b0f !important;
 }
 
 @media (max-width: 620px) {
+    a.brand-mini,
+    a.brand-mini:visited,
     .brand-mini,
-    .brand-mini span {
+    .brand-mini span,
+    .nav .brand-mini,
+    .nav .brand-mini span {
         font-size: 20px !important;
         color: #986719 !important;
     }
