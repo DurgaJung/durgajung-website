@@ -25,8 +25,8 @@
       flex-direction:column
     }
     .software-logo-wrap{
-      min-height:330px;
-      padding:34px;
+      min-height:190px;
+      padding:24px;
       display:flex;
       align-items:center;
       justify-content:center;
@@ -34,8 +34,10 @@
       border-bottom:1px solid #ece9e2
     }
     .software-logo{
-      width:100%;
-      height:260px;
+      width:auto;
+      max-width:230px;
+      height:auto;
+      max-height:135px;
       object-fit:contain
     }
     .software-body{
@@ -100,12 +102,12 @@
     }
     @media(max-width:850px){
       .software-grid{grid-template-columns:1fr}
-      .software-logo-wrap{min-height:280px}
-      .software-logo{height:220px}
+      .software-logo-wrap{min-height:170px}
+      .software-logo{max-width:210px;max-height:120px}
     }
     @media(max-width:520px){
-      .software-logo-wrap{padding:22px;min-height:230px}
-      .software-logo{height:190px}
+      .software-logo-wrap{padding:20px;min-height:150px}
+      .software-logo{max-width:180px;max-height:105px}
       .software-body{padding:22px}
       .software-body h2{font-size:26px}
     }
