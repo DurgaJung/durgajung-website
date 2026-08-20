@@ -8,6 +8,20 @@
   <link rel="icon" href="/assets/images/favicon.webp">
   <link rel="stylesheet" href="/assets/css/style.css">
   <style>
+    /* Keep the approved Durga Jung Kunwar wordmark consistent on this page */
+    .brand-mini,
+    .brand-mini span{
+      font-family:Georgia,"Times New Roman",serif !important;
+      font-size:24px !important;
+      font-weight:700 !important;
+      line-height:1 !important;
+      letter-spacing:.015em !important;
+      color:#986719 !important;
+      text-decoration:none !important;
+      white-space:nowrap
+    }
+    .brand-mini:hover,
+    .brand-mini:hover span{color:#744b0f !important}
     .software-intro{margin-bottom:38px}
     .software-grid{
       display:grid;
@@ -25,8 +39,8 @@
       flex-direction:column
     }
     .software-logo-wrap{
-      min-height:190px;
-      padding:24px;
+      min-height:150px;
+      padding:18px 22px;
       display:flex;
       align-items:center;
       justify-content:center;
@@ -35,9 +49,9 @@
     }
     .software-logo{
       width:auto;
-      max-width:230px;
+      max-width:205px;
       height:auto;
-      max-height:135px;
+      max-height:105px;
       object-fit:contain
     }
     .software-body{
@@ -102,12 +116,12 @@
     }
     @media(max-width:850px){
       .software-grid{grid-template-columns:1fr}
-      .software-logo-wrap{min-height:170px}
-      .software-logo{max-width:210px;max-height:120px}
+      .software-logo-wrap{min-height:140px}
+      .software-logo{max-width:190px;max-height:98px}
     }
     @media(max-width:520px){
-      .software-logo-wrap{padding:20px;min-height:150px}
-      .software-logo{max-width:180px;max-height:105px}
+      .software-logo-wrap{padding:16px 18px;min-height:125px}
+      .software-logo{max-width:165px;max-height:88px}
       .software-body{padding:22px}
       .software-body h2{font-size:26px}
     }
