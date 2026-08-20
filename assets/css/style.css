@@ -414,3 +414,23 @@ a{color:inherit}img{max-width:100%;display:block}button{font:inherit}
   .sermon-section-head{display:block}
   .sermon-section-head p{margin-top:5px}
 }
+
+/* INDIVIDUAL SERMON ARTICLE */
+.sermon-article-hero{padding:52px 0 36px;background:#faf9f6;border-bottom:1px solid var(--line)}
+.sermon-article-hero .hero-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:34px;align-items:center}
+.sermon-article-hero h1{font-family:Georgia,"Times New Roman",serif;font-size:clamp(40px,5vw,60px);line-height:1.08;margin:9px 0 7px;color:#202020}
+.sermon-article-hero .nepali-title{font-size:26px;color:#986719;font-weight:700;margin:0 0 14px}
+.sermon-article-hero .summary{font-size:16px;color:#4a4a4a;max-width:760px}
+.sermon-cover{border-radius:14px;overflow:hidden;border:1px solid #d9d6cf;box-shadow:0 10px 26px rgba(0,0,0,.06)}
+.sermon-cover img{width:100%;aspect-ratio:16/9;object-fit:cover}
+.sermon-meta{display:flex;flex-wrap:wrap;gap:9px;margin:18px 0 0}
+.sermon-chip{display:inline-block;background:#f1e5cc;color:#725015;padding:6px 10px;border-radius:999px;font-size:12px;font-weight:800}
+.sermon-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:20px}.sermon-actions .btn{min-width:150px}
+.sermon-article{max-width:900px;margin:auto}
+.sermon-article h2{font-family:Georgia,"Times New Roman",serif;color:#202020;font-size:30px;margin:40px 0 8px}
+.sermon-article h3{color:#986719;font-size:20px;margin:4px 0 15px}
+.sermon-article p{max-width:none;color:#3f3f3f;font-size:16px}
+.sermon-article .scripture{background:#fbf7ef;border-left:4px solid #a8741e;border-radius:8px;padding:17px 20px;margin:14px 0;color:#3e392f}
+.sermon-article .scripture strong{display:block;margin-bottom:7px;color:#6f4d18}
+.sermon-article .source-note{font-size:13px;color:#777;border-top:1px solid #e6e1d8;margin-top:42px;padding-top:18px}
+@media(max-width:850px){.sermon-article-hero .hero-grid{grid-template-columns:1fr}.sermon-cover{max-width:650px}.sermon-article-hero{padding-top:40px}}
