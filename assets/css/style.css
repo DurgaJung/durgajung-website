@@ -280,3 +280,53 @@ a.brand-mini:focus,
         color: #986719 !important;
     }
 }
+
+/* Universal phone fix: keep the full-size brand while preventing
+   the mobile menu button from extending past the right edge. */
+@media (max-width: 620px) {
+    .brand-banner {
+        width: 100%;
+        height: auto;
+        min-height: 0;
+        max-height: none;
+        object-fit: contain;
+        object-position: center;
+    }
+
+    .hero {
+        padding-top: 32px;
+    }
+
+    .hero h1,
+    .page-hero h1 {
+        font-size: 32px;
+        line-height: 1.12;
+    }
+
+    .hero h2 {
+        font-size: 21px;
+        line-height: 1.35;
+    }
+
+    .section-head h2 {
+        font-size: 29px;
+    }
+
+    .nav {
+        gap: 8px;
+    }
+
+    .menu-btn {
+        flex: 0 0 46px;
+        width: 46px;
+        padding-left: 0;
+        padding-right: 0;
+        font-size: 0;
+    }
+
+    .menu-btn::before {
+        content: "☰";
+        font-size: 20px;
+        line-height: 1;
+    }
+}
