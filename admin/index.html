@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow,noarchive,nosnippet">
+  <meta name="referrer" content="same-origin">
+  <title>Admin Control Center | Durga Jung Kunwar</title>
+  <link rel="icon" href="/assets/images/favicon.webp">
+  <link rel="stylesheet" href="/assets/admin/admin.css">
+</head>
+<body>
+  <div class="admin-shell">
+    <aside class="sidebar" id="sidebar" aria-label="Admin navigation">
+      <div class="brand-block">
+        <a class="brand" href="/admin/">Durga Jung Kunwar</a>
+        <div class="brand-sub">Admin Control Center</div>
+      </div>
+
+      <nav class="side-nav">
+        <button class="nav-item active" data-section="dashboard"><span class="nav-icon">⌂</span><span>Dashboard</span></button>
+        <button class="nav-item" data-section="website"><span class="nav-icon">◉</span><span>Website</span></button>
+        <button class="nav-item" data-section="orders"><span class="nav-icon">▤</span><span>Orders</span></button>
+        <button class="nav-item" data-section="payments"><span class="nav-icon">₹</span><span>Payments</span></button>
+        <button class="nav-item" data-section="software"><span class="nav-icon">▣</span><span>Software</span></button>
+        <button class="nav-item" data-section="books"><span class="nav-icon">▥</span><span>Books</span></button>
+        <button class="nav-item" data-section="licenses"><span class="nav-icon">◆</span><span>Licenses</span></button>
+        <button class="nav-item" data-section="downloads"><span class="nav-icon">⇩</span><span>Downloads</span></button>
+        <button class="nav-item" data-section="security"><span class="nav-icon">◈</span><span>Security</span></button>
+        <button class="nav-item" data-section="settings"><span class="nav-icon">⚙</span><span>Settings</span></button>
+      </nav>
+
+      <div class="sidebar-foot">
+        <a class="public-site-link" href="/" target="_blank" rel="noopener">View public website ↗</a>
+        <a class="logout-link" href="/cdn-cgi/access/logout">Secure logout</a>
+      </div>
+    </aside>
+
+    <div class="main-area">
+      <header class="topbar">
+        <button class="menu-toggle" id="menuToggle" aria-label="Open admin menu">☰</button>
+        <div>
+          <div class="top-title">Website Administration</div>
+          <div class="top-subtitle">durgajung.com.np</div>
+        </div>
+        <div class="top-actions">
+          <span class="connection-pill" id="browserConnection">Checking connection…</span>
+          <button class="refresh-btn" id="refreshAll" type="button">Refresh</button>
+        </div>
+      </header>
+
+      <main class="content">
+        <section class="admin-section active" id="section-dashboard">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">OVERVIEW</p>
+              <h1>Admin Dashboard</h1>
+              <p class="lead">Monitor the website and manage future software, book, payment, licensing and download workflows from one private control center.</p>
+            </div>
+            <div class="date-card"><span id="currentDate">—</span><strong id="currentTime">—</strong></div>
+          </div>
+
+          <div class="metric-grid">
+            <article class="metric-card"><div class="metric-label">Main Website</div><div class="metric-value" id="mainSiteStatus">Checking…</div><div class="metric-note" id="mainSiteLatency">Waiting for health check</div></article>
+            <article class="metric-card"><div class="metric-label">Admin Security</div><div class="metric-value neutral">Cloudflare Access</div><div class="metric-note">Protect /admin/* before public use</div></article>
+            <article class="metric-card"><div class="metric-label">Orders</div><div class="metric-value neutral">Not connected</div><div class="metric-note">D1 database will be added in Phase 2</div></article>
+            <article class="metric-card"><div class="metric-label">Payments</div><div class="metric-value neutral">Manual verification</div><div class="metric-note">eSewa · Khalti · Bank · BenefitPay</div></article>
+          </div>
+
+          <div class="dashboard-grid">
+            <article class="panel">
+              <div class="panel-head"><div><h2>Live Site Health</h2><p>Basic reachability checks from your current browser.</p></div><span class="small-badge">LIVE</span></div>
+              <div class="health-list" id="dashboardHealthList"></div>
+            </article>
+            <article class="panel">
+              <div class="panel-head"><div><h2>System Modules</h2><p>Current build status of the administration system.</p></div></div>
+              <div class="module-list">
+                <div class="module-row"><span>Public website</span><strong class="status-ok">Active</strong></div>
+                <div class="module-row"><span>Admin interface</span><strong class="status-ok">Phase 1</strong></div>
+                <div class="module-row"><span>Cloudflare Access</span><strong class="status-warn">Configure</strong></div>
+                <div class="module-row"><span>D1 orders database</span><strong class="status-muted">Next phase</strong></div>
+                <div class="module-row"><span>Private R2 downloads</span><strong class="status-muted">Next phase</strong></div>
+                <div class="module-row"><span>License server</span><strong class="status-muted">Planned</strong></div>
+                <div class="module-row"><span>Cloudflare Analytics API</span><strong class="status-muted">Planned</strong></div>
+              </div>
+            </article>
+          </div>
+
+          <article class="panel roadmap-panel">
+            <div class="panel-head"><div><h2>Admin Build Roadmap</h2><p>We will connect these features safely without disturbing the working public website.</p></div></div>
+            <div class="roadmap">
+              <div class="roadmap-item done"><span>1</span><div><strong>Admin dashboard shell</strong><p>Responsive desktop/mobile control center.</p></div></div>
+              <div class="roadmap-item current"><span>2</span><div><strong>Private login protection</strong><p>Cloudflare Access for only /admin/*.</p></div></div>
+              <div class="roadmap-item"><span>3</span><div><strong>D1 database</strong><p>Orders, payments, products, books, licenses and activity.</p></div></div>
+              <div class="roadmap-item"><span>4</span><div><strong>Monitoring & analytics</strong><p>Cloudflare traffic, performance, Worker health and errors.</p></div></div>
+              <div class="roadmap-item"><span>5</span><div><strong>Sales & protected delivery</strong><p>Manual payment approval, private downloads and device licensing.</p></div></div>
+            </div>
+          </article>
+        </section>
+
+        <section class="admin-section" id="section-website">
+          <div class="section-heading compact"><div><p class="eyebrow">MONITORING</p><h1>Website Status</h1><p class="lead">Check important public pages and their browser-observed response times.</p></div></div>
+          <article class="panel">
+            <div class="panel-head"><div><h2>Page Health</h2><p>Refresh to run a new health check.</p></div><button class="secondary-btn" id="refreshHealth" type="button">Run checks</button></div>
+            <div class="health-table-wrap"><table class="health-table"><thead><tr><th>Page</th><th>Path</th><th>Status</th><th>Response</th></tr></thead><tbody id="healthTableBody"></tbody></table></div>
+            <p class="info-note">This Phase 1 check measures browser reachability only. Cloudflare request analytics, geographic traffic, error rates and Worker metrics will be connected server-side in a later phase.</p>
+          </article>
+        </section>
+
+        <section class="admin-section" id="section-orders">
+          <div class="section-heading compact"><div><p class="eyebrow">SALES</p><h1>Orders</h1><p class="lead">Software and paid-book orders will appear here after the D1 database is connected.</p></div></div>
+          <article class="empty-panel"><div class="empty-icon">▤</div><h2>Order database not connected yet</h2><p>Phase 2 will add Pending, Pending Verification, Approved, Rejected, Delivered and Refunded order states.</p></article>
+        </section>
+
+        <section class="admin-section" id="section-payments">
+          <div class="section-heading compact"><div><p class="eyebrow">PAYMENTS</p><h1>Payment Verification</h1><p class="lead">Manually verify payments from your mobile before approving product delivery.</p></div></div>
+          <div class="payment-grid">
+            <article class="payment-card"><h3>eSewa</h3><p>Nepal</p><span>Manual verification</span></article>
+            <article class="payment-card"><h3>Khalti</h3><p>Nepal</p><span>Manual verification</span></article>
+            <article class="payment-card"><h3>Bank Transfer</h3><p>Nepal / Bahrain</p><span>Manual verification</span></article>
+            <article class="payment-card"><h3>BenefitPay</h3><p>Bahrain</p><span>Manual verification</span></article>
+          </div>
+          <article class="panel"><h2>Approval workflow</h2><ol class="workflow"><li>Customer creates an order and receives an Order ID.</li><li>Customer pays using the selected payment method.</li><li>You check the payment in your own wallet/bank app.</li><li>You approve or reject the order here.</li><li>Only an approved order receives protected product access.</li></ol></article>
+        </section>
+
+        <section class="admin-section" id="section-software">
+          <div class="section-heading compact"><div><p class="eyebrow">PRODUCTS</p><h1>Software</h1><p class="lead">Manage commercial releases, pricing, versions and licensing when the backend is connected.</p></div></div>
+          <div class="product-admin-grid">
+            <article class="product-admin-card"><span class="product-type">SOFTWARE</span><h2>Mero Mandali</h2><p>Church Presentation Software</p><div class="product-admin-status">In Development</div></article>
+            <article class="product-admin-card"><span class="product-type">SOFTWARE</span><h2>Nepali Bible Quiz</h2><p>नेपाली बाइबल हाजिरीजवाफ</p><div class="product-admin-status">In Development</div></article>
+          </div>
+        </section>
+
+        <section class="admin-section" id="section-books">
+          <div class="section-heading compact"><div><p class="eyebrow">DIGITAL BOOKS</p><h1>Books</h1><p class="lead">Future paid PDF/EPUB books and protected online-reading access will be managed here.</p></div></div>
+          <article class="empty-panel"><div class="empty-icon">▥</div><h2>Book sales module ready for Phase 2</h2><p>We will support product metadata, price, PDF/EPUB availability, buyer access, watermarking and controlled downloads.</p></article>
+        </section>
+
+        <section class="admin-section" id="section-licenses">
+          <div class="section-heading compact"><div><p class="eyebrow">PROTECTION</p><h1>Licenses & Devices</h1><p class="lead">One-PC activation and device management will be connected after the sales database.</p></div></div>
+          <article class="empty-panel"><div class="empty-icon">◆</div><h2>No license server connected</h2><p>Future controls: activate, deactivate, reset device, revoke license, view last validation and allow replacement PC.</p></article>
+        </section>
+
+        <section class="admin-section" id="section-downloads">
+          <div class="section-heading compact"><div><p class="eyebrow">DELIVERY</p><h1>Protected Downloads</h1><p class="lead">Private software installers and paid files will be stored outside the public GitHub repository.</p></div></div>
+          <article class="empty-panel"><div class="empty-icon">⇩</div><h2>Private R2 storage not connected yet</h2><p>Phase 2 will add expiring download tokens, download limits and delivery history.</p></article>
+        </section>
+
+        <section class="admin-section" id="section-security">
+          <div class="section-heading compact"><div><p class="eyebrow">ACCESS CONTROL</p><h1>Security</h1><p class="lead">The admin page must be protected server-side. Never rely on a password stored in HTML or JavaScript.</p></div></div>
+          <div class="security-grid">
+            <article class="panel"><h2>Required now</h2><ul class="check-list"><li>Protect <code>/admin/*</code> using Cloudflare Access.</li><li>Allow only your own approved login identity/email.</li><li>Keep payment and licensing secrets out of GitHub.</li><li>Use the Secure logout button when using a shared device.</li></ul></article>
+            <article class="panel"><h2>Later backend protections</h2><ul class="check-list"><li>Server-side Access token validation for privileged API actions.</li><li>D1 audit log for approvals, rejections and license resets.</li><li>Rate limiting for sensitive APIs.</li><li>Cloudflare Secrets for payment and signing credentials.</li></ul></article>
+          </div>
+        </section>
+
+        <section class="admin-section" id="section-settings">
+          <div class="section-heading compact"><div><p class="eyebrow">CONFIGURATION</p><h1>Settings</h1><p class="lead">Configuration values will become editable after the protected backend is connected.</p></div></div>
+          <article class="panel settings-panel">
+            <div class="setting-row"><div><strong>Primary website</strong><p>Main public address</p></div><code>https://durgajung.com.np</code></div>
+            <div class="setting-row"><div><strong>Admin path</strong><p>Private management area</p></div><code>/admin/</code></div>
+            <div class="setting-row"><div><strong>General email</strong><p>Planned email routing</p></div><code>info@durgajung.com.np</code></div>
+            <div class="setting-row"><div><strong>Sales email</strong><p>Orders, books, software and licensing</p></div><code>sales@durgajung.com.np</code></div>
+            <div class="setting-row"><div><strong>Payment methods</strong><p>Planned manual verification</p></div><span>eSewa · Khalti · Bank · BenefitPay</span></div>
+          </article>
+        </section>
+      </main>
+    </div>
+  </div>
+  <script src="/assets/admin/admin.js"></script>
+</body>
+</html>
