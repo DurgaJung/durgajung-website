@@ -163,6 +163,7 @@ a{color:inherit}img{max-width:100%;display:block}button{font:inherit}
 .book-cover img{height:100%;width:100%;object-fit:contain}
 .book-body{padding:20px;display:flex;flex-direction:column;flex:1}
 .book-body h3{margin:0;color:#222;font-size:20px}
+.book-new{display:inline-block;margin-left:8px;padding:3px 7px;border-radius:999px;background:var(--gold);color:#fff;font-size:10px;font-weight:800;line-height:1;vertical-align:middle;letter-spacing:.06em}
 .book-local{font-weight:700;color:var(--gold);margin:4px 0 10px}
 .book-desc{font-size:13.5px;color:#505050;display:-webkit-box;-webkit-line-clamp:5;-webkit-box-orient:vertical;overflow:hidden}
 .book-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:auto;padding-top:14px}
