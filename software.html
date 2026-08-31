@@ -125,6 +125,11 @@
       .software-body{padding:22px}
       .software-body h2{font-size:26px}
     }
+
+    .software-actions{margin-top:18px}.buy-btn{display:inline-flex;padding:12px 22px;border-radius:8px;background:#986719;color:#fff;text-decoration:none;font-weight:800}.buy-btn:hover{background:#744b0f;color:#fff}
+    .purchase-panel{display:none;margin-top:34px;padding:28px;border:1px solid #ddd9d1;border-radius:14px;background:#fff;box-shadow:0 10px 28px rgba(0,0,0,.05)}.purchase-panel:target{display:block}
+    .purchase-panel h2{margin-top:0;font-family:Georgia,"Times New Roman",serif}.payment-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;margin:24px 0}.payment-card{border:1px solid #e4e0d8;border-radius:12px;padding:18px;text-align:center;background:#fbfbfa}.payment-qr{width:100%;max-width:270px;height:360px;object-fit:contain;background:#fff;border-radius:8px}.payment-details{margin-top:12px;font-size:14px;line-height:1.6}.purchase-instruction{padding:16px 18px;border-left:4px solid #986719;background:#fbf7ef;border-radius:8px}.purchase-contact a{color:#986719;font-weight:700}@media(max-width:850px){.payment-grid{grid-template-columns:1fr}.payment-qr{height:auto;max-height:380px}}
+
   </style>
 </head>
 <body>
@@ -180,7 +185,8 @@
             <h2>Mero Mandali</h2>
             <div class="software-local nepali">मेरो मण्डली</div>
             <p>Church presentation software designed for songs, Bible verses, programmes, media, timers, and live projection in church services.</p>
-            <div class="software-meta">Church Presentation Software • More details coming soon</div>
+            <div class="software-actions"><a class="buy-btn" href="#purchase-mero-mandali">Buy Now</a></div>
+            <div class="software-meta">Church Presentation Software • Purchase available by verified payment</div>
           </div>
         </article>
 
@@ -197,6 +203,18 @@
           </div>
         </article>
       </div>
+
+      <section id="purchase-mero-mandali" class="purchase-panel">
+        <h2>Purchase Mero Mandali</h2><p class="nepali"><strong>मेरो मण्डली खरिद गर्नुहोस्</strong></p>
+        <p>Choose a payment method below. After payment, send your transaction reference together with your name, email address and WhatsApp/Viber number for verification. The software download or licence will be provided only after payment is verified.</p>
+        <div class="payment-grid">
+          <article class="payment-card"><h3>Global IME Bank</h3><img class="payment-qr" src="/assets/images/payments/global-ime-bank-qr.jpeg" alt="Global IME Bank payment QR code"><div class="payment-details"><strong>DURGA JUNG KUNWAR</strong><br>A/C No. 01507010199124</div></article>
+          <article class="payment-card"><h3>eSewa</h3><img class="payment-qr" src="/assets/images/payments/esewa-qr.jpeg" alt="eSewa payment QR code"><div class="payment-details"><strong>Durga Jung Kunwar</strong><br>9700807642</div></article>
+          <article class="payment-card"><h3>Khalti</h3><img class="payment-qr" src="/assets/images/payments/khalti-qr.jpeg" alt="Khalti payment QR code"><div class="payment-details"><strong>Durga Jung Kunwar</strong><br>9700807642</div></article>
+        </div>
+        <div class="purchase-instruction"><strong>Important:</strong> Payment does not automatically expose the installer. Each order is verified before the download/licence is issued.</div>
+        <p class="purchase-contact">Purchase support: <a href="mailto:sales@durgajung.com.np">sales@durgajung.com.np</a></p>
+      </section>
 
       <div class="coming-note">
         These projects are still under active development. Screenshots, features, release information, and download availability will be added as each project becomes ready.
