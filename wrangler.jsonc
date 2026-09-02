@@ -1,17 +1,17 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-
   "name": "durgajung-website",
-
   "main": "src/index.js",
-
   "compatibility_date": "2026-08-19",
 
   "assets": {
     "directory": ".",
     "binding": "ASSETS",
     "html_handling": "auto-trailing-slash",
-    "not_found_handling": "404-page"
+    "not_found_handling": "404-page",
+    "run_worker_first": [
+      "/api/*"
+    ]
   },
 
   "d1_databases": [
