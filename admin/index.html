@@ -2,65 +2,1399 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="robots" content="noindex,nofollow,noarchive">
-  <title>Admin Control Center | Durga Jung Kunwar</title>
-  <link rel="stylesheet" href="/assets/admin/admin.css">
-  <script src="/assets/admin/admin.js" defer></script>
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1"
+  >
+
+  <meta
+    name="robots"
+    content="noindex,nofollow,noarchive"
+  >
+
+  <title>
+    Mero Mandali Admin | Durga Jung Kunwar
+  </title>
+
+  <link
+    rel="stylesheet"
+    href="/assets/admin/admin.css"
+  >
+
+  <script
+    src="/assets/admin/admin.js"
+    defer
+  ></script>
 </head>
+
 <body>
-  <div class="admin-shell">
-    <aside class="sidebar" id="sidebar">
-      <div class="brand-block"><a class="brand" href="/">Durga Jung Kunwar</a><div class="brand-sub">Admin Control Center</div></div>
-      <nav class="side-nav" aria-label="Admin navigation">
-        <button class="nav-item active" type="button" data-section="dashboard"><span>⌂</span>Dashboard</button>
-        <button class="nav-item" type="button" data-section="website"><span>◉</span>Website</button>
-        <button class="nav-item" type="button" data-section="orders"><span>□</span>Orders</button>
-        <button class="nav-item" type="button" data-section="payments"><span>₨</span>Payments</button>
-        <button class="nav-item" type="button" data-section="software"><span>⌘</span>Software</button>
-        <button class="nav-item" type="button" data-section="books"><span>▤</span>Books</button>
-        <button class="nav-item" type="button" data-section="licenses"><span>◇</span>Licenses</button>
-        <button class="nav-item" type="button" data-section="downloads"><span>⇩</span>Downloads</button>
-        <button class="nav-item" type="button" data-section="security"><span>◈</span>Security</button>
-        <button class="nav-item" type="button" data-section="settings"><span>⚙</span>Settings</button>
-      </nav>
-      <div class="sidebar-foot"><a href="/" class="public-site-link">Open public website ↗</a><a href="/cdn-cgi/access/logout" class="logout-link">Sign out</a></div>
-    </aside>
 
-    <main class="main-area">
-      <header class="topbar">
-        <button id="menuToggle" class="menu-toggle" type="button" aria-label="Open menu" aria-expanded="false">☰</button>
-        <div><div class="top-title">Admin Control Center</div><div class="top-subtitle">Phase 1 · Secure monitoring interface</div></div>
-        <div class="top-actions"><span id="browserConnection" class="connection-pill">Checking connection…</span><button id="refreshAll" class="refresh-btn" type="button">Refresh checks</button></div>
-      </header>
+<div class="admin-shell">
 
-      <div class="content">
-        <section id="section-dashboard" class="admin-section active">
-          <div class="section-heading"><div><p class="eyebrow">OVERVIEW</p><h1>Dashboard</h1><p class="lead">Monitor the public website and see which management modules are ready for future phases.</p></div><div class="date-card"><span id="currentDate">—</span><strong id="currentTime">—</strong></div></div>
-          <div class="metric-grid">
-            <article class="metric-card"><div class="metric-label">Main Website</div><div id="mainSiteStatus" class="metric-value neutral">Checking…</div><div id="mainSiteLatency" class="metric-note">Waiting for response</div></article>
-            <article class="metric-card"><div class="metric-label">Admin Security</div><div class="metric-value">Protected</div><div class="metric-note">Cloudflare Access</div></article>
-            <article class="metric-card"><div class="metric-label">Orders</div><div class="metric-value neutral">Phase 2</div><div class="metric-note">Database not connected</div></article>
-            <article class="metric-card"><div class="metric-label">Licensing</div><div class="metric-value neutral">Planned</div><div class="metric-note">Activation backend pending</div></article>
-          </div>
-          <div class="dashboard-grid">
-            <article class="panel"><div class="panel-head"><div><h2>Website health</h2><p>Live checks of public pages.</p></div><button id="refreshHealth" class="secondary-btn" type="button">Run again</button></div><div id="dashboardHealthList" class="health-list" aria-live="polite"></div></article>
-            <article class="panel"><h2>Module readiness</h2><div class="module-list"><div class="module-row"><span>Dashboard & security</span><strong class="status-ok">READY</strong></div><div class="module-row"><span>Orders & payments</span><strong class="status-warn">PHASE 2</strong></div><div class="module-row"><span>Analytics</span><strong class="status-warn">PLANNED</strong></div><div class="module-row"><span>Downloads & licensing</span><strong class="status-warn">PLANNED</strong></div></div></article>
-          </div>
-        </section>
+  <!-- ==========================================
+       SIDEBAR
+  =========================================== -->
 
-        <section id="section-website" class="admin-section"><div class="section-heading compact"><div><p class="eyebrow">MONITORING</p><h1>Website Status</h1><p class="lead">Results are browser-side availability checks, not full server monitoring.</p></div></div><article class="panel health-table-wrap"><table class="health-table"><thead><tr><th>Page</th><th>Path</th><th>Status</th><th>Response</th></tr></thead><tbody id="healthTableBody"><tr><td colspan="4">Waiting for checks…</td></tr></tbody></table></article></section>
+  <aside
+    class="sidebar"
+    id="sidebar"
+  >
 
-        <section id="section-orders" class="admin-section"><div class="section-heading compact"><div><p class="eyebrow">SALES</p><h1>Orders</h1></div></div><div class="empty-panel"><h2>Orders database is not connected yet</h2><p>Phase 2 will add Cloudflare D1 order records, statuses and customer details.</p></div></section>
-        <section id="section-payments" class="admin-section"><div class="section-heading compact"><div><p class="eyebrow">SALES</p><h1>Payments</h1></div></div><div class="empty-panel"><h2>Payment review arrives in Phase 2</h2><p>This section will show submitted payment details and approval status.</p></div></section>
-        <section id="section-software" class="admin-section"><div class="section-heading compact"><div><p class="eyebrow">PRODUCTS</p><h1>Software</h1></div></div><div class="empty-panel"><h2>Software management is planned</h2><p>Product records and protected delivery will be connected in later phases.</p></div></section>
-        <section id="section-books" class="admin-section"><div class="section-heading compact"><div><p class="eyebrow">PRODUCTS</p><h1>Books</h1></div></div><div class="empty-panel"><h2>Book management is planned</h2><p>Book records, orders and downloads will be connected later.</p></div></section>
-        <section id="section-licenses" class="admin-section"><div class="section-heading compact"><div><p class="eyebrow">DELIVERY</p><h1>Licenses</h1></div></div><div class="empty-panel"><h2>Licensing backend is planned</h2><p>Device activation and license controls are not connected in Phase 1.</p></div></section>
-        <section id="section-downloads" class="admin-section"><div class="section-heading compact"><div><p class="eyebrow">DELIVERY</p><h1>Downloads</h1></div></div><div class="empty-panel"><h2>Protected downloads are planned</h2><p>Customer download authorization will be added after the sales database.</p></div></section>
-        <section id="section-security" class="admin-section"><div class="section-heading compact"><div><p class="eyebrow">ACCESS</p><h1>Security</h1></div></div><article class="panel"><h2>Cloudflare Access</h2><p class="lead">This page must remain protected by the existing <code>/admin/*</code> Access application. The dashboard itself does not replace access control.</p></article></section>
-        <section id="section-settings" class="admin-section"><div class="section-heading compact"><div><p class="eyebrow">CONFIGURATION</p><h1>Settings</h1></div></div><article class="panel settings-panel"><div class="setting-row"><div><strong>Public website</strong><p>Health-check origin</p></div><code>https://durgajung.com.np</code></div><div class="setting-row"><div><strong>Admin version</strong><p>Current interface package</p></div><span>Phase 1.1</span></div></article></section>
+    <div class="brand-block">
+      <a
+        class="brand"
+        href="/"
+      >
+        Durga Jung Kunwar
+      </a>
+
+      <div class="brand-sub">
+        Mero Mandali Admin
       </div>
-    </main>
+    </div>
+
+
+    <nav
+      class="side-nav"
+      aria-label="Admin navigation"
+    >
+
+      <button
+        class="nav-item active"
+        type="button"
+        data-section="dashboard"
+      >
+        <span>⌂</span>
+        Dashboard
+      </button>
+
+
+      <button
+        class="nav-item"
+        type="button"
+        data-section="orders"
+      >
+        <span>□</span>
+        Orders
+        <b
+          id="pendingOrderBadge"
+          class="nav-badge"
+        ></b>
+      </button>
+
+
+      <button
+        class="nav-item"
+        type="button"
+        data-section="payments"
+      >
+        <span>₨</span>
+        Payments
+      </button>
+
+
+      <button
+        class="nav-item"
+        type="button"
+        data-section="sales"
+      >
+        <span>▦</span>
+        Sales
+      </button>
+
+
+      <button
+        class="nav-item"
+        type="button"
+        data-section="licenses"
+      >
+        <span>◇</span>
+        Licenses
+      </button>
+
+
+      <button
+        class="nav-item"
+        type="button"
+        data-section="invoices"
+      >
+        <span>▤</span>
+        Invoices
+      </button>
+
+
+      <button
+        class="nav-item"
+        type="button"
+        data-section="downloads"
+      >
+        <span>⇩</span>
+        Downloads
+      </button>
+
+
+      <button
+        class="nav-item"
+        type="button"
+        data-section="website"
+      >
+        <span>◉</span>
+        Website
+      </button>
+
+
+      <button
+        class="nav-item"
+        type="button"
+        data-section="activity"
+      >
+        <span>≡</span>
+        Activity
+      </button>
+
+
+      <button
+        class="nav-item"
+        type="button"
+        data-section="security"
+      >
+        <span>◈</span>
+        Security
+      </button>
+
+
+      <button
+        class="nav-item"
+        type="button"
+        data-section="settings"
+      >
+        <span>⚙</span>
+        Settings
+      </button>
+
+    </nav>
+
+
+    <div class="sidebar-foot">
+
+      <div class="admin-owner">
+        <span>OWNER</span>
+        <strong>Durga Jung Kunwar</strong>
+      </div>
+
+      <a
+        href="/"
+        class="public-site-link"
+      >
+        Open public website ↗
+      </a>
+
+      <a
+        href="/cdn-cgi/access/logout"
+        class="logout-link"
+      >
+        Sign out
+      </a>
+
+    </div>
+
+  </aside>
+
+
+  <!-- ==========================================
+       MAIN AREA
+  =========================================== -->
+
+  <main class="main-area">
+
+    <header class="topbar">
+
+      <button
+        id="menuToggle"
+        class="menu-toggle"
+        type="button"
+        aria-label="Open menu"
+        aria-expanded="false"
+      >
+        ☰
+      </button>
+
+
+      <div>
+
+        <div class="top-title">
+          Mero Mandali Admin Control Center
+        </div>
+
+        <div class="top-subtitle">
+          Orders · Payments · Sales · Licensing
+        </div>
+
+      </div>
+
+
+      <div class="top-actions">
+
+        <span
+          id="apiConnection"
+          class="connection-pill"
+        >
+          Checking API…
+        </span>
+
+        <button
+          id="refreshAll"
+          class="refresh-btn"
+          type="button"
+        >
+          Refresh
+        </button>
+
+      </div>
+
+    </header>
+
+
+    <div class="content">
+
+
+      <!-- ======================================
+           DASHBOARD
+      ======================================= -->
+
+      <section
+        id="section-dashboard"
+        class="admin-section active"
+      >
+
+        <div class="section-heading">
+
+          <div>
+
+            <p class="eyebrow">
+              MERO MANDALI
+            </p>
+
+            <h1>Dashboard</h1>
+
+            <p class="lead">
+              Monitor incoming orders, payment approvals,
+              completed sales and licence delivery.
+            </p>
+
+          </div>
+
+
+          <div class="date-card">
+
+            <span id="currentDate">
+              —
+            </span>
+
+            <strong id="currentTime">
+              —
+            </strong>
+
+          </div>
+
+        </div>
+
+
+        <div class="metric-grid">
+
+          <article class="metric-card">
+
+            <div class="metric-label">
+              Pending Orders
+            </div>
+
+            <div
+              id="metricPendingOrders"
+              class="metric-value neutral"
+            >
+              —
+            </div>
+
+            <div class="metric-note">
+              Waiting for review
+            </div>
+
+          </article>
+
+
+          <article class="metric-card">
+
+            <div class="metric-label">
+              Confirmed Payments
+            </div>
+
+            <div
+              id="metricConfirmedPayments"
+              class="metric-value"
+            >
+              —
+            </div>
+
+            <div class="metric-note">
+              Approved payment records
+            </div>
+
+          </article>
+
+
+          <article class="metric-card">
+
+            <div class="metric-label">
+              Completed Sales
+            </div>
+
+            <div
+              id="metricTotalSales"
+              class="metric-value"
+            >
+              —
+            </div>
+
+            <div
+              id="metricTotalRevenue"
+              class="metric-note"
+            >
+              NPR —
+            </div>
+
+          </article>
+
+
+          <article class="metric-card">
+
+            <div class="metric-label">
+              Licence Pending
+            </div>
+
+            <div
+              id="metricPendingLicences"
+              class="metric-value neutral"
+            >
+              —
+            </div>
+
+            <div class="metric-note">
+              Waiting for licence issuance
+            </div>
+
+          </article>
+
+        </div>
+
+
+        <div class="dashboard-grid">
+
+          <article class="panel">
+
+            <div class="panel-head">
+
+              <div>
+                <h2>Recent Orders</h2>
+                <p>
+                  Latest customer payment submissions.
+                </p>
+              </div>
+
+              <button
+                class="secondary-btn"
+                type="button"
+                data-open-section="orders"
+              >
+                View Orders
+              </button>
+
+            </div>
+
+
+            <div class="table-wrap">
+
+              <table class="admin-table">
+
+                <thead>
+                  <tr>
+                    <th>Order</th>
+                    <th>Customer</th>
+                    <th>Amount</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+
+                <tbody id="dashboardOrdersBody">
+
+                  <tr>
+                    <td colspan="4">
+                      Loading…
+                    </td>
+                  </tr>
+
+                </tbody>
+
+              </table>
+
+            </div>
+
+          </article>
+
+
+          <article class="panel">
+
+            <h2>System Status</h2>
+
+            <div class="module-list">
+
+              <div class="module-row">
+                <span>Admin API</span>
+                <strong
+                  id="moduleApiStatus"
+                  class="status-warn"
+                >
+                  CHECKING
+                </strong>
+              </div>
+
+              <div class="module-row">
+                <span>Orders Database</span>
+                <strong class="status-ok">
+                  READY
+                </strong>
+              </div>
+
+              <div class="module-row">
+                <span>Sales Database</span>
+                <strong class="status-ok">
+                  READY
+                </strong>
+              </div>
+
+              <div class="module-row">
+                <span>Licence API</span>
+                <strong class="status-warn">
+                  NEXT PHASE
+                </strong>
+              </div>
+
+              <div class="module-row">
+                <span>Email Delivery</span>
+                <strong class="status-warn">
+                  PENDING
+                </strong>
+              </div>
+
+            </div>
+
+          </article>
+
+        </div>
+
+      </section>
+
+
+      <!-- ======================================
+           ORDERS
+      ======================================= -->
+
+      <section
+        id="section-orders"
+        class="admin-section"
+      >
+
+        <div class="section-heading">
+
+          <div>
+
+            <p class="eyebrow">
+              CUSTOMER PURCHASES
+            </p>
+
+            <h1>Orders</h1>
+
+            <p class="lead">
+              Review customer details and submitted payment
+              information before confirming a sale.
+            </p>
+
+          </div>
+
+
+          <button
+            id="refreshOrders"
+            class="secondary-btn"
+            type="button"
+          >
+            Refresh Orders
+          </button>
+
+        </div>
+
+
+        <article class="panel">
+
+          <div class="toolbar">
+
+            <select id="orderStatusFilter">
+
+              <option value="">
+                All Orders
+              </option>
+
+              <option value="pending">
+                Pending
+              </option>
+
+              <option value="under_review">
+                Under Review
+              </option>
+
+              <option value="approved">
+                Approved
+              </option>
+
+              <option value="rejected">
+                Rejected
+              </option>
+
+              <option value="completed">
+                Completed
+              </option>
+
+            </select>
+
+
+            <input
+              id="orderSearch"
+              type="search"
+              placeholder="Search customer, email or order…"
+            >
+
+          </div>
+
+
+          <div class="table-wrap">
+
+            <table class="admin-table wide-table">
+
+              <thead>
+
+                <tr>
+
+                  <th>S.N.</th>
+                  <th>Order No.</th>
+                  <th>Customer</th>
+                  <th>Email</th>
+                  <th>Phone</th>
+                  <th>Amount</th>
+                  <th>Payment</th>
+                  <th>Transaction Ref.</th>
+                  <th>Receipt</th>
+                  <th>Status</th>
+                  <th>Submitted</th>
+                  <th>Action</th>
+
+                </tr>
+
+              </thead>
+
+
+              <tbody id="ordersTableBody">
+
+                <tr>
+                  <td colspan="12">
+                    Loading orders…
+                  </td>
+                </tr>
+
+              </tbody>
+
+            </table>
+
+          </div>
+
+        </article>
+
+      </section>
+
+
+      <!-- ======================================
+           PAYMENTS
+      ======================================= -->
+
+      <section
+        id="section-payments"
+        class="admin-section"
+      >
+
+        <div class="section-heading compact">
+
+          <div>
+
+            <p class="eyebrow">
+              PAYMENT REVIEW
+            </p>
+
+            <h1>Payments</h1>
+
+            <p class="lead">
+              Verify payment references and customer receipt
+              evidence before approval.
+            </p>
+
+          </div>
+
+        </div>
+
+
+        <article class="panel">
+
+          <div class="table-wrap">
+
+            <table class="admin-table wide-table">
+
+              <thead>
+
+                <tr>
+                  <th>S.N.</th>
+                  <th>Order</th>
+                  <th>Customer</th>
+                  <th>Method</th>
+                  <th>Reference</th>
+                  <th>Amount</th>
+                  <th>Payment Date</th>
+                  <th>Receipt</th>
+                  <th>Status</th>
+                  <th>Action</th>
+                </tr>
+
+              </thead>
+
+
+              <tbody id="paymentsTableBody">
+
+                <tr>
+                  <td colspan="10">
+                    Loading payments…
+                  </td>
+                </tr>
+
+              </tbody>
+
+            </table>
+
+          </div>
+
+        </article>
+
+      </section>
+
+
+      <!-- ======================================
+           SALES
+      ======================================= -->
+
+      <section
+        id="section-sales"
+        class="admin-section"
+      >
+
+        <div class="section-heading">
+
+          <div>
+
+            <p class="eyebrow">
+              SALES REGISTER
+            </p>
+
+            <h1>Sales</h1>
+
+            <p class="lead">
+              Permanent record of approved Mero Mandali
+              customer sales and issued licence details.
+            </p>
+
+          </div>
+
+
+          <div class="section-actions">
+
+            <button
+              id="refreshSales"
+              class="secondary-btn"
+              type="button"
+            >
+              Refresh
+            </button>
+
+            <a
+              id="exportSales"
+              class="primary-btn"
+              href="/api/admin/export-sales"
+            >
+              Export Sales
+            </a>
+
+          </div>
+
+        </div>
+
+
+        <article class="panel">
+
+          <div class="table-wrap">
+
+            <table class="admin-table sales-table">
+
+              <thead>
+
+                <tr>
+
+                  <th>S.N.</th>
+                  <th>Sale No.</th>
+                  <th>Invoice No.</th>
+                  <th>Customer</th>
+                  <th>Email</th>
+                  <th>Phone</th>
+                  <th>Payment Date</th>
+                  <th>Payment Method</th>
+                  <th>Reference</th>
+                  <th>Total Paid</th>
+                  <th>Licence Key</th>
+                  <th>Licence Status</th>
+                  <th>Device</th>
+                  <th>Reset</th>
+                  <th>Invoice Sent</th>
+                  <th>Licence Sent</th>
+                  <th>Approved</th>
+                  <th>Notes</th>
+
+                </tr>
+
+              </thead>
+
+
+              <tbody id="salesTableBody">
+
+                <tr>
+                  <td colspan="18">
+                    Loading sales…
+                  </td>
+                </tr>
+
+              </tbody>
+
+            </table>
+
+          </div>
+
+        </article>
+
+      </section>
+
+
+      <!-- ======================================
+           LICENSES
+      ======================================= -->
+
+      <section
+        id="section-licenses"
+        class="admin-section"
+      >
+
+        <div class="section-heading compact">
+
+          <div>
+
+            <p class="eyebrow">
+              MERO MANDALI
+            </p>
+
+            <h1>Licenses</h1>
+
+            <p class="lead">
+              Customer licence management will connect to the
+              dedicated Mero Mandali licensing API after the
+              admin sales system is finalized.
+            </p>
+
+          </div>
+
+        </div>
+
+
+        <article class="panel">
+
+          <div class="notice-box">
+
+            <strong>
+              Customer licences
+            </strong>
+
+            <p>
+              Normal customer licences will be limited to
+              one Windows PC.
+            </p>
+
+          </div>
+
+
+          <div class="notice-box owner-notice">
+
+            <strong>
+              Owner licence
+            </strong>
+
+            <p>
+              The private unlimited Owner licence is not a
+              customer sale and will remain separate from
+              Orders and Sales.
+            </p>
+
+          </div>
+
+        </article>
+
+      </section>
+
+
+      <!-- ======================================
+           INVOICES
+      ======================================= -->
+
+      <section
+        id="section-invoices"
+        class="admin-section"
+      >
+
+        <div class="section-heading compact">
+
+          <div>
+
+            <p class="eyebrow">
+              CUSTOMER DOCUMENTS
+            </p>
+
+            <h1>Invoices</h1>
+
+            <p class="lead">
+              Numbered customer invoices for approved
+              Mero Mandali sales.
+            </p>
+
+          </div>
+
+        </div>
+
+
+        <article class="panel">
+
+          <div class="table-wrap">
+
+            <table class="admin-table">
+
+              <thead>
+
+                <tr>
+                  <th>Invoice No.</th>
+                  <th>Customer</th>
+                  <th>Email</th>
+                  <th>Amount</th>
+                  <th>Date</th>
+                  <th>Email Status</th>
+                  <th>PDF</th>
+                </tr>
+
+              </thead>
+
+
+              <tbody id="invoiceTableBody">
+
+                <tr>
+                  <td colspan="7">
+                    Invoice generation will be connected next.
+                  </td>
+                </tr>
+
+              </tbody>
+
+            </table>
+
+          </div>
+
+        </article>
+
+      </section>
+
+
+      <!-- ======================================
+           DOWNLOADS
+      ======================================= -->
+
+      <section
+        id="section-downloads"
+        class="admin-section"
+      >
+
+        <div class="section-heading compact">
+
+          <div>
+
+            <p class="eyebrow">
+              CUSTOMER DELIVERY
+            </p>
+
+            <h1>Downloads</h1>
+
+            <p class="lead">
+              Files that will be delivered after an approved
+              Mero Mandali purchase.
+            </p>
+
+          </div>
+
+        </div>
+
+
+        <article class="panel">
+
+          <div class="delivery-list">
+
+            <div class="delivery-item">
+              <strong>Mero Mandali Installer</strong>
+              <span>Pending protected download setup</span>
+            </div>
+
+            <div class="delivery-item">
+              <strong>
+                Mero Mandali Installation & Setup Guide
+              </strong>
+              <span>Pending protected download setup</span>
+            </div>
+
+            <div class="delivery-item">
+              <strong>
+                Mero Mandali User Manual
+              </strong>
+              <span>Pending protected download setup</span>
+            </div>
+
+          </div>
+
+        </article>
+
+      </section>
+
+
+      <!-- ======================================
+           WEBSITE STATUS
+      ======================================= -->
+
+      <section
+        id="section-website"
+        class="admin-section"
+      >
+
+        <div class="section-heading compact">
+
+          <div>
+
+            <p class="eyebrow">
+              WEBSITE
+            </p>
+
+            <h1>Website Status</h1>
+
+            <p class="lead">
+              Browser-side availability checks for the
+              public website.
+            </p>
+
+          </div>
+
+        </div>
+
+
+        <article class="panel health-table-wrap">
+
+          <table class="health-table">
+
+            <thead>
+              <tr>
+                <th>Page</th>
+                <th>Path</th>
+                <th>Status</th>
+                <th>Response</th>
+              </tr>
+            </thead>
+
+            <tbody id="healthTableBody">
+
+              <tr>
+                <td colspan="4">
+                  Waiting for checks…
+                </td>
+              </tr>
+
+            </tbody>
+
+          </table>
+
+        </article>
+
+      </section>
+
+
+      <!-- ======================================
+           ACTIVITY
+      ======================================= -->
+
+      <section
+        id="section-activity"
+        class="admin-section"
+      >
+
+        <div class="section-heading compact">
+
+          <div>
+
+            <p class="eyebrow">
+              AUDIT HISTORY
+            </p>
+
+            <h1>Admin Activity</h1>
+
+            <p class="lead">
+              Important order, payment and sales actions
+              performed inside the admin system.
+            </p>
+
+          </div>
+
+        </div>
+
+
+        <article class="panel">
+
+          <div class="table-wrap">
+
+            <table class="admin-table">
+
+              <thead>
+
+                <tr>
+                  <th>Date</th>
+                  <th>Admin</th>
+                  <th>Action</th>
+                  <th>Type</th>
+                  <th>Description</th>
+                </tr>
+
+              </thead>
+
+
+              <tbody id="activityTableBody">
+
+                <tr>
+                  <td colspan="5">
+                    Loading activity…
+                  </td>
+                </tr>
+
+              </tbody>
+
+            </table>
+
+          </div>
+
+        </article>
+
+      </section>
+
+
+      <!-- ======================================
+           SECURITY
+      ======================================= -->
+
+      <section
+        id="section-security"
+        class="admin-section"
+      >
+
+        <div class="section-heading compact">
+
+          <div>
+
+            <p class="eyebrow">
+              OWNER ACCESS
+            </p>
+
+            <h1>Security</h1>
+
+          </div>
+
+        </div>
+
+
+        <article class="panel">
+
+          <h2>
+            Cloudflare Access Protection
+          </h2>
+
+          <p class="lead">
+            The complete
+            <code>/admin/*</code>
+            area must remain protected by Cloudflare Access.
+          </p>
+
+
+          <div class="security-card">
+
+            <span>Authorized administrator</span>
+
+            <strong>
+              durgajung.nits@gmail.com
+            </strong>
+
+          </div>
+
+
+          <p class="security-warning">
+            Customer-facing pages must never expose admin API,
+            licence management or private sales information.
+          </p>
+
+        </article>
+
+      </section>
+
+
+      <!-- ======================================
+           SETTINGS
+      ======================================= -->
+
+      <section
+        id="section-settings"
+        class="admin-section"
+      >
+
+        <div class="section-heading compact">
+
+          <div>
+
+            <p class="eyebrow">
+              CONFIGURATION
+            </p>
+
+            <h1>Settings</h1>
+
+          </div>
+
+        </div>
+
+
+        <article class="panel settings-panel">
+
+          <div class="setting-row">
+
+            <div>
+              <strong>Product</strong>
+              <p>Software being sold</p>
+            </div>
+
+            <span>Mero Mandali</span>
+
+          </div>
+
+
+          <div class="setting-row">
+
+            <div>
+              <strong>Customer Price</strong>
+              <p>Final purchase price</p>
+            </div>
+
+            <span>NPR 5,000</span>
+
+          </div>
+
+
+          <div class="setting-row">
+
+            <div>
+              <strong>VAT</strong>
+              <p>Current billing configuration</p>
+            </div>
+
+            <span>Not used</span>
+
+          </div>
+
+
+          <div class="setting-row">
+
+            <div>
+              <strong>Sales Database</strong>
+              <p>Cloudflare D1</p>
+            </div>
+
+            <code>durgajung-admin-db</code>
+
+          </div>
+
+
+          <div class="setting-row">
+
+            <div>
+              <strong>Admin Account</strong>
+              <p>Authorized owner</p>
+            </div>
+
+            <code>
+              durgajung.nits@gmail.com
+            </code>
+
+          </div>
+
+
+          <div class="setting-row">
+
+            <div>
+              <strong>Developer Email</strong>
+              <p>Owner licence delivery</p>
+            </div>
+
+            <code>
+              developer@durgajung.com.np
+            </code>
+
+          </div>
+
+        </article>
+
+      </section>
+
+    </div>
+
+  </main>
+
+</div>
+
+
+<!-- ==========================================
+     ORDER REVIEW MODAL
+=========================================== -->
+
+<div
+  id="orderModal"
+  class="modal-backdrop"
+  hidden
+>
+
+  <div
+    class="modal-card"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="orderModalTitle"
+  >
+
+    <div class="modal-head">
+
+      <div>
+
+        <p class="eyebrow">
+          ORDER REVIEW
+        </p>
+
+        <h2 id="orderModalTitle">
+          Customer Order
+        </h2>
+
+      </div>
+
+
+      <button
+        id="closeOrderModal"
+        class="modal-close"
+        type="button"
+        aria-label="Close"
+      >
+        ×
+      </button>
+
+    </div>
+
+
+    <div
+      id="orderModalContent"
+      class="order-detail-grid"
+    ></div>
+
+
+    <div class="modal-notes">
+
+      <label for="adminOrderNotes">
+        Admin Notes
+      </label>
+
+      <textarea
+        id="adminOrderNotes"
+        rows="3"
+        placeholder="Optional internal notes…"
+      ></textarea>
+
+    </div>
+
+
+    <div class="modal-actions">
+
+      <button
+        id="rejectOrderBtn"
+        class="danger-btn"
+        type="button"
+      >
+        Reject
+      </button>
+
+
+      <button
+        id="reviewOrderBtn"
+        class="secondary-btn"
+        type="button"
+      >
+        Mark Under Review
+      </button>
+
+
+      <button
+        id="confirmPaymentBtn"
+        class="primary-btn"
+        type="button"
+      >
+        Confirm Payment
+      </button>
+
+    </div>
+
   </div>
+
+</div>
+
+
+<!-- ==========================================
+     TOAST
+=========================================== -->
+
+<div
+  id="toast"
+  class="toast"
+  aria-live="polite"
+  aria-atomic="true"
+></div>
+
+
 </body>
 </html>
