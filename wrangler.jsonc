@@ -1,9 +1,24 @@
 {
+  "$schema": "node_modules/wrangler/config-schema.json",
+
   "name": "durgajung-website",
+
+  "main": "src/index.js",
+
   "compatibility_date": "2026-08-19",
+
   "assets": {
     "directory": ".",
+    "binding": "ASSETS",
     "html_handling": "auto-trailing-slash",
     "not_found_handling": "404-page"
-  }
+  },
+
+  "d1_databases": [
+    {
+      "binding": "ADMIN_DB",
+      "database_name": "durgajung-admin-db",
+      "database_id": "63f388c8-d8ce-48f2-ad09-e754478a2f26"
+    }
+  ]
 }
