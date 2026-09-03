@@ -1,5 +1,6 @@
 <!doctype html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8">
 
@@ -14,7 +15,7 @@
   >
 
   <title>
-    Admin Control Center | Durga Jung Kunwar
+    Durga Jung Admin Control Center
   </title>
 
   <link
@@ -28,13 +29,15 @@
   ></script>
 </head>
 
+
 <body>
 
 <div class="admin-shell">
 
-  <!-- ==========================================
+
+  <!-- =====================================================
        SIDEBAR
-  =========================================== -->
+  ====================================================== -->
 
   <aside
     class="sidebar"
@@ -42,6 +45,7 @@
   >
 
     <div class="brand-block">
+
       <a
         class="brand"
         href="/"
@@ -50,8 +54,9 @@
       </a>
 
       <div class="brand-sub">
-        Mero Mandali Admin
+        Admin Control Center
       </div>
+
     </div>
 
 
@@ -59,6 +64,9 @@
       class="side-nav"
       aria-label="Admin navigation"
     >
+
+
+      <!-- Dashboard -->
 
       <button
         class="nav-item active"
@@ -70,6 +78,8 @@
       </button>
 
 
+      <!-- Orders -->
+
       <button
         class="nav-item"
         type="button"
@@ -77,12 +87,15 @@
       >
         <span>□</span>
         Orders
+
         <b
           id="pendingOrderBadge"
           class="nav-badge"
         ></b>
       </button>
 
+
+      <!-- Payments -->
 
       <button
         class="nav-item"
@@ -94,6 +107,32 @@
       </button>
 
 
+      <!-- Software -->
+
+      <button
+        class="nav-item"
+        type="button"
+        data-section="software"
+      >
+        <span>▣</span>
+        Software
+      </button>
+
+
+      <!-- Books -->
+
+      <button
+        class="nav-item"
+        type="button"
+        data-section="books"
+      >
+        <span>▤</span>
+        Books
+      </button>
+
+
+      <!-- Sales -->
+
       <button
         class="nav-item"
         type="button"
@@ -103,6 +142,8 @@
         Sales
       </button>
 
+
+      <!-- Licenses -->
 
       <button
         class="nav-item"
@@ -114,15 +155,31 @@
       </button>
 
 
+      <!-- Invoices -->
+
       <button
         class="nav-item"
         type="button"
         data-section="invoices"
       >
-        <span>▤</span>
+        <span>▥</span>
         Invoices
       </button>
 
+
+      <!-- Customers -->
+
+      <button
+        class="nav-item"
+        type="button"
+        data-section="customers"
+      >
+        <span>◎</span>
+        Customers
+      </button>
+
+
+      <!-- Downloads -->
 
       <button
         class="nav-item"
@@ -134,6 +191,8 @@
       </button>
 
 
+      <!-- Website -->
+
       <button
         class="nav-item"
         type="button"
@@ -143,6 +202,8 @@
         Website
       </button>
 
+
+      <!-- Activity -->
 
       <button
         class="nav-item"
@@ -154,6 +215,8 @@
       </button>
 
 
+      <!-- Security -->
+
       <button
         class="nav-item"
         type="button"
@@ -163,6 +226,8 @@
         Security
       </button>
 
+
+      <!-- Settings -->
 
       <button
         class="nav-item"
@@ -179,9 +244,17 @@
     <div class="sidebar-foot">
 
       <div class="admin-owner">
-        <span>OWNER</span>
-        <strong>Durga Jung Kunwar</strong>
+
+        <span>
+          OWNER
+        </span>
+
+        <strong>
+          Durga Jung Kunwar
+        </strong>
+
       </div>
+
 
       <a
         href="/"
@@ -189,6 +262,7 @@
       >
         Open public website ↗
       </a>
+
 
       <a
         href="/cdn-cgi/access/logout"
@@ -202,11 +276,15 @@
   </aside>
 
 
-  <!-- ==========================================
+
+  <!-- =====================================================
        MAIN AREA
-  =========================================== -->
+  ====================================================== -->
 
   <main class="main-area">
+
+
+    <!-- TOP BAR -->
 
     <header class="topbar">
 
@@ -243,6 +321,7 @@
           Checking API…
         </span>
 
+
         <button
           id="refreshAll"
           class="refresh-btn"
@@ -256,12 +335,13 @@
     </header>
 
 
+
     <div class="content">
 
 
-      <!-- ======================================
+      <!-- =================================================
            DASHBOARD
-      ======================================= -->
+      ================================================== -->
 
       <section
         id="section-dashboard"
@@ -273,14 +353,17 @@
           <div>
 
             <p class="eyebrow">
-              MERO MANDALI
+              ADMINISTRATION
             </p>
 
-            <h1>Dashboard</h1>
+            <h1>
+              Dashboard
+            </h1>
 
             <p class="lead">
-              Monitor incoming orders, payment approvals,
-              completed sales and licence delivery.
+              Monitor software and book orders, customer
+              payments, completed sales, invoices, licences
+              and delivery activity.
             </p>
 
           </div>
@@ -301,7 +384,11 @@
         </div>
 
 
+
+        <!-- DASHBOARD METRICS -->
+
         <div class="metric-grid">
+
 
           <article class="metric-card">
 
@@ -323,6 +410,7 @@
           </article>
 
 
+
           <article class="metric-card">
 
             <div class="metric-label">
@@ -337,10 +425,11 @@
             </div>
 
             <div class="metric-note">
-              Approved payment records
+              Approved payments
             </div>
 
           </article>
+
 
 
           <article class="metric-card">
@@ -366,6 +455,7 @@
           </article>
 
 
+
           <article class="metric-card">
 
             <div class="metric-label">
@@ -380,7 +470,7 @@
             </div>
 
             <div class="metric-note">
-              Waiting for licence issuance
+              Software licences awaiting issuance
             </div>
 
           </article>
@@ -388,18 +478,28 @@
         </div>
 
 
+
         <div class="dashboard-grid">
+
+
+          <!-- RECENT ORDERS -->
 
           <article class="panel">
 
             <div class="panel-head">
 
               <div>
-                <h2>Recent Orders</h2>
+
+                <h2>
+                  Recent Orders
+                </h2>
+
                 <p>
-                  Latest customer payment submissions.
+                  Latest software and book purchase submissions.
                 </p>
+
               </div>
+
 
               <button
                 class="secondary-btn"
@@ -417,20 +517,25 @@
               <table class="admin-table">
 
                 <thead>
+
                   <tr>
                     <th>Order</th>
                     <th>Customer</th>
                     <th>Amount</th>
                     <th>Status</th>
                   </tr>
+
                 </thead>
+
 
                 <tbody id="dashboardOrdersBody">
 
                   <tr>
+
                     <td colspan="4">
                       Loading…
                     </td>
+
                   </tr>
 
                 </tbody>
@@ -442,48 +547,110 @@
           </article>
 
 
+
+          <!-- SYSTEM STATUS -->
+
           <article class="panel">
 
-            <h2>System Status</h2>
+            <h2>
+              System Status
+            </h2>
+
 
             <div class="module-list">
 
+
               <div class="module-row">
-                <span>Admin API</span>
+
+                <span>
+                  Admin API
+                </span>
+
                 <strong
                   id="moduleApiStatus"
                   class="status-warn"
                 >
                   CHECKING
                 </strong>
+
               </div>
 
+
               <div class="module-row">
-                <span>Orders Database</span>
+
+                <span>
+                  Orders Database
+                </span>
+
                 <strong class="status-ok">
                   READY
                 </strong>
+
               </div>
 
+
               <div class="module-row">
-                <span>Sales Database</span>
+
+                <span>
+                  Sales Database
+                </span>
+
                 <strong class="status-ok">
                   READY
                 </strong>
+
               </div>
 
+
               <div class="module-row">
-                <span>Licence API</span>
+
+                <span>
+                  Product Catalogue
+                </span>
+
+                <strong class="status-ok">
+                  READY
+                </strong>
+
+              </div>
+
+
+              <div class="module-row">
+
+                <span>
+                  Licence API
+                </span>
+
                 <strong class="status-warn">
                   NEXT PHASE
                 </strong>
+
               </div>
 
+
               <div class="module-row">
-                <span>Email Delivery</span>
+
+                <span>
+                  Invoice System
+                </span>
+
+                <strong class="status-warn">
+                  NEXT PHASE
+                </strong>
+
+              </div>
+
+
+              <div class="module-row">
+
+                <span>
+                  Email Delivery
+                </span>
+
                 <strong class="status-warn">
                   PENDING
                 </strong>
+
               </div>
 
             </div>
@@ -495,9 +662,10 @@
       </section>
 
 
-      <!-- ======================================
+
+      <!-- =================================================
            ORDERS
-      ======================================= -->
+      ================================================== -->
 
       <section
         id="section-orders"
@@ -512,11 +680,14 @@
               CUSTOMER PURCHASES
             </p>
 
-            <h1>Orders</h1>
+            <h1>
+              Orders
+            </h1>
 
             <p class="lead">
-              Review customer details and submitted payment
-              information before confirming a sale.
+              Review incoming software and book orders,
+              customer information and payment submissions
+              before confirming a sale.
             </p>
 
           </div>
@@ -533,9 +704,12 @@
         </div>
 
 
+
         <article class="panel">
 
+
           <div class="toolbar">
+
 
             <select id="orderStatusFilter">
 
@@ -575,6 +749,7 @@
           </div>
 
 
+
           <div class="table-wrap">
 
             <table class="admin-table wide-table">
@@ -604,9 +779,11 @@
               <tbody id="ordersTableBody">
 
                 <tr>
+
                   <td colspan="12">
                     Loading orders…
                   </td>
+
                 </tr>
 
               </tbody>
@@ -620,9 +797,10 @@
       </section>
 
 
-      <!-- ======================================
+
+      <!-- =================================================
            PAYMENTS
-      ======================================= -->
+      ================================================== -->
 
       <section
         id="section-payments"
@@ -637,16 +815,19 @@
               PAYMENT REVIEW
             </p>
 
-            <h1>Payments</h1>
+            <h1>
+              Payments
+            </h1>
 
             <p class="lead">
-              Verify payment references and customer receipt
+              Verify payment references and customer payment
               evidence before approval.
             </p>
 
           </div>
 
         </div>
+
 
 
         <article class="panel">
@@ -658,6 +839,7 @@
               <thead>
 
                 <tr>
+
                   <th>S.N.</th>
                   <th>Order</th>
                   <th>Customer</th>
@@ -668,6 +850,7 @@
                   <th>Receipt</th>
                   <th>Status</th>
                   <th>Action</th>
+
                 </tr>
 
               </thead>
@@ -676,9 +859,11 @@
               <tbody id="paymentsTableBody">
 
                 <tr>
+
                   <td colspan="10">
                     Loading payments…
                   </td>
+
                 </tr>
 
               </tbody>
@@ -692,9 +877,199 @@
       </section>
 
 
-      <!-- ======================================
+
+      <!-- =================================================
+           SOFTWARE
+      ================================================== -->
+
+      <section
+        id="section-software"
+        class="admin-section"
+      >
+
+        <div class="section-heading">
+
+          <div>
+
+            <p class="eyebrow">
+              SOFTWARE PRODUCTS
+            </p>
+
+            <h1>
+              Software
+            </h1>
+
+            <p class="lead">
+              Manage software products, pricing, versions,
+              licence requirements, installers, installation
+              guides and user manuals.
+            </p>
+
+          </div>
+
+        </div>
+
+
+
+        <article class="panel">
+
+          <div class="panel-head">
+
+            <div>
+
+              <h2>
+                Software Catalogue
+              </h2>
+
+              <p>
+                All software products registered in the
+                Admin Control Center.
+              </p>
+
+            </div>
+
+          </div>
+
+
+          <div class="table-wrap">
+
+            <table class="admin-table">
+
+              <thead>
+
+                <tr>
+
+                  <th>Product Code</th>
+                  <th>Software Name</th>
+                  <th>Version</th>
+                  <th>Price</th>
+                  <th>Licence Required</th>
+                  <th>Status</th>
+
+                </tr>
+
+              </thead>
+
+
+              <tbody id="softwareTableBody">
+
+                <tr>
+
+                  <td colspan="6">
+                    Loading software products…
+                  </td>
+
+                </tr>
+
+              </tbody>
+
+            </table>
+
+          </div>
+
+        </article>
+
+      </section>
+
+
+
+      <!-- =================================================
+           BOOKS
+      ================================================== -->
+
+      <section
+        id="section-books"
+        class="admin-section"
+      >
+
+        <div class="section-heading">
+
+          <div>
+
+            <p class="eyebrow">
+              BOOK PRODUCTS
+            </p>
+
+            <h1>
+              Books
+            </h1>
+
+            <p class="lead">
+              Manage printed books, PDF editions, EPUB
+              editions, prices, stock and delivery options.
+            </p>
+
+          </div>
+
+        </div>
+
+
+
+        <article class="panel">
+
+          <div class="panel-head">
+
+            <div>
+
+              <h2>
+                Book Catalogue
+              </h2>
+
+              <p>
+                Books registered for sale through the website.
+              </p>
+
+            </div>
+
+          </div>
+
+
+          <div class="table-wrap">
+
+            <table class="admin-table">
+
+              <thead>
+
+                <tr>
+
+                  <th>Product Code</th>
+                  <th>Book Title</th>
+                  <th>Author</th>
+                  <th>Available Formats</th>
+                  <th>Price</th>
+                  <th>Stock</th>
+                  <th>Status</th>
+
+                </tr>
+
+              </thead>
+
+
+              <tbody id="booksTableBody">
+
+                <tr>
+
+                  <td colspan="7">
+                    No books registered yet.
+                  </td>
+
+                </tr>
+
+              </tbody>
+
+            </table>
+
+          </div>
+
+        </article>
+
+      </section>
+
+
+
+      <!-- =================================================
            SALES
-      ======================================= -->
+      ================================================== -->
 
       <section
         id="section-sales"
@@ -709,11 +1084,13 @@
               SALES REGISTER
             </p>
 
-            <h1>Sales</h1>
+            <h1>
+              Sales
+            </h1>
 
             <p class="lead">
-              Permanent record of approved Mero Mandali
-              customer sales and issued licence details.
+              Permanent sales register for all approved
+              software and book purchases.
             </p>
 
           </div>
@@ -729,6 +1106,7 @@
               Refresh
             </button>
 
+
             <a
               id="exportSales"
               class="primary-btn"
@@ -740,6 +1118,7 @@
           </div>
 
         </div>
+
 
 
         <article class="panel">
@@ -779,9 +1158,11 @@
               <tbody id="salesTableBody">
 
                 <tr>
+
                   <td colspan="18">
                     Loading sales…
                   </td>
+
                 </tr>
 
               </tbody>
@@ -795,9 +1176,10 @@
       </section>
 
 
-      <!-- ======================================
+
+      <!-- =================================================
            LICENSES
-      ======================================= -->
+      ================================================== -->
 
       <section
         id="section-licenses"
@@ -809,15 +1191,17 @@
           <div>
 
             <p class="eyebrow">
-              MERO MANDALI
+              SOFTWARE LICENSING
             </p>
 
-            <h1>Licenses</h1>
+            <h1>
+              Licenses
+            </h1>
 
             <p class="lead">
-              Customer licence management will connect to the
-              dedicated Mero Mandali licensing API after the
-              admin sales system is finalized.
+              Manage licence issuance, activation, device
+              binding, disabling and reset for licensed
+              software products.
             </p>
 
           </div>
@@ -825,7 +1209,9 @@
         </div>
 
 
+
         <article class="panel">
+
 
           <div class="notice-box">
 
@@ -834,8 +1220,8 @@
             </strong>
 
             <p>
-              Normal customer licences will be limited to
-              one Windows PC.
+              Customer licence rules are determined by the
+              individual software product.
             </p>
 
           </div>
@@ -844,13 +1230,12 @@
           <div class="notice-box owner-notice">
 
             <strong>
-              Owner licence
+              Owner licences
             </strong>
 
             <p>
-              The private unlimited Owner licence is not a
-              customer sale and will remain separate from
-              Orders and Sales.
+              Private developer or owner licences remain
+              separate from normal customer sales.
             </p>
 
           </div>
@@ -860,9 +1245,10 @@
       </section>
 
 
-      <!-- ======================================
+
+      <!-- =================================================
            INVOICES
-      ======================================= -->
+      ================================================== -->
 
       <section
         id="section-invoices"
@@ -877,16 +1263,19 @@
               CUSTOMER DOCUMENTS
             </p>
 
-            <h1>Invoices</h1>
+            <h1>
+              Invoices
+            </h1>
 
             <p class="lead">
-              Numbered customer invoices for approved
-              Mero Mandali sales.
+              Permanent numbered invoices for approved
+              software and book sales.
             </p>
 
           </div>
 
         </div>
+
 
 
         <article class="panel">
@@ -898,6 +1287,7 @@
               <thead>
 
                 <tr>
+
                   <th>Invoice No.</th>
                   <th>Customer</th>
                   <th>Email</th>
@@ -905,6 +1295,7 @@
                   <th>Date</th>
                   <th>Email Status</th>
                   <th>PDF</th>
+
                 </tr>
 
               </thead>
@@ -913,9 +1304,11 @@
               <tbody id="invoiceTableBody">
 
                 <tr>
+
                   <td colspan="7">
                     Invoice generation will be connected next.
                   </td>
+
                 </tr>
 
               </tbody>
@@ -929,9 +1322,86 @@
       </section>
 
 
-      <!-- ======================================
+
+      <!-- =================================================
+           CUSTOMERS
+      ================================================== -->
+
+      <section
+        id="section-customers"
+        class="admin-section"
+      >
+
+        <div class="section-heading compact">
+
+          <div>
+
+            <p class="eyebrow">
+              CUSTOMER RECORDS
+            </p>
+
+            <h1>
+              Customers
+            </h1>
+
+            <p class="lead">
+              View customer purchase history across software
+              and book products.
+            </p>
+
+          </div>
+
+        </div>
+
+
+
+        <article class="panel">
+
+          <div class="table-wrap">
+
+            <table class="admin-table">
+
+              <thead>
+
+                <tr>
+
+                  <th>Customer</th>
+                  <th>Email</th>
+                  <th>Phone</th>
+                  <th>Orders</th>
+                  <th>Sales</th>
+                  <th>Total Spent</th>
+
+                </tr>
+
+              </thead>
+
+
+              <tbody id="customersTableBody">
+
+                <tr>
+
+                  <td colspan="6">
+                    Customer history will be connected next.
+                  </td>
+
+                </tr>
+
+              </tbody>
+
+            </table>
+
+          </div>
+
+        </article>
+
+      </section>
+
+
+
+      <!-- =================================================
            DOWNLOADS
-      ======================================= -->
+      ================================================== -->
 
       <section
         id="section-downloads"
@@ -943,14 +1413,16 @@
           <div>
 
             <p class="eyebrow">
-              CUSTOMER DELIVERY
+              DIGITAL DELIVERY
             </p>
 
-            <h1>Downloads</h1>
+            <h1>
+              Downloads
+            </h1>
 
             <p class="lead">
-              Files that will be delivered after an approved
-              Mero Mandali purchase.
+              Manage protected software installers,
+              documentation and digital book files.
             </p>
 
           </div>
@@ -958,27 +1430,75 @@
         </div>
 
 
+
         <article class="panel">
+
 
           <div class="delivery-list">
 
-            <div class="delivery-item">
-              <strong>Mero Mandali Installer</strong>
-              <span>Pending protected download setup</span>
-            </div>
 
             <div class="delivery-item">
+
               <strong>
-                Mero Mandali Installation & Setup Guide
+                Software Installers
               </strong>
-              <span>Pending protected download setup</span>
+
+              <span>
+                Protected delivery by software product
+              </span>
+
             </div>
 
+
             <div class="delivery-item">
+
               <strong>
-                Mero Mandali User Manual
+                Installation Guides
               </strong>
-              <span>Pending protected download setup</span>
+
+              <span>
+                Software-specific documentation
+              </span>
+
+            </div>
+
+
+            <div class="delivery-item">
+
+              <strong>
+                User Manuals
+              </strong>
+
+              <span>
+                Software-specific documentation
+              </span>
+
+            </div>
+
+
+            <div class="delivery-item">
+
+              <strong>
+                PDF Books
+              </strong>
+
+              <span>
+                Protected digital-book delivery
+              </span>
+
+            </div>
+
+
+            <div class="delivery-item">
+
+              <strong>
+                EPUB Books
+              </strong>
+
+              <span>
+                Protected digital-book delivery
+              </span>
+
             </div>
 
           </div>
@@ -988,9 +1508,10 @@
       </section>
 
 
-      <!-- ======================================
-           WEBSITE STATUS
-      ======================================= -->
+
+      <!-- =================================================
+           WEBSITE
+      ================================================== -->
 
       <section
         id="section-website"
@@ -1005,11 +1526,12 @@
               WEBSITE
             </p>
 
-            <h1>Website Status</h1>
+            <h1>
+              Website Status
+            </h1>
 
             <p class="lead">
-              Browser-side availability checks for the
-              public website.
+              Availability checks for public website pages.
             </p>
 
           </div>
@@ -1017,25 +1539,33 @@
         </div>
 
 
+
         <article class="panel health-table-wrap">
 
           <table class="health-table">
 
             <thead>
+
               <tr>
+
                 <th>Page</th>
                 <th>Path</th>
                 <th>Status</th>
                 <th>Response</th>
+
               </tr>
+
             </thead>
+
 
             <tbody id="healthTableBody">
 
               <tr>
+
                 <td colspan="4">
                   Waiting for checks…
                 </td>
+
               </tr>
 
             </tbody>
@@ -1047,9 +1577,10 @@
       </section>
 
 
-      <!-- ======================================
+
+      <!-- =================================================
            ACTIVITY
-      ======================================= -->
+      ================================================== -->
 
       <section
         id="section-activity"
@@ -1064,16 +1595,19 @@
               AUDIT HISTORY
             </p>
 
-            <h1>Admin Activity</h1>
+            <h1>
+              Admin Activity
+            </h1>
 
             <p class="lead">
-              Important order, payment and sales actions
-              performed inside the admin system.
+              Important administration actions performed
+              inside the system.
             </p>
 
           </div>
 
         </div>
+
 
 
         <article class="panel">
@@ -1085,11 +1619,13 @@
               <thead>
 
                 <tr>
+
                   <th>Date</th>
                   <th>Admin</th>
                   <th>Action</th>
                   <th>Type</th>
                   <th>Description</th>
+
                 </tr>
 
               </thead>
@@ -1098,9 +1634,11 @@
               <tbody id="activityTableBody">
 
                 <tr>
+
                   <td colspan="5">
                     Loading activity…
                   </td>
+
                 </tr>
 
               </tbody>
@@ -1114,9 +1652,10 @@
       </section>
 
 
-      <!-- ======================================
+
+      <!-- =================================================
            SECURITY
-      ======================================= -->
+      ================================================== -->
 
       <section
         id="section-security"
@@ -1131,11 +1670,14 @@
               OWNER ACCESS
             </p>
 
-            <h1>Security</h1>
+            <h1>
+              Security
+            </h1>
 
           </div>
 
         </div>
+
 
 
         <article class="panel">
@@ -1144,16 +1686,18 @@
             Cloudflare Access Protection
           </h2>
 
+
           <p class="lead">
-            The complete
-            <code>/admin/*</code>
-            area must remain protected by Cloudflare Access.
+            The Admin Control Center and private admin API
+            are protected by Cloudflare Access.
           </p>
 
 
           <div class="security-card">
 
-            <span>Authorized administrator</span>
+            <span>
+              Authorized administrator
+            </span>
 
             <strong>
               durgajung.nits@gmail.com
@@ -1163,8 +1707,9 @@
 
 
           <p class="security-warning">
-            Customer-facing pages must never expose admin API,
-            licence management or private sales information.
+            Public website users must never receive access
+            to admin APIs, customer records, payment data,
+            licences or private sales information.
           </p>
 
         </article>
@@ -1172,9 +1717,10 @@
       </section>
 
 
-      <!-- ======================================
+
+      <!-- =================================================
            SETTINGS
-      ======================================= -->
+      ================================================== -->
 
       <section
         id="section-settings"
@@ -1189,68 +1735,97 @@
               CONFIGURATION
             </p>
 
-            <h1>Settings</h1>
+            <h1>
+              Settings
+            </h1>
 
           </div>
 
         </div>
 
 
+
         <article class="panel settings-panel">
 
+
           <div class="setting-row">
 
             <div>
-              <strong>Product</strong>
-              <p>Software being sold</p>
+
+              <strong>
+                Admin System
+              </strong>
+
+              <p>
+                Central sales and product administration
+              </p>
+
             </div>
 
-            <span>Mero Mandali</span>
+            <span>
+              Software + Books
+            </span>
 
           </div>
 
 
+
           <div class="setting-row">
 
             <div>
-              <strong>Customer Price</strong>
-              <p>Final purchase price</p>
+
+              <strong>
+                Product Catalogue
+              </strong>
+
+              <p>
+                Supported product types
+              </p>
+
             </div>
 
-            <span>NPR 5,000</span>
+            <span>
+              Software / Book
+            </span>
 
           </div>
 
 
+
           <div class="setting-row">
 
             <div>
-              <strong>VAT</strong>
-              <p>Current billing configuration</p>
+
+              <strong>
+                Sales Database
+              </strong>
+
+              <p>
+                Cloudflare D1
+              </p>
+
             </div>
 
-            <span>Not used</span>
+            <code>
+              durgajung-admin-db
+            </code>
 
           </div>
 
 
-          <div class="setting-row">
-
-            <div>
-              <strong>Sales Database</strong>
-              <p>Cloudflare D1</p>
-            </div>
-
-            <code>durgajung-admin-db</code>
-
-          </div>
-
 
           <div class="setting-row">
 
             <div>
-              <strong>Admin Account</strong>
-              <p>Authorized owner</p>
+
+              <strong>
+                Admin Account
+              </strong>
+
+              <p>
+                Authorized owner
+              </p>
+
             </div>
 
             <code>
@@ -1260,11 +1835,19 @@
           </div>
 
 
+
           <div class="setting-row">
 
             <div>
-              <strong>Developer Email</strong>
-              <p>Owner licence delivery</p>
+
+              <strong>
+                Developer Email
+              </strong>
+
+              <p>
+                Private developer communication
+              </p>
+
             </div>
 
             <code>
@@ -1277,6 +1860,7 @@
 
       </section>
 
+
     </div>
 
   </main>
@@ -1284,9 +1868,10 @@
 </div>
 
 
-<!-- ==========================================
+
+<!-- =====================================================
      ORDER REVIEW MODAL
-=========================================== -->
+====================================================== -->
 
 <div
   id="orderModal"
@@ -1300,6 +1885,7 @@
     aria-modal="true"
     aria-labelledby="orderModalTitle"
   >
+
 
     <div class="modal-head">
 
@@ -1328,10 +1914,12 @@
     </div>
 
 
+
     <div
       id="orderModalContent"
       class="order-detail-grid"
     ></div>
+
 
 
     <div class="modal-notes">
@@ -1347,6 +1935,7 @@
       ></textarea>
 
     </div>
+
 
 
     <div class="modal-actions">
@@ -1384,9 +1973,10 @@
 </div>
 
 
-<!-- ==========================================
+
+<!-- =====================================================
      TOAST
-=========================================== -->
+====================================================== -->
 
 <div
   id="toast"
@@ -1397,4 +1987,5 @@
 
 
 </body>
+
 </html>
