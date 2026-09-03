@@ -1,17 +1,25 @@
 const ADMIN_EMAIL = "durgajung.nits@gmail.com";
-const PRODUCT_NAME = "Mero Mandali";
-const PRODUCT_CODE = "MERO-MANDALI";
-const PRODUCT_PRICE = 5000;
+
+const DEFAULT_PRODUCT_CODE = "MERO-MANDALI";
+
+
+/* =========================================================
+   BASIC HELPERS
+========================================================= */
 
 function json(data, status = 200) {
-  return new Response(JSON.stringify(data), {
-    status,
-    headers: {
-      "content-type": "application/json; charset=UTF-8",
-      "cache-control": "no-store"
+  return new Response(
+    JSON.stringify(data),
+    {
+      status,
+      headers: {
+        "content-type": "application/json; charset=utf-8",
+        "cache-control": "no-store"
+      }
     }
-  });
+  );
 }
+
 
 async function readJson(request) {
   try {
@@ -21,20 +29,66 @@ async function readJson(request) {
   }
 }
 
+
 function clean(value) {
-  return typeof value === "string" ? value.trim() : "";
+  if (value === undefined || value === null) {
+    return null;
+  }
+
+  const text = String(value).trim();
+
+  return text === "" ? null : text;
 }
+
+
+function safeInt(value, fallback = 1) {
+  const number = Number.parseInt(value, 10);
+
+  if (!Number.isFinite(number) || number < 1) {
+    return fallback;
+  }
+
+  return number;
+}
+
+
+function currentYear() {
+  return new Date().getUTCFullYear();
+}
+
+
+function makeNumber(prefix, id) {
+  return `${prefix}-${currentYear()}-${String(id).padStart(5, "0")}`;
+}
+
+
+function makeTemporaryNumber(prefix) {
+  return `${prefix}-TMP-${crypto.randomUUID()}`;
+}
+
 
 function getAdminEmail(request) {
-  return clean(
-    request.headers.get("Cf-Access-Authenticated-User-Email") ||
-    request.headers.get("CF-Access-Authenticated-User-Email")
-  ).toLowerCase();
+  return (
+    request.headers.get(
+      "Cf-Access-Authenticated-User-Email"
+    ) ||
+    request.headers.get(
+      "CF-Access-Authenticated-User-Email"
+    ) ||
+    ""
+  )
+    .trim()
+    .toLowerCase();
 }
 
+
 function isAdmin(request) {
-  return getAdminEmail(request) === ADMIN_EMAIL.toLowerCase();
+  return (
+    getAdminEmail(request) ===
+    ADMIN_EMAIL.toLowerCase()
+  );
 }
+
 
 function requireAdmin(request) {
   if (!isAdmin(request)) {
@@ -50,24 +104,32 @@ function requireAdmin(request) {
   return null;
 }
 
-function makeNumber(prefix, id) {
-  const year = new Date().getUTCFullYear();
-  return `${prefix}-${year}-${String(id).padStart(5, "0")}`;
+
+function clientIp(request) {
+  return (
+    request.headers.get("CF-Connecting-IP") ||
+    request.headers.get("X-Forwarded-For") ||
+    ""
+  );
 }
+
+
+/* =========================================================
+   ADMIN ACTIVITY
+========================================================= */
 
 async function recordAdminActivity(
   env,
   request,
   action,
-  entityType,
-  entityId,
-  description
+  entityType = null,
+  entityId = null,
+  description = null
 ) {
   try {
     await env.ADMIN_DB.prepare(
       `
-      INSERT INTO admin_activity
-      (
+      INSERT INTO admin_activity (
         admin_email,
         action,
         entity_type,
@@ -82,49 +144,122 @@ async function recordAdminActivity(
       .bind(
         getAdminEmail(request) || ADMIN_EMAIL,
         action,
-        entityType || null,
-        entityId || null,
-        description || null,
-        request.headers.get("CF-Connecting-IP") || null,
-        request.headers.get("User-Agent") || null
+        entityType,
+        entityId,
+        description,
+        clientIp(request),
+        request.headers.get("User-Agent") || ""
       )
       .run();
   } catch (error) {
-    console.warn("Admin activity log failed:", error);
+    console.error(
+      "Admin activity logging failed:",
+      error
+    );
   }
 }
 
+
+/* =========================================================
+   PRODUCT LOOKUP
+========================================================= */
+
+async function getProductByCode(env, productCode) {
+  return await env.ADMIN_DB.prepare(
+    `
+    SELECT
+      id,
+      product_code,
+      product_type,
+      product_name,
+      description,
+      price_npr,
+      status,
+      cover_image_url
+    FROM products
+    WHERE product_code = ?
+    LIMIT 1
+    `
+  )
+    .bind(productCode)
+    .first();
+}
+
+
+/* =========================================================
+   HEALTH
+========================================================= */
+
 async function health(env) {
-  const db = await env.ADMIN_DB.prepare(
-    "SELECT 1 AS ok"
-  ).first();
+  try {
+    await env.ADMIN_DB.prepare(
+      "SELECT 1 AS ok"
+    ).first();
+
+    return json({
+      success: true,
+      service: "Durga Jung Admin API",
+      database: "online",
+      platform: "Software and Books"
+    });
+  } catch (error) {
+    return json(
+      {
+        success: false,
+        service: "Durga Jung Admin API",
+        database: "offline",
+        error: error.message
+      },
+      500
+    );
+  }
+}
+
+
+/* =========================================================
+   PUBLIC PRODUCT CATALOGUE
+========================================================= */
+
+async function publicProducts(env) {
+  const result =
+    await env.ADMIN_DB.prepare(
+      `
+      SELECT
+        product_code,
+        product_type,
+        product_name,
+        description,
+        price_npr,
+        status,
+        cover_image_url
+      FROM products
+      WHERE status = 'active'
+      ORDER BY product_type, product_name
+      `
+    ).all();
 
   return json({
     success: true,
-    service: "Durga Jung Admin API",
-    database: db?.ok === 1 ? "online" : "degraded",
-    product: PRODUCT_NAME,
-    price_npr: PRODUCT_PRICE
+    products: result.results || []
   });
 }
+
+
+/* =========================================================
+   PUBLIC ORDER SUBMISSION
+========================================================= */
 
 async function createOrder(request, env) {
   const body = await readJson(request);
 
-  const customerName = clean(body.customer_name);
-  const customerEmail = clean(body.customer_email).toLowerCase();
-  const customerPhone = clean(body.customer_phone);
-  const customerAddress = clean(body.customer_address);
-  const churchOrganization = clean(body.church_organization);
+  const customerName =
+    clean(body.customer_name);
 
-  const paymentMethod = clean(body.payment_method);
-  const transactionReference = clean(body.transaction_reference);
-  const paymentDate = clean(body.payment_date);
+  const customerEmail =
+    clean(body.customer_email);
 
-  const receiptFileUrl = clean(body.receipt_file_url);
-  const receiptFileName = clean(body.receipt_file_name);
-
-  const customerNotes = clean(body.customer_notes);
+  const paymentMethod =
+    clean(body.payment_method);
 
   if (!customerName) {
     return json(
@@ -136,11 +271,11 @@ async function createOrder(request, env) {
     );
   }
 
-  if (!customerEmail || !customerEmail.includes("@")) {
+  if (!customerEmail) {
     return json(
       {
         success: false,
-        error: "A valid customer email is required."
+        error: "Customer email is required."
       },
       400
     );
@@ -156,186 +291,447 @@ async function createOrder(request, env) {
     );
   }
 
-  const orderInsert = await env.ADMIN_DB.prepare(
-    `
-    INSERT INTO orders
-    (
-      order_number,
-      product_code,
-      product_name,
-      customer_name,
-      customer_email,
-      customer_phone,
-      customer_address,
-      church_organization,
-      amount_npr,
-      status,
-      customer_notes
-    )
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending', ?)
-    `
-  )
-    .bind(
-      "TEMP",
-      PRODUCT_CODE,
-      PRODUCT_NAME,
-      customerName,
-      customerEmail,
-      customerPhone || null,
-      customerAddress || null,
-      churchOrganization || null,
-      PRODUCT_PRICE,
-      customerNotes || null
-    )
-    .run();
+  const productCode =
+    clean(body.product_code) ||
+    DEFAULT_PRODUCT_CODE;
 
-  const orderId = Number(orderInsert.meta?.last_row_id);
+  const product =
+    await getProductByCode(
+      env,
+      productCode
+    );
 
-  if (!orderId) {
+  if (!product) {
     return json(
       {
         success: false,
-        error: "Could not create order."
+        error: "Product not found."
       },
-      500
+      404
     );
   }
 
-  const orderNumber = makeNumber("MM-ORD", orderId);
+  if (product.status !== "active") {
+    return json(
+      {
+        success: false,
+        error: "This product is not currently available."
+      },
+      400
+    );
+  }
+
+  const quantity =
+    safeInt(body.quantity, 1);
+
+  const unitPrice =
+    Number(product.price_npr || 0);
+
+  const totalAmount =
+    unitPrice * quantity;
+
+  const temporaryOrderNumber =
+    makeTemporaryNumber("ORDER");
+
+  const orderInsert =
+    await env.ADMIN_DB.prepare(
+      `
+      INSERT INTO orders (
+        order_number,
+        product_code,
+        product_name,
+        product_type,
+        customer_name,
+        customer_email,
+        customer_phone,
+        customer_address,
+        church_organization,
+        amount_npr,
+        quantity,
+        unit_price_npr,
+        delivery_format,
+        delivery_method,
+        delivery_status,
+        tracking_reference,
+        customer_notes,
+        status
+      )
+      VALUES (
+        ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending', ?, ?, 'pending'
+      )
+      `
+    )
+      .bind(
+        temporaryOrderNumber,
+        product.product_code,
+        product.product_name,
+        product.product_type,
+        customerName,
+        customerEmail,
+        clean(body.customer_phone),
+        clean(body.customer_address),
+        clean(body.church_organization),
+        totalAmount,
+        quantity,
+        unitPrice,
+        clean(body.delivery_format),
+        clean(body.delivery_method),
+        clean(body.tracking_reference),
+        clean(body.customer_notes)
+      )
+      .run();
+
+  const orderId =
+    Number(orderInsert.meta.last_row_id);
+
+  const orderNumber =
+    makeNumber(
+      "MM-ORD",
+      orderId
+    );
 
   await env.ADMIN_DB.prepare(
     `
     UPDATE orders
-    SET order_number = ?,
-        updated_at = CURRENT_TIMESTAMP
+    SET
+      order_number = ?,
+      updated_at = CURRENT_TIMESTAMP
     WHERE id = ?
     `
   )
-    .bind(orderNumber, orderId)
+    .bind(
+      orderNumber,
+      orderId
+    )
     .run();
 
-  const paymentInsert = await env.ADMIN_DB.prepare(
-    `
-    INSERT INTO payments
-    (
-      order_id,
-      payment_method,
-      transaction_reference,
-      amount_npr,
-      payment_date,
-      receipt_file_url,
-      receipt_file_name,
-      status
+  const paymentInsert =
+    await env.ADMIN_DB.prepare(
+      `
+      INSERT INTO payments (
+        order_id,
+        payment_method,
+        transaction_reference,
+        amount_npr,
+        payment_date,
+        receipt_file_url,
+        receipt_file_name,
+        status
+      )
+      VALUES (?, ?, ?, ?, ?, ?, ?, 'submitted')
+      `
     )
-    VALUES (?, ?, ?, ?, ?, ?, ?, 'submitted')
-    `
-  )
-    .bind(
-      orderId,
-      paymentMethod,
-      transactionReference || null,
-      PRODUCT_PRICE,
-      paymentDate || null,
-      receiptFileUrl || null,
-      receiptFileName || null
-    )
-    .run();
+      .bind(
+        orderId,
+        paymentMethod,
+        clean(body.transaction_reference),
+        totalAmount,
+        clean(body.payment_date),
+        clean(body.receipt_file_url),
+        clean(body.receipt_file_name)
+      )
+      .run();
 
   return json(
     {
       success: true,
-      message: "Payment submission received for verification.",
+      message:
+        "Payment submission received for verification.",
       order: {
         id: orderId,
         order_number: orderNumber,
-        product_name: PRODUCT_NAME,
-        total_npr: PRODUCT_PRICE,
-        status: "pending"
+        product_code:
+          product.product_code,
+        product_name:
+          product.product_name,
+        product_type:
+          product.product_type,
+        amount_npr:
+          totalAmount,
+        quantity
       },
-      payment_id: Number(paymentInsert.meta?.last_row_id || 0)
+      payment_id:
+        Number(
+          paymentInsert.meta.last_row_id
+        )
     },
     201
   );
 }
 
-async function getDashboard(env) {
-  const pendingOrders = await env.ADMIN_DB.prepare(
-    `
-    SELECT COUNT(*) AS count
-    FROM orders
-    WHERE status IN ('pending', 'under_review')
-    `
-  ).first();
 
-  const confirmedPayments = await env.ADMIN_DB.prepare(
-    `
-    SELECT COUNT(*) AS count
-    FROM payments
-    WHERE status = 'confirmed'
-    `
-  ).first();
+/* =========================================================
+   ADMIN DASHBOARD
+========================================================= */
 
-  const totalSales = await env.ADMIN_DB.prepare(
-    `
-    SELECT COUNT(*) AS count,
-           COALESCE(SUM(total_paid_npr), 0) AS amount
-    FROM sales
-    `
-  ).first();
+async function adminDashboard(env) {
+  const pendingOrders =
+    await env.ADMIN_DB.prepare(
+      `
+      SELECT COUNT(*) AS count
+      FROM orders
+      WHERE status IN ('pending', 'under_review')
+      `
+    ).first();
 
-  const licencePending = await env.ADMIN_DB.prepare(
-    `
-    SELECT COUNT(*) AS count
-    FROM sales
-    WHERE licence_status IN ('pending', 'not_issued')
-    `
-  ).first();
+  const confirmedPayments =
+    await env.ADMIN_DB.prepare(
+      `
+      SELECT COUNT(*) AS count
+      FROM payments
+      WHERE status = 'confirmed'
+      `
+    ).first();
+
+  const sales =
+    await env.ADMIN_DB.prepare(
+      `
+      SELECT
+        COUNT(*) AS count,
+        COALESCE(
+          SUM(total_paid_npr),
+          0
+        ) AS total
+      FROM sales
+      `
+    ).first();
+
+  const pendingLicences =
+    await env.ADMIN_DB.prepare(
+      `
+      SELECT COUNT(*) AS count
+      FROM sales
+      WHERE
+        product_type = 'software'
+        AND (
+          licence_status IS NULL
+          OR licence_status IN (
+            'pending',
+            'not_issued'
+          )
+        )
+      `
+    ).first();
+
+  const softwareProducts =
+    await env.ADMIN_DB.prepare(
+      `
+      SELECT COUNT(*) AS count
+      FROM products
+      WHERE
+        product_type = 'software'
+        AND status = 'active'
+      `
+    ).first();
+
+  const bookProducts =
+    await env.ADMIN_DB.prepare(
+      `
+      SELECT COUNT(*) AS count
+      FROM products
+      WHERE
+        product_type = 'book'
+        AND status = 'active'
+      `
+    ).first();
 
   return json({
     success: true,
+
     dashboard: {
-      pending_orders: Number(pendingOrders?.count || 0),
-      confirmed_payments: Number(confirmedPayments?.count || 0),
-      total_sales: Number(totalSales?.count || 0),
-      total_sales_npr: Number(totalSales?.amount || 0),
-      pending_licences: Number(licencePending?.count || 0)
+      pending_orders:
+        Number(
+          pendingOrders?.count || 0
+        ),
+
+      confirmed_payments:
+        Number(
+          confirmedPayments?.count || 0
+        ),
+
+      total_sales:
+        Number(
+          sales?.count || 0
+        ),
+
+      total_sales_npr:
+        Number(
+          sales?.total || 0
+        ),
+
+      pending_licences:
+        Number(
+          pendingLicences?.count || 0
+        ),
+
+      active_software:
+        Number(
+          softwareProducts?.count || 0
+        ),
+
+      active_books:
+        Number(
+          bookProducts?.count || 0
+        )
     }
   });
 }
 
-async function listOrders(env, url) {
-  const status = clean(url.searchParams.get("status"));
 
-  let sql = `
-    SELECT
-      o.*,
-      p.id AS payment_id,
-      p.payment_method,
-      p.transaction_reference,
-      p.payment_date,
-      p.receipt_file_url,
-      p.receipt_file_name,
-      p.status AS payment_status,
-      p.confirmed_at AS payment_confirmed_at
-    FROM orders o
-    LEFT JOIN payments p
-      ON p.order_id = o.id
-  `;
+/* =========================================================
+   ADMIN PRODUCTS
+========================================================= */
 
-  const bindings = [];
+async function adminProducts(env) {
+  const result =
+    await env.ADMIN_DB.prepare(
+      `
+      SELECT
+        id,
+        product_code,
+        product_type,
+        product_name,
+        description,
+        price_npr,
+        status,
+        cover_image_url,
+        created_at,
+        updated_at
+      FROM products
+      ORDER BY product_type, product_name
+      `
+    ).all();
 
-  if (status) {
-    sql += " WHERE o.status = ?";
-    bindings.push(status);
-  }
+  return json({
+    success: true,
+    products: result.results || []
+  });
+}
 
-  sql += " ORDER BY o.id DESC";
 
-  const statement = env.ADMIN_DB.prepare(sql);
+/* =========================================================
+   ADMIN SOFTWARE
+========================================================= */
 
-  const result = bindings.length
-    ? await statement.bind(...bindings).all()
-    : await statement.all();
+async function adminSoftware(env) {
+  const result =
+    await env.ADMIN_DB.prepare(
+      `
+      SELECT
+        p.id,
+        p.product_code,
+        p.product_type,
+        p.product_name,
+        p.description,
+        p.price_npr,
+        p.status,
+        p.cover_image_url,
+
+        s.version,
+        s.installer_file_url,
+        s.installation_guide_url,
+        s.user_manual_url,
+        s.licence_required,
+        s.licence_type_default
+
+      FROM products p
+
+      LEFT JOIN software_products s
+        ON s.product_id = p.id
+
+      WHERE p.product_type = 'software'
+
+      ORDER BY p.product_name
+      `
+    ).all();
+
+  return json({
+    success: true,
+    software: result.results || []
+  });
+}
+
+
+/* =========================================================
+   ADMIN BOOKS
+========================================================= */
+
+async function adminBooks(env) {
+  const result =
+    await env.ADMIN_DB.prepare(
+      `
+      SELECT
+        p.id,
+        p.product_code,
+        p.product_type,
+        p.product_name,
+        p.description,
+        p.price_npr,
+        p.status,
+        p.cover_image_url,
+
+        b.author_name,
+        b.isbn,
+        b.language,
+        b.print_available,
+        b.pdf_available,
+        b.epub_available,
+        b.stock_quantity,
+        b.pdf_file_url,
+        b.epub_file_url
+
+      FROM products p
+
+      LEFT JOIN book_products b
+        ON b.product_id = p.id
+
+      WHERE p.product_type = 'book'
+
+      ORDER BY p.product_name
+      `
+    ).all();
+
+  return json({
+    success: true,
+    books: result.results || []
+  });
+}
+
+
+/* =========================================================
+   ADMIN ORDERS LIST
+========================================================= */
+
+async function adminOrders(env) {
+  const result =
+    await env.ADMIN_DB.prepare(
+      `
+      SELECT
+        o.*,
+
+        p.id AS payment_id,
+        p.payment_method,
+        p.transaction_reference,
+        p.payment_date,
+        p.receipt_file_url,
+        p.receipt_file_name,
+        p.status AS payment_status,
+        p.admin_notes AS payment_admin_notes
+
+      FROM orders o
+
+      LEFT JOIN payments p
+        ON p.id = (
+          SELECT p2.id
+          FROM payments p2
+          WHERE p2.order_id = o.id
+          ORDER BY p2.id DESC
+          LIMIT 1
+        )
+
+      ORDER BY o.id DESC
+      `
+    ).all();
 
   return json({
     success: true,
@@ -343,29 +739,49 @@ async function listOrders(env, url) {
   });
 }
 
-async function getOrder(env, id) {
-  const order = await env.ADMIN_DB.prepare(
-    `
-    SELECT
-      o.*,
-      p.id AS payment_id,
-      p.payment_method,
-      p.transaction_reference,
-      p.payment_date,
-      p.receipt_file_url,
-      p.receipt_file_name,
-      p.status AS payment_status,
-      p.admin_notes AS payment_admin_notes,
-      p.confirmed_at AS payment_confirmed_at
-    FROM orders o
-    LEFT JOIN payments p
-      ON p.order_id = o.id
-    WHERE o.id = ?
-    LIMIT 1
-    `
-  )
-    .bind(id)
-    .first();
+
+/* =========================================================
+   ADMIN SINGLE ORDER
+========================================================= */
+
+async function adminGetOrder(
+  env,
+  orderId
+) {
+  const order =
+    await env.ADMIN_DB.prepare(
+      `
+      SELECT
+        o.*,
+
+        p.id AS payment_id,
+        p.payment_method,
+        p.transaction_reference,
+        p.payment_date,
+        p.receipt_file_url,
+        p.receipt_file_name,
+        p.status AS payment_status,
+        p.admin_notes AS payment_admin_notes,
+        p.confirmed_at AS payment_confirmed_at
+
+      FROM orders o
+
+      LEFT JOIN payments p
+        ON p.id = (
+          SELECT p2.id
+          FROM payments p2
+          WHERE p2.order_id = o.id
+          ORDER BY p2.id DESC
+          LIMIT 1
+        )
+
+      WHERE o.id = ?
+
+      LIMIT 1
+      `
+    )
+      .bind(orderId)
+      .first();
 
   if (!order) {
     return json(
@@ -383,23 +799,34 @@ async function getOrder(env, id) {
   });
 }
 
-async function setOrderReviewStatus(
+
+/* =========================================================
+   UPDATE ORDER STATUS
+========================================================= */
+
+async function adminSetOrderStatus(
   request,
   env,
-  id
+  orderId
 ) {
   const body = await readJson(request);
 
-  const status = clean(body.status);
+  const status =
+    clean(body.status);
 
-  const allowed = [
+  const allowedStatuses = [
     "pending",
     "under_review",
+    "approved",
     "rejected",
+    "completed",
     "cancelled"
   ];
 
-  if (!allowed.includes(status)) {
+  if (
+    !status ||
+    !allowedStatuses.includes(status)
+  ) {
     return json(
       {
         success: false,
@@ -409,17 +836,18 @@ async function setOrderReviewStatus(
     );
   }
 
-  const order = await env.ADMIN_DB.prepare(
-    `
-    SELECT id
-    FROM orders
-    WHERE id = ?
-    `
-  )
-    .bind(id)
-    .first();
+  const existing =
+    await env.ADMIN_DB.prepare(
+      `
+      SELECT id, order_number
+      FROM orders
+      WHERE id = ?
+      `
+    )
+      .bind(orderId)
+      .first();
 
-  if (!order) {
+  if (!existing) {
     return json(
       {
         success: false,
@@ -429,77 +857,96 @@ async function setOrderReviewStatus(
     );
   }
 
-  const adminNotes = clean(body.admin_notes);
-
-  let extraSql = "";
-
-  if (status === "rejected") {
-    extraSql = ", rejected_at = CURRENT_TIMESTAMP";
-  }
-
   await env.ADMIN_DB.prepare(
     `
     UPDATE orders
-    SET status = ?,
-        admin_notes = ?,
-        reviewed_at = CURRENT_TIMESTAMP,
-        updated_at = CURRENT_TIMESTAMP
-        ${extraSql}
+    SET
+      status = ?,
+      admin_notes = ?,
+
+      reviewed_at =
+        CASE
+          WHEN ? = 'under_review'
+          THEN CURRENT_TIMESTAMP
+          ELSE reviewed_at
+        END,
+
+      approved_at =
+        CASE
+          WHEN ? = 'approved'
+          THEN CURRENT_TIMESTAMP
+          ELSE approved_at
+        END,
+
+      rejected_at =
+        CASE
+          WHEN ? = 'rejected'
+          THEN CURRENT_TIMESTAMP
+          ELSE rejected_at
+        END,
+
+      completed_at =
+        CASE
+          WHEN ? = 'completed'
+          THEN CURRENT_TIMESTAMP
+          ELSE completed_at
+        END,
+
+      updated_at = CURRENT_TIMESTAMP
+
     WHERE id = ?
     `
   )
     .bind(
       status,
-      adminNotes || null,
-      id
+      clean(body.admin_notes),
+      status,
+      status,
+      status,
+      status,
+      orderId
     )
     .run();
-
-  if (status === "rejected") {
-    await env.ADMIN_DB.prepare(
-      `
-      UPDATE payments
-      SET status = 'rejected',
-          rejected_at = CURRENT_TIMESTAMP,
-          updated_at = CURRENT_TIMESTAMP
-      WHERE order_id = ?
-      `
-    )
-      .bind(id)
-      .run();
-  }
 
   await recordAdminActivity(
     env,
     request,
-    "order_status_changed",
+    "ORDER_STATUS_CHANGED",
     "order",
-    id,
-    `Order changed to ${status}.`
+    orderId,
+    `${existing.order_number} changed to ${status}.`
   );
 
   return json({
     success: true,
-    message: `Order status changed to ${status}.`
+    message:
+      `Order marked ${status}.`
   });
 }
 
-async function confirmPayment(
+
+/* =========================================================
+   CONFIRM PAYMENT
+========================================================= */
+
+async function adminConfirmPayment(
   request,
   env,
   orderId
 ) {
   const body = await readJson(request);
 
-  const order = await env.ADMIN_DB.prepare(
-    `
-    SELECT *
-    FROM orders
-    WHERE id = ?
-    `
-  )
-    .bind(orderId)
-    .first();
+  const order =
+    await env.ADMIN_DB.prepare(
+      `
+      SELECT *
+      FROM orders
+      WHERE id = ?
+      LIMIT 1
+      `
+    )
+      .bind(orderId)
+      .first();
 
   if (!order) {
     return json(
@@ -511,60 +958,69 @@ async function confirmPayment(
     );
   }
 
-  const payment = await env.ADMIN_DB.prepare(
-    `
-    SELECT *
-    FROM payments
-    WHERE order_id = ?
-    ORDER BY id DESC
-    LIMIT 1
-    `
-  )
-    .bind(orderId)
-    .first();
+  const existingSale =
+    await env.ADMIN_DB.prepare(
+      `
+      SELECT *
+      FROM sales
+      WHERE order_id = ?
+      LIMIT 1
+      `
+    )
+      .bind(orderId)
+      .first();
+
+  if (existingSale) {
+    return json({
+      success: true,
+      message:
+        "Payment was already confirmed.",
+      sale: existingSale
+    });
+  }
+
+  const payment =
+    await env.ADMIN_DB.prepare(
+      `
+      SELECT *
+      FROM payments
+      WHERE order_id = ?
+      ORDER BY id DESC
+      LIMIT 1
+      `
+    )
+      .bind(orderId)
+      .first();
 
   if (!payment) {
     return json(
       {
         success: false,
-        error: "Payment record not found."
+        error:
+          "No payment submission exists for this order."
       },
-      404
+      400
     );
   }
 
-  const existingSale = await env.ADMIN_DB.prepare(
-    `
-    SELECT *
-    FROM sales
-    WHERE order_id = ?
-    `
-  )
-    .bind(orderId)
-    .first();
-
-  if (existingSale) {
-    return json({
-      success: true,
-      message: "This order is already recorded as a sale.",
-      sale: existingSale
-    });
-  }
+  const adminEmail =
+    getAdminEmail(request);
 
   await env.ADMIN_DB.prepare(
     `
     UPDATE payments
-    SET status = 'confirmed',
-        confirmed_by = ?,
-        confirmed_at = CURRENT_TIMESTAMP,
-        admin_notes = ?,
-        updated_at = CURRENT_TIMESTAMP
+    SET
+      status = 'confirmed',
+      confirmed_by = ?,
+      confirmed_at = CURRENT_TIMESTAMP,
+      admin_notes = ?,
+      updated_at = CURRENT_TIMESTAMP
     WHERE id = ?
     `
   )
     .bind(
-      getAdminEmail(request) || ADMIN_EMAIL,
-      clean(body.admin_notes) || null,
+      adminEmail,
+      clean(body.admin_notes),
       payment.id
     )
     .run();
@@ -572,87 +1028,155 @@ async function confirmPayment(
   await env.ADMIN_DB.prepare(
     `
     UPDATE orders
-    SET status = 'approved',
-        reviewed_at = CURRENT_TIMESTAMP,
-        approved_at = CURRENT_TIMESTAMP,
-        admin_notes = ?,
-        updated_at = CURRENT_TIMESTAMP
+    SET
+      status = 'completed',
+      admin_notes = ?,
+      reviewed_at =
+        COALESCE(
+          reviewed_at,
+          CURRENT_TIMESTAMP
+        ),
+      approved_at =
+        COALESCE(
+          approved_at,
+          CURRENT_TIMESTAMP
+        ),
+      completed_at =
+        CURRENT_TIMESTAMP,
+      updated_at =
+        CURRENT_TIMESTAMP
     WHERE id = ?
     `
   )
     .bind(
-      clean(body.admin_notes) || null,
+      clean(body.admin_notes),
       orderId
     )
     .run();
 
-  const saleInsert = await env.ADMIN_DB.prepare(
-    `
-    INSERT INTO sales
-    (
-      sale_number,
-      order_id,
-      payment_id,
-      customer_name,
-      customer_email,
-      customer_phone,
-      customer_address,
-      church_organization,
-      product_code,
-      product_name,
-      total_paid_npr,
-      payment_method,
-      transaction_reference,
-      payment_date,
-      licence_type,
-      licence_status,
-      approved_by,
-      approved_at,
-      notes
-    )
-    VALUES (
-      ?,
-      ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
-      ?, ?, ?,
-      'customer',
-      'not_issued',
-      ?,
-      CURRENT_TIMESTAMP,
-      ?
-    )
-    `
-  )
-    .bind(
-      "TEMP",
-      order.id,
-      payment.id,
-      order.customer_name,
-      order.customer_email,
-      order.customer_phone || null,
-      order.customer_address || null,
-      order.church_organization || null,
-      PRODUCT_CODE,
-      PRODUCT_NAME,
-      PRODUCT_PRICE,
-      payment.payment_method || null,
-      payment.transaction_reference || null,
-      payment.payment_date || null,
-      getAdminEmail(request) || ADMIN_EMAIL,
-      clean(body.admin_notes) || null
-    )
-    .run();
+  const temporarySaleNumber =
+    makeTemporaryNumber("SALE");
 
-  const saleId = Number(saleInsert.meta?.last_row_id);
+  const isSoftware =
+    order.product_type === "software";
 
-  const saleNumber = makeNumber("MM-SALE", saleId);
-  const invoiceNumber = makeNumber("MM-INV", saleId);
+  const saleInsert =
+    await env.ADMIN_DB.prepare(
+      `
+      INSERT INTO sales (
+        sale_number,
+        order_id,
+        payment_id,
+
+        customer_name,
+        customer_email,
+        customer_phone,
+        customer_address,
+        church_organization,
+
+        product_code,
+        product_name,
+        product_type,
+
+        quantity,
+        unit_price_npr,
+        total_paid_npr,
+
+        payment_method,
+        transaction_reference,
+        payment_date,
+
+        delivery_format,
+        delivery_method,
+        delivery_status,
+        tracking_reference,
+
+        licence_type,
+        licence_status,
+
+        approved_by,
+        approved_at,
+        notes
+      )
+      VALUES (
+        ?, ?, ?,
+        ?, ?, ?, ?, ?,
+        ?, ?, ?,
+        ?, ?, ?,
+        ?, ?, ?,
+        ?, ?, ?, ?,
+        ?, ?,
+        ?, CURRENT_TIMESTAMP, ?
+      )
+      `
+    )
+      .bind(
+        temporarySaleNumber,
+        orderId,
+        payment.id,
+
+        order.customer_name,
+        order.customer_email,
+        order.customer_phone,
+        order.customer_address,
+        order.church_organization,
+
+        order.product_code,
+        order.product_name,
+        order.product_type,
+
+        order.quantity || 1,
+        order.unit_price_npr ||
+          order.amount_npr,
+        order.amount_npr,
+
+        payment.payment_method,
+        payment.transaction_reference,
+        payment.payment_date,
+
+        order.delivery_format,
+        order.delivery_method,
+        order.delivery_status ||
+          "pending",
+        order.tracking_reference,
+
+        isSoftware
+          ? "customer"
+          : null,
+
+        isSoftware
+          ? "not_issued"
+          : null,
+
+        adminEmail,
+        clean(body.admin_notes)
+      )
+      .run();
+
+  const saleId =
+    Number(
+      saleInsert.meta.last_row_id
+    );
+
+  const saleNumber =
+    makeNumber(
+      "MM-SALE",
+      saleId
+    );
+
+  const invoiceNumber =
+    makeNumber(
+      "MM-INV",
+      saleId
+    );
 
   await env.ADMIN_DB.prepare(
     `
     UPDATE sales
-    SET sale_number = ?,
-        invoice_number = ?,
-        updated_at = CURRENT_TIMESTAMP
+    SET
+      sale_number = ?,
+      invoice_number = ?,
+      updated_at = CURRENT_TIMESTAMP
     WHERE id = ?
     `
   )
@@ -665,8 +1189,7 @@ async function confirmPayment(
 
   await env.ADMIN_DB.prepare(
     `
-    INSERT INTO invoices
-    (
+    INSERT INTO invoices (
       invoice_number,
       sale_id,
       order_id,
@@ -682,11 +1205,11 @@ async function confirmPayment(
     .bind(
       invoiceNumber,
       saleId,
-      order.id,
+      orderId,
       order.customer_name,
       order.customer_email,
-      PRODUCT_NAME,
-      PRODUCT_PRICE,
+      order.product_name,
+      order.amount_npr,
       "Durga Jung Kunwar"
     )
     .run();
@@ -694,44 +1217,45 @@ async function confirmPayment(
   await recordAdminActivity(
     env,
     request,
-    "payment_confirmed",
-    "order",
-    orderId,
-    `Payment confirmed. Sale ${saleNumber} created.`
+    "PAYMENT_CONFIRMED",
+    "sale",
+    saleId,
+    `${order.order_number} confirmed as ${saleNumber}; invoice ${invoiceNumber}.`
   );
 
-  const sale = await env.ADMIN_DB.prepare(
-    `
-    SELECT *
-    FROM sales
-    WHERE id = ?
-    `
-  )
-    .bind(saleId)
-    .first();
+  const sale =
+    await env.ADMIN_DB.prepare(
+      `
+      SELECT *
+      FROM sales
+      WHERE id = ?
+      `
+    )
+      .bind(saleId)
+      .first();
 
   return json({
     success: true,
     message:
-      "Payment confirmed and sale created. Licence issuance is pending.",
+      "Payment confirmed and permanent Sales record created.",
     sale
   });
 }
 
-async function listSales(env) {
-  const result = await env.ADMIN_DB.prepare(
-    `
-    SELECT
-      s.*,
-      i.pdf_file_url,
-      i.email_sent AS invoice_email_sent,
-      i.email_sent_at
-    FROM sales s
-    LEFT JOIN invoices i
-      ON i.sale_id = s.id
-    ORDER BY s.id DESC
-    `
-  ).all();
+
+/* =========================================================
+   SALES
+========================================================= */
+
+async function adminSales(env) {
+  const result =
+    await env.ADMIN_DB.prepare(
+      `
+      SELECT *
+      FROM sales
+      ORDER BY id DESC
+      `
+    ).all();
 
   return json({
     success: true,
@@ -739,24 +1263,26 @@ async function listSales(env) {
   });
 }
 
-async function getSale(env, id) {
-  const sale = await env.ADMIN_DB.prepare(
-    `
-    SELECT
-      s.*,
-      i.pdf_file_url,
-      i.pdf_file_name,
-      i.email_sent AS invoice_email_sent,
-      i.email_sent_at
-    FROM sales s
-    LEFT JOIN invoices i
-      ON i.sale_id = s.id
-    WHERE s.id = ?
-    LIMIT 1
-    `
-  )
-    .bind(id)
-    .first();
+
+/* =========================================================
+   SINGLE SALE
+========================================================= */
+
+async function adminGetSale(
+  env,
+  saleId
+) {
+  const sale =
+    await env.ADMIN_DB.prepare(
+      `
+      SELECT *
+      FROM sales
+      WHERE id = ?
+      LIMIT 1
+      `
+    )
+      .bind(saleId)
+      .first();
 
   if (!sale) {
     return json(
@@ -774,7 +1300,111 @@ async function getSale(env, id) {
   });
 }
 
-function csvEscape(value) {
+
+/* =========================================================
+   INVOICES
+========================================================= */
+
+async function adminInvoices(env) {
+  const result =
+    await env.ADMIN_DB.prepare(
+      `
+      SELECT
+        i.*,
+        s.sale_number,
+        s.product_code,
+        s.product_type
+
+      FROM invoices i
+
+      LEFT JOIN sales s
+        ON s.id = i.sale_id
+
+      ORDER BY i.id DESC
+      `
+    ).all();
+
+  return json({
+    success: true,
+    invoices:
+      result.results || []
+  });
+}
+
+
+/* =========================================================
+   CUSTOMERS
+========================================================= */
+
+async function adminCustomers(env) {
+  const result =
+    await env.ADMIN_DB.prepare(
+      `
+      SELECT
+        customer_email,
+
+        MAX(customer_name)
+          AS customer_name,
+
+        MAX(customer_phone)
+          AS customer_phone,
+
+        COUNT(*)
+          AS total_sales,
+
+        SUM(total_paid_npr)
+          AS total_spent_npr,
+
+        MIN(created_at)
+          AS first_purchase,
+
+        MAX(created_at)
+          AS latest_purchase
+
+      FROM sales
+
+      GROUP BY customer_email
+
+      ORDER BY latest_purchase DESC
+      `
+    ).all();
+
+  return json({
+    success: true,
+    customers:
+      result.results || []
+  });
+}
+
+
+/* =========================================================
+   ADMIN ACTIVITY LIST
+========================================================= */
+
+async function adminActivity(env) {
+  const result =
+    await env.ADMIN_DB.prepare(
+      `
+      SELECT *
+      FROM admin_activity
+      ORDER BY id DESC
+      LIMIT 200
+      `
+    ).all();
+
+  return json({
+    success: true,
+    activity:
+      result.results || []
+  });
+}
+
+
+/* =========================================================
+   SALES EXPORT
+========================================================= */
+
+function csvValue(value) {
   if (
     value === null ||
     value === undefined
@@ -782,276 +1412,162 @@ function csvEscape(value) {
     return "";
   }
 
-  const text = String(value);
-
-  if (
-    text.includes(",") ||
-    text.includes('"') ||
-    text.includes("\n")
-  ) {
-    return `"${text.replace(/"/g, '""')}"`;
-  }
-
-  return text;
+  return `"${String(value)
+    .replaceAll('"', '""')}"`;
 }
 
+
 async function exportSales(env) {
-  const result = await env.ADMIN_DB.prepare(
-    `
-    SELECT
-      id,
-      sale_number,
-      invoice_number,
-      customer_name,
-      customer_email,
-      customer_phone,
-      customer_address,
-      church_organization,
-      payment_date,
-      payment_method,
-      transaction_reference,
-      total_paid_npr,
-      licence_key,
-      licence_type,
-      licence_status,
-      device_id,
-      reset_count,
-      invoice_sent,
-      licence_email_sent,
-      approved_at,
-      notes
-    FROM sales
-    ORDER BY id ASC
-    `
-  ).all();
+  const result =
+    await env.ADMIN_DB.prepare(
+      `
+      SELECT *
+      FROM sales
+      ORDER BY id ASC
+      `
+    ).all();
+
+  const sales =
+    result.results || [];
 
   const headers = [
     "S.N.",
-    "Sale No.",
-    "Invoice No.",
+    "Sale Number",
+    "Invoice Number",
+    "Product Type",
+    "Product Code",
+    "Product Name",
     "Customer Name",
-    "Email",
-    "Phone",
-    "Address",
-    "Church / Organization",
-    "Payment Date",
+    "Customer Email",
+    "Customer Phone",
+    "Quantity",
+    "Unit Price NPR",
+    "Total Paid NPR",
     "Payment Method",
     "Transaction Reference",
-    "Total Paid NPR",
+    "Payment Date",
     "Licence Key",
-    "Licence Type",
     "Licence Status",
     "Device ID",
     "Reset Count",
+    "Delivery Format",
+    "Delivery Method",
+    "Delivery Status",
+    "Tracking Reference",
     "Invoice Sent",
     "Licence Email Sent",
-    "Approved Date",
+    "Approved By",
+    "Approved At",
     "Notes"
   ];
 
-  const rows = (result.results || []).map(
-    (row, index) => [
-      index + 1,
-      row.sale_number,
-      row.invoice_number,
-      row.customer_name,
-      row.customer_email,
-      row.customer_phone,
-      row.customer_address,
-      row.church_organization,
-      row.payment_date,
-      row.payment_method,
-      row.transaction_reference,
-      row.total_paid_npr,
-      row.licence_key,
-      row.licence_type,
-      row.licence_status,
-      row.device_id,
-      row.reset_count,
-      row.invoice_sent ? "Yes" : "No",
-      row.licence_email_sent ? "Yes" : "No",
-      row.approved_at,
-      row.notes
-    ]
-  );
-
-  const csv = [
-    headers.map(csvEscape).join(","),
-    ...rows.map(
-      (row) =>
-        row.map(csvEscape).join(",")
-    )
-  ].join("\r\n");
-
-  const date = new Date()
-    .toISOString()
-    .slice(0, 10);
-
-  return new Response(csv, {
-    status: 200,
-    headers: {
-      "content-type":
-        "text/csv; charset=UTF-8",
-      "content-disposition":
-        `attachment; filename="Mero_Mandali_Sales_${date}.csv"`,
-      "cache-control": "no-store"
-    }
-  });
-}
-
-async function listActivity(env) {
-  const result = await env.ADMIN_DB.prepare(
-    `
-    SELECT *
-    FROM admin_activity
-    ORDER BY id DESC
-    LIMIT 200
-    `
-  ).all();
-
-  return json({
-    success: true,
-    activity: result.results || []
-  });
-}
-
-async function handleAdminApi(
-  request,
-  env,
-  url
-) {
-  const denied = requireAdmin(request);
-
-  if (denied) {
-    return denied;
-  }
-
-  if (
-    url.pathname ===
-      "/api/admin/dashboard" &&
-    request.method === "GET"
-  ) {
-    return getDashboard(env);
-  }
-
-  if (
-    url.pathname ===
-      "/api/admin/orders" &&
-    request.method === "GET"
-  ) {
-    return listOrders(env, url);
-  }
-
-  const orderMatch =
-    url.pathname.match(
-      /^\/api\/admin\/orders\/(\d+)$/
+  const rows =
+    sales.map(
+      (sale, index) => [
+        index + 1,
+        sale.sale_number,
+        sale.invoice_number,
+        sale.product_type,
+        sale.product_code,
+        sale.product_name,
+        sale.customer_name,
+        sale.customer_email,
+        sale.customer_phone,
+        sale.quantity,
+        sale.unit_price_npr,
+        sale.total_paid_npr,
+        sale.payment_method,
+        sale.transaction_reference,
+        sale.payment_date,
+        sale.licence_key,
+        sale.licence_status,
+        sale.device_id,
+        sale.reset_count,
+        sale.delivery_format,
+        sale.delivery_method,
+        sale.delivery_status,
+        sale.tracking_reference,
+        sale.invoice_sent,
+        sale.licence_email_sent,
+        sale.approved_by,
+        sale.approved_at,
+        sale.notes
+      ]
+        .map(csvValue)
+        .join(",")
     );
 
-  if (
-    orderMatch &&
-    request.method === "GET"
-  ) {
-    return getOrder(
-      env,
-      Number(orderMatch[1])
-    );
-  }
+  const csv =
+    [
+      headers
+        .map(csvValue)
+        .join(","),
 
-  const orderStatusMatch =
-    url.pathname.match(
-      /^\/api\/admin\/orders\/(\d+)\/status$/
-    );
+      ...rows
+    ].join("\r\n");
 
-  if (
-    orderStatusMatch &&
-    request.method === "PATCH"
-  ) {
-    return setOrderReviewStatus(
-      request,
-      env,
-      Number(orderStatusMatch[1])
-    );
-  }
-
-  const confirmMatch =
-    url.pathname.match(
-      /^\/api\/admin\/orders\/(\d+)\/confirm-payment$/
-    );
-
-  if (
-    confirmMatch &&
-    request.method === "POST"
-  ) {
-    return confirmPayment(
-      request,
-      env,
-      Number(confirmMatch[1])
-    );
-  }
-
-  if (
-    url.pathname ===
-      "/api/admin/sales" &&
-    request.method === "GET"
-  ) {
-    return listSales(env);
-  }
-
-  const saleMatch =
-    url.pathname.match(
-      /^\/api\/admin\/sales\/(\d+)$/
-    );
-
-  if (
-    saleMatch &&
-    request.method === "GET"
-  ) {
-    return getSale(
-      env,
-      Number(saleMatch[1])
-    );
-  }
-
-  if (
-    url.pathname ===
-      "/api/admin/export-sales" &&
-    request.method === "GET"
-  ) {
-    return exportSales(env);
-  }
-
-  if (
-    url.pathname ===
-      "/api/admin/activity" &&
-    request.method === "GET"
-  ) {
-    return listActivity(env);
-  }
-
-  return json(
+  return new Response(
+    csv,
     {
-      success: false,
-      error: "Admin API route not found."
-    },
-    404
+      headers: {
+        "content-type":
+          "text/csv; charset=utf-8",
+
+        "content-disposition":
+          `attachment; filename="Durga-Jung-Sales-${currentYear()}.csv"`,
+
+        "cache-control":
+          "no-store"
+      }
+    }
   );
 }
+
+
+/* =========================================================
+   ROUTER
+========================================================= */
 
 export default {
-  async fetch(request, env) {
-    const url = new URL(request.url);
 
+  async fetch(
+    request,
+    env
+  ) {
     try {
+      const url =
+        new URL(request.url);
+
+      const path =
+        url.pathname;
+
+      const method =
+        request.method.toUpperCase();
+
+
+      /* -----------------------------------------------
+         PUBLIC API
+      ------------------------------------------------ */
+
       if (
-        url.pathname === "/api/health" &&
-        request.method === "GET"
+        path === "/api/health" &&
+        method === "GET"
       ) {
         return health(env);
       }
 
+
       if (
-        url.pathname === "/api/orders" &&
-        request.method === "POST"
+        path === "/api/products" &&
+        method === "GET"
+      ) {
+        return publicProducts(env);
+      }
+
+
+      if (
+        path === "/api/orders" &&
+        method === "POST"
       ) {
         return createOrder(
           request,
@@ -1059,28 +1575,258 @@ export default {
         );
       }
 
+
+      /* -----------------------------------------------
+         ADMIN API SECURITY
+      ------------------------------------------------ */
+
       if (
-        url.pathname.startsWith(
+        path.startsWith(
           "/api/admin/"
         )
       ) {
-        return handleAdminApi(
-          request,
+        const denied =
+          requireAdmin(request);
+
+        if (denied) {
+          return denied;
+        }
+      }
+
+
+      /* -----------------------------------------------
+         DASHBOARD
+      ------------------------------------------------ */
+
+      if (
+        path ===
+          "/api/admin/dashboard" &&
+        method === "GET"
+      ) {
+        return adminDashboard(env);
+      }
+
+
+      /* -----------------------------------------------
+         PRODUCTS
+      ------------------------------------------------ */
+
+      if (
+        path ===
+          "/api/admin/products" &&
+        method === "GET"
+      ) {
+        return adminProducts(env);
+      }
+
+
+      if (
+        path ===
+          "/api/admin/software" &&
+        method === "GET"
+      ) {
+        return adminSoftware(env);
+      }
+
+
+      if (
+        path ===
+          "/api/admin/books" &&
+        method === "GET"
+      ) {
+        return adminBooks(env);
+      }
+
+
+      /* -----------------------------------------------
+         ORDERS
+      ------------------------------------------------ */
+
+      if (
+        path ===
+          "/api/admin/orders" &&
+        method === "GET"
+      ) {
+        return adminOrders(env);
+      }
+
+
+      const orderDetailMatch =
+        path.match(
+          /^\/api\/admin\/orders\/(\d+)$/
+        );
+
+      if (
+        orderDetailMatch &&
+        method === "GET"
+      ) {
+        return adminGetOrder(
           env,
-          url
+          Number(
+            orderDetailMatch[1]
+          )
         );
       }
 
-      return env.ASSETS.fetch(request);
+
+      const orderStatusMatch =
+        path.match(
+          /^\/api\/admin\/orders\/(\d+)\/status$/
+        );
+
+      if (
+        orderStatusMatch &&
+        method === "PATCH"
+      ) {
+        return adminSetOrderStatus(
+          request,
+          env,
+          Number(
+            orderStatusMatch[1]
+          )
+        );
+      }
+
+
+      const confirmPaymentMatch =
+        path.match(
+          /^\/api\/admin\/orders\/(\d+)\/confirm-payment$/
+        );
+
+      if (
+        confirmPaymentMatch &&
+        method === "POST"
+      ) {
+        return adminConfirmPayment(
+          request,
+          env,
+          Number(
+            confirmPaymentMatch[1]
+          )
+        );
+      }
+
+
+      /* -----------------------------------------------
+         SALES
+      ------------------------------------------------ */
+
+      if (
+        path ===
+          "/api/admin/sales" &&
+        method === "GET"
+      ) {
+        return adminSales(env);
+      }
+
+
+      const saleDetailMatch =
+        path.match(
+          /^\/api\/admin\/sales\/(\d+)$/
+        );
+
+      if (
+        saleDetailMatch &&
+        method === "GET"
+      ) {
+        return adminGetSale(
+          env,
+          Number(
+            saleDetailMatch[1]
+          )
+        );
+      }
+
+
+      if (
+        path ===
+          "/api/admin/export-sales" &&
+        method === "GET"
+      ) {
+        return exportSales(env);
+      }
+
+
+      /* -----------------------------------------------
+         INVOICES
+      ------------------------------------------------ */
+
+      if (
+        path ===
+          "/api/admin/invoices" &&
+        method === "GET"
+      ) {
+        return adminInvoices(env);
+      }
+
+
+      /* -----------------------------------------------
+         CUSTOMERS
+      ------------------------------------------------ */
+
+      if (
+        path ===
+          "/api/admin/customers" &&
+        method === "GET"
+      ) {
+        return adminCustomers(env);
+      }
+
+
+      /* -----------------------------------------------
+         ACTIVITY
+      ------------------------------------------------ */
+
+      if (
+        path ===
+          "/api/admin/activity" &&
+        method === "GET"
+      ) {
+        return adminActivity(env);
+      }
+
+
+      /* -----------------------------------------------
+         UNKNOWN ADMIN API
+      ------------------------------------------------ */
+
+      if (
+        path.startsWith(
+          "/api/admin/"
+        )
+      ) {
+        return json(
+          {
+            success: false,
+            error:
+              "Admin API endpoint not found."
+          },
+          404
+        );
+      }
+
+
+      /* -----------------------------------------------
+         STATIC WEBSITE
+      ------------------------------------------------ */
+
+      return env.ASSETS.fetch(
+        request
+      );
 
     } catch (error) {
-      console.error(error);
+      console.error(
+        "Worker error:",
+        error
+      );
 
       return json(
         {
           success: false,
           error:
-            "Internal server error."
+            "Internal server error.",
+          detail:
+            error.message
         },
         500
       );
