@@ -32,10 +32,17 @@
     path
   }));
 
+
+  /* =====================================================
+     SECTION NAVIGATION
+  ====================================================== */
+
   function showSection(name) {
     const target = $(`section-${name}`);
 
-    if (!target) return;
+    if (!target) {
+      return;
+    }
 
     navItems.forEach((item) => {
       item.classList.toggle(
@@ -63,32 +70,52 @@
       behavior: "smooth"
     });
 
-    if (name === "orders") {
-      loadOrders();
-    }
+    switch (name) {
+      case "orders":
+        loadOrders();
+        break;
 
-    if (name === "payments") {
-      loadPayments();
-    }
+      case "payments":
+        loadPayments();
+        break;
 
-    if (name === "sales") {
-      loadSales();
-    }
+      case "software":
+        loadSoftware();
+        break;
 
-    if (name === "activity") {
-      loadActivity();
-    }
+      case "books":
+        loadBooks();
+        break;
 
-    if (name === "website") {
-      runHealthChecks();
+      case "sales":
+        loadSales();
+        break;
+
+      case "invoices":
+        loadInvoices();
+        break;
+
+      case "customers":
+        loadCustomers();
+        break;
+
+      case "activity":
+        loadActivity();
+        break;
+
+      case "website":
+        runHealthChecks();
+        break;
     }
   }
+
 
   navItems.forEach((item) => {
     item.addEventListener("click", () => {
       showSection(item.dataset.section);
     });
   });
+
 
   document
     .querySelectorAll("[data-open-section]")
@@ -99,6 +126,7 @@
         );
       });
     });
+
 
   menuToggle?.addEventListener(
     "click",
@@ -113,6 +141,7 @@
       );
     }
   );
+
 
   document.addEventListener(
     "click",
@@ -132,6 +161,11 @@
       }
     }
   );
+
+
+  /* =====================================================
+     FORMAT HELPERS
+  ====================================================== */
 
   function updateClock() {
     const now = new Date();
@@ -162,8 +196,10 @@
     }
   }
 
+
   function money(value) {
-    const number = Number(value || 0);
+    const number =
+      Number(value || 0);
 
     return new Intl.NumberFormat(
       "en-IN",
@@ -174,17 +210,45 @@
     ).format(number);
   }
 
-  function formatDate(value) {
-    if (!value) return "—";
 
-    const date = new Date(
-      String(value).replace(" ", "T") + "Z"
-    );
+  function toDate(value) {
+    if (!value) {
+      return null;
+    }
+
+    const raw = String(value);
+
+    let date;
 
     if (
-      Number.isNaN(date.getTime())
+      raw.includes("T") ||
+      raw.endsWith("Z")
     ) {
-      return value;
+      date = new Date(raw);
+    } else {
+      date = new Date(
+        raw.replace(" ", "T") + "Z"
+      );
+    }
+
+    return Number.isNaN(
+      date.getTime()
+    )
+      ? null
+      : date;
+  }
+
+
+  function formatDate(value) {
+    if (!value) {
+      return "—";
+    }
+
+    const date =
+      toDate(value);
+
+    if (!date) {
+      return String(value);
     }
 
     return new Intl.DateTimeFormat(
@@ -199,6 +263,7 @@
     ).format(date);
   }
 
+
   function escapeHtml(value) {
     return String(
       value ?? ""
@@ -209,6 +274,7 @@
       .replaceAll('"', "&quot;")
       .replaceAll("'", "&#039;");
   }
+
 
   function statusBadge(status) {
     const value =
@@ -230,21 +296,27 @@
     `;
   }
 
+
   function yesNo(value) {
     return Number(value) === 1
       ? "Yes"
       : "No";
   }
 
+
   function toast(
     message,
     type = ""
   ) {
-    const node = $("toast");
+    const node =
+      $("toast");
 
-    if (!node) return;
+    if (!node) {
+      return;
+    }
 
-    node.textContent = message;
+    node.textContent =
+      message;
 
     node.className =
       `toast ${type} show`;
@@ -253,20 +325,39 @@
       node._timer
     );
 
-    node._timer = setTimeout(
-      () => {
-        node.classList.remove(
-          "show"
-        );
-      },
-      3500
-    );
+    node._timer =
+      setTimeout(
+        () => {
+          node.classList.remove(
+            "show"
+          );
+        },
+        3500
+      );
   }
+
+
+  /* =====================================================
+     API HELPER
+  ====================================================== */
 
   async function api(
     path,
     options = {}
   ) {
+    const headers = {
+      ...(options.headers || {})
+    };
+
+    if (
+      options.body !== undefined &&
+      !headers["content-type"] &&
+      !headers["Content-Type"]
+    ) {
+      headers["content-type"] =
+        "application/json";
+    }
+
     const response =
       await fetch(
         path,
@@ -274,11 +365,7 @@
           cache: "no-store",
           credentials: "same-origin",
           ...options,
-          headers: {
-            "content-type":
-              "application/json",
-            ...(options.headers || {})
-          }
+          headers
         }
       );
 
@@ -299,19 +386,25 @@
       const error =
         new Error(
           data.error ||
-            `Request failed (${response.status}).`
+          `Request failed (${response.status}).`
         );
 
       error.status =
         response.status;
 
-      error.data = data;
+      error.data =
+        data;
 
       throw error;
     }
 
     return data;
   }
+
+
+  /* =====================================================
+     API STATUS
+  ====================================================== */
 
   async function checkApi() {
     const pill =
@@ -355,8 +448,9 @@
       }
 
       throw new Error(
-        "Database degraded"
+        "Database unavailable"
       );
+
     } catch (error) {
       if (pill) {
         pill.textContent =
@@ -382,6 +476,11 @@
       return false;
     }
   }
+
+
+  /* =====================================================
+     DASHBOARD
+  ====================================================== */
 
   async function loadDashboard() {
     try {
@@ -427,7 +526,7 @@
         const count =
           Number(
             dashboard.pending_orders ||
-              0
+            0
           );
 
         badge.textContent =
@@ -435,6 +534,7 @@
             ? String(count)
             : "";
       }
+
     } catch (error) {
       console.error(
         "Dashboard load failed:",
@@ -443,11 +543,18 @@
     }
   }
 
+
+  /* =====================================================
+     RECENT ORDERS
+  ====================================================== */
+
   async function loadRecentOrders() {
     const body =
       $("dashboardOrdersBody");
 
-    if (!body) return;
+    if (!body) {
+      return;
+    }
 
     body.innerHTML = `
       <tr>
@@ -483,37 +590,48 @@
       }
 
       body.innerHTML =
-        orders
-          .map((order) => `
-            <tr>
-              <td>
-                <strong>
-                  ${escapeHtml(
-                    order.order_number
-                  )}
-                </strong>
-              </td>
+        orders.map((order) => `
+          <tr>
 
-              <td>
+            <td>
+              <strong>
                 ${escapeHtml(
-                  order.customer_name
+                  order.order_number
                 )}
-              </td>
+              </strong>
 
-              <td>
-                NPR ${money(
-                  order.amount_npr
-                )}
-              </td>
+              <br>
 
-              <td>
-                ${statusBadge(
-                  order.status
+              <small>
+                ${escapeHtml(
+                  order.product_name ||
+                  order.product_code ||
+                  ""
                 )}
-              </td>
-            </tr>
-          `)
-          .join("");
+              </small>
+            </td>
+
+            <td>
+              ${escapeHtml(
+                order.customer_name
+              )}
+            </td>
+
+            <td>
+              NPR ${money(
+                order.amount_npr
+              )}
+            </td>
+
+            <td>
+              ${statusBadge(
+                order.status
+              )}
+            </td>
+
+          </tr>
+        `).join("");
+
     } catch (error) {
       body.innerHTML = `
         <tr>
@@ -528,11 +646,16 @@
     }
   }
 
+
+  /* =====================================================
+     ORDERS
+  ====================================================== */
+
   function filterOrders() {
     const search =
       String(
         $("orderSearch")?.value ||
-          ""
+        ""
       )
         .trim()
         .toLowerCase();
@@ -547,16 +670,18 @@
           !status ||
           order.status === status;
 
-        const haystack =
-          [
-            order.order_number,
-            order.customer_name,
-            order.customer_email,
-            order.customer_phone,
-            order.transaction_reference
-          ]
-            .join(" ")
-            .toLowerCase();
+        const haystack = [
+          order.order_number,
+          order.product_code,
+          order.product_name,
+          order.product_type,
+          order.customer_name,
+          order.customer_email,
+          order.customer_phone,
+          order.transaction_reference
+        ]
+          .join(" ")
+          .toLowerCase();
 
         const matchesSearch =
           !search ||
@@ -572,11 +697,14 @@
     );
   }
 
+
   function renderOrders() {
     const body =
       $("ordersTableBody");
 
-    if (!body) return;
+    if (!body) {
+      return;
+    }
 
     const orders =
       filterOrders();
@@ -597,141 +725,156 @@
     }
 
     body.innerHTML =
-      orders
-        .map(
-          (order, index) => {
-            const receipt =
-              order.receipt_file_url
-                ? `
-                  <a
-                    class="receipt-link"
-                    href="${escapeHtml(
-                      order.receipt_file_url
-                    )}"
-                    target="_blank"
-                    rel="noopener"
+      orders.map(
+        (order, index) => {
+
+          const receipt =
+            order.receipt_file_url
+              ? `
+                <a
+                  class="receipt-link"
+                  href="${escapeHtml(
+                    order.receipt_file_url
+                  )}"
+                  target="_blank"
+                  rel="noopener"
+                >
+                  View
+                </a>
+              `
+              : "—";
+
+          return `
+            <tr>
+
+              <td>
+                ${index + 1}
+              </td>
+
+              <td>
+                <strong>
+                  ${escapeHtml(
+                    order.order_number
+                  )}
+                </strong>
+
+                <br>
+
+                <small>
+                  ${escapeHtml(
+                    order.product_name ||
+                    "—"
+                  )}
+                </small>
+              </td>
+
+              <td>
+                ${escapeHtml(
+                  order.customer_name
+                )}
+              </td>
+
+              <td>
+                ${escapeHtml(
+                  order.customer_email
+                )}
+              </td>
+
+              <td>
+                ${escapeHtml(
+                  order.customer_phone ||
+                  "—"
+                )}
+              </td>
+
+              <td>
+                NPR ${money(
+                  order.amount_npr
+                )}
+              </td>
+
+              <td>
+                ${escapeHtml(
+                  order.payment_method ||
+                  "—"
+                )}
+              </td>
+
+              <td>
+                ${escapeHtml(
+                  order.transaction_reference ||
+                  "—"
+                )}
+              </td>
+
+              <td>
+                ${receipt}
+              </td>
+
+              <td>
+                ${statusBadge(
+                  order.status
+                )}
+              </td>
+
+              <td>
+                ${escapeHtml(
+                  formatDate(
+                    order.submitted_at
+                  )
+                )}
+              </td>
+
+              <td>
+
+                <div class="table-actions">
+
+                  <button
+                    class="table-btn"
+                    type="button"
+                    data-view-order="${order.id}"
                   >
-                    View
-                  </a>
-                `
-                : "—";
+                    Review
+                  </button>
 
-            return `
-              <tr>
+                </div>
 
-                <td>
-                  ${index + 1}
-                </td>
+              </td>
 
-                <td>
-                  <strong>
-                    ${escapeHtml(
-                      order.order_number
-                    )}
-                  </strong>
-                </td>
+            </tr>
+          `;
+        }
+      ).join("");
 
-                <td>
-                  ${escapeHtml(
-                    order.customer_name
-                  )}
-                </td>
-
-                <td>
-                  ${escapeHtml(
-                    order.customer_email
-                  )}
-                </td>
-
-                <td>
-                  ${escapeHtml(
-                    order.customer_phone ||
-                      "—"
-                  )}
-                </td>
-
-                <td>
-                  NPR ${money(
-                    order.amount_npr
-                  )}
-                </td>
-
-                <td>
-                  ${escapeHtml(
-                    order.payment_method ||
-                      "—"
-                  )}
-                </td>
-
-                <td>
-                  ${escapeHtml(
-                    order.transaction_reference ||
-                      "—"
-                  )}
-                </td>
-
-                <td>
-                  ${receipt}
-                </td>
-
-                <td>
-                  ${statusBadge(
-                    order.status
-                  )}
-                </td>
-
-                <td>
-                  ${escapeHtml(
-                    formatDate(
-                      order.submitted_at
-                    )
-                  )}
-                </td>
-
-                <td>
-                  <div class="table-actions">
-
-                    <button
-                      class="table-btn"
-                      type="button"
-                      data-view-order="${order.id}"
-                    >
-                      Review
-                    </button>
-
-                  </div>
-                </td>
-
-              </tr>
-            `;
-          }
-        )
-        .join("");
 
     body
       .querySelectorAll(
         "[data-view-order]"
       )
       .forEach((button) => {
+
         button.addEventListener(
           "click",
           () => {
             openOrder(
               Number(
-                button.dataset
-                  .viewOrder
+                button.dataset.viewOrder
               )
             );
           }
         );
+
       });
   }
+
 
   async function loadOrders() {
     const body =
       $("ordersTableBody");
 
-    if (!body) return;
+    if (!body) {
+      return;
+    }
 
     body.innerHTML = `
       <tr>
@@ -751,6 +894,7 @@
         data.orders || [];
 
       renderOrders();
+
     } catch (error) {
       console.error(error);
 
@@ -772,11 +916,18 @@
     }
   }
 
+
+  /* =====================================================
+     PAYMENTS
+  ====================================================== */
+
   async function loadPayments() {
     const body =
       $("paymentsTableBody");
 
-    if (!body) return;
+    if (!body) {
+      return;
+    }
 
     body.innerHTML = `
       <tr>
@@ -811,119 +962,127 @@
       }
 
       body.innerHTML =
-        orders
-          .map(
-            (order, index) => {
-              const receipt =
-                order.receipt_file_url
-                  ? `
-                    <a
-                      class="receipt-link"
-                      href="${escapeHtml(
-                        order.receipt_file_url
-                      )}"
-                      target="_blank"
-                      rel="noopener"
-                    >
-                      View
-                    </a>
-                  `
-                  : "—";
+        orders.map(
+          (order, index) => {
 
-              return `
-                <tr>
+            const receipt =
+              order.receipt_file_url
+                ? `
+                  <a
+                    class="receipt-link"
+                    href="${escapeHtml(
+                      order.receipt_file_url
+                    )}"
+                    target="_blank"
+                    rel="noopener"
+                  >
+                    View
+                  </a>
+                `
+                : "—";
 
-                  <td>
-                    ${index + 1}
-                  </td>
+            return `
+              <tr>
 
-                  <td>
+                <td>
+                  ${index + 1}
+                </td>
+
+                <td>
+                  ${escapeHtml(
+                    order.order_number
+                  )}
+
+                  <br>
+
+                  <small>
                     ${escapeHtml(
-                      order.order_number
+                      order.product_name ||
+                      ""
                     )}
-                  </td>
+                  </small>
+                </td>
 
-                  <td>
-                    ${escapeHtml(
-                      order.customer_name
-                    )}
-                  </td>
+                <td>
+                  ${escapeHtml(
+                    order.customer_name
+                  )}
+                </td>
 
-                  <td>
-                    ${escapeHtml(
-                      order.payment_method ||
-                        "—"
-                    )}
-                  </td>
+                <td>
+                  ${escapeHtml(
+                    order.payment_method ||
+                    "—"
+                  )}
+                </td>
 
-                  <td>
-                    ${escapeHtml(
-                      order.transaction_reference ||
-                        "—"
-                    )}
-                  </td>
+                <td>
+                  ${escapeHtml(
+                    order.transaction_reference ||
+                    "—"
+                  )}
+                </td>
 
-                  <td>
-                    NPR ${money(
-                      order.amount_npr
-                    )}
-                  </td>
+                <td>
+                  NPR ${money(
+                    order.amount_npr
+                  )}
+                </td>
 
-                  <td>
-                    ${escapeHtml(
-                      order.payment_date ||
-                        "—"
-                    )}
-                  </td>
+                <td>
+                  ${escapeHtml(
+                    order.payment_date ||
+                    "—"
+                  )}
+                </td>
 
-                  <td>
-                    ${receipt}
-                  </td>
+                <td>
+                  ${receipt}
+                </td>
 
-                  <td>
-                    ${statusBadge(
-                      order.payment_status ||
-                        "submitted"
-                    )}
-                  </td>
+                <td>
+                  ${statusBadge(
+                    order.payment_status ||
+                    "submitted"
+                  )}
+                </td>
 
-                  <td>
+                <td>
 
-                    <button
-                      class="table-btn"
-                      type="button"
-                      data-view-order="${order.id}"
-                    >
-                      Review
-                    </button>
+                  <button
+                    class="table-btn"
+                    type="button"
+                    data-view-order="${order.id}"
+                  >
+                    Review
+                  </button>
 
-                  </td>
+                </td>
 
-                </tr>
-              `;
-            }
-          )
-          .join("");
+              </tr>
+            `;
+          }
+        ).join("");
+
 
       body
         .querySelectorAll(
           "[data-view-order]"
         )
-        .forEach(
-          (button) => {
-            button.addEventListener(
-              "click",
-              () => {
-                openOrder(
-                  Number(
-                    button.dataset
-                      .viewOrder
-                  )
-                );
-              }
-            );
-          }
-        );
+        .forEach((button) => {
+
+          button.addEventListener(
+            "click",
+            () => {
+              openOrder(
+                Number(
+                  button.dataset.viewOrder
+                )
+              );
+            }
+          );
+
+        });
 
     } catch (error) {
       body.innerHTML = `
@@ -939,6 +1098,33 @@
     }
   }
 
+
+  /* =====================================================
+     ORDER MODAL
+  ====================================================== */
+
+  function detail(
+    label,
+    value
+  ) {
+    return `
+      <div class="detail-card">
+
+        <div class="detail-label">
+          ${escapeHtml(label)}
+        </div>
+
+        <div class="detail-value">
+          ${escapeHtml(
+            value ?? "—"
+          )}
+        </div>
+
+      </div>
+    `;
+  }
+
+
   async function openOrder(id) {
     try {
       const data =
@@ -949,7 +1135,8 @@
       const order =
         data.order;
 
-      currentOrderId = id;
+      currentOrderId =
+        id;
 
       if ($("orderModalTitle")) {
         $("orderModalTitle").textContent =
@@ -973,9 +1160,49 @@
           `
           : "No receipt uploaded";
 
+
       if ($("orderModalContent")) {
-        $("orderModalContent").innerHTML =
-          `
+        $("orderModalContent").innerHTML = `
+
+          ${detail(
+            "Product Type",
+            order.product_type ||
+            "—"
+          )}
+
+          ${detail(
+            "Product",
+            order.product_name ||
+            order.product_code ||
+            "—"
+          )}
+
+          ${detail(
+            "Product Code",
+            order.product_code ||
+            "—"
+          )}
+
+          ${detail(
+            "Quantity",
+            order.quantity || 1
+          )}
+
+          ${detail(
+            "Unit Price",
+            `NPR ${money(
+              order.unit_price_npr ||
+              order.amount_npr
+            )}`
+          )}
+
+          ${detail(
+            "Total Amount",
+            `NPR ${money(
+              order.amount_npr
+            )}`
+          )}
+
           ${detail(
             "Customer Name",
             order.customer_name
@@ -989,44 +1216,49 @@
           ${detail(
             "Phone",
             order.customer_phone ||
-              "—"
+            "—"
           )}
 
           ${detail(
             "Address",
             order.customer_address ||
-              "—"
+            "—"
           )}
 
           ${detail(
             "Church / Organization",
             order.church_organization ||
-              "—"
-          )}
-
-          ${detail(
-            "Amount",
-            `NPR ${money(
-              order.amount_npr
-            )}`
+            "—"
           )}
 
           ${detail(
             "Payment Method",
             order.payment_method ||
-              "—"
+            "—"
           )}
 
           ${detail(
             "Transaction Reference",
             order.transaction_reference ||
-              "—"
+            "—"
           )}
 
           ${detail(
             "Payment Date",
             order.payment_date ||
-              "—"
+            "—"
+          )}
+
+          ${detail(
+            "Delivery Format",
+            order.delivery_format ||
+            "—"
+          )}
+
+          ${detail(
+            "Delivery Method",
+            order.delivery_method ||
+            "—"
           )}
 
           ${detail(
@@ -1037,7 +1269,7 @@
           ${detail(
             "Payment Status",
             order.payment_status ||
-              "submitted"
+            "submitted"
           )}
 
           ${detail(
@@ -1061,12 +1293,14 @@
         `;
       }
 
+
       if ($("adminOrderNotes")) {
         $("adminOrderNotes").value =
           order.admin_notes ||
           order.payment_admin_notes ||
           "";
       }
+
 
       $("orderModal").hidden =
         false;
@@ -1079,37 +1313,19 @@
     }
   }
 
-  function detail(
-    label,
-    value
-  ) {
-    return `
-      <div class="detail-card">
-
-        <div class="detail-label">
-          ${escapeHtml(label)}
-        </div>
-
-        <div class="detail-value">
-          ${escapeHtml(
-            value ?? "—"
-          )}
-        </div>
-
-      </div>
-    `;
-  }
 
   function closeOrderModal() {
-    $("orderModal").hidden =
-      true;
+    if ($("orderModal")) {
+      $("orderModal").hidden =
+        true;
+    }
 
-    currentOrderId = null;
+    currentOrderId =
+      null;
   }
 
-  async function updateOrderStatus(
-    status
-  ) {
+
+  async function updateOrderStatus(status) {
     if (!currentOrderId) {
       return;
     }
@@ -1147,6 +1363,7 @@
     }
   }
 
+
   async function confirmPayment() {
     if (!currentOrderId) {
       return;
@@ -1158,7 +1375,7 @@
 
     const confirmed =
       window.confirm(
-        "Confirm this customer's payment and create the permanent Sales record?"
+        "Confirm this customer's payment and create the permanent Sales and Invoice records?"
       );
 
     if (!confirmed) {
@@ -1179,7 +1396,7 @@
 
       toast(
         data.message ||
-          "Payment confirmed.",
+        "Payment confirmed.",
         "success"
       );
 
@@ -1197,11 +1414,311 @@
     }
   }
 
+
+  /* =====================================================
+     SOFTWARE PRODUCTS
+  ====================================================== */
+
+  async function loadSoftware() {
+    const body =
+      $("softwareTableBody");
+
+    if (!body) {
+      return;
+    }
+
+    body.innerHTML = `
+      <tr>
+        <td colspan="6">
+          Loading software products…
+        </td>
+      </tr>
+    `;
+
+    try {
+      const data =
+        await api(
+          "/api/admin/software"
+        );
+
+      const software =
+        data.software || [];
+
+      if (!software.length) {
+        body.innerHTML = `
+          <tr>
+            <td
+              colspan="6"
+              class="table-empty"
+            >
+              No software products registered.
+            </td>
+          </tr>
+        `;
+
+        return;
+      }
+
+      body.innerHTML =
+        software.map(
+          (item) => `
+            <tr>
+
+              <td>
+                <code>
+                  ${escapeHtml(
+                    item.product_code
+                  )}
+                </code>
+              </td>
+
+              <td>
+                <strong>
+                  ${escapeHtml(
+                    item.product_name
+                  )}
+                </strong>
+
+                ${
+                  item.description
+                    ? `
+                      <br>
+                      <small>
+                        ${escapeHtml(
+                          item.description
+                        )}
+                      </small>
+                    `
+                    : ""
+                }
+              </td>
+
+              <td>
+                ${escapeHtml(
+                  item.version ||
+                  "—"
+                )}
+              </td>
+
+              <td>
+                NPR ${money(
+                  item.price_npr
+                )}
+              </td>
+
+              <td>
+                ${
+                  Number(
+                    item.licence_required
+                  ) === 1
+                    ? "Yes"
+                    : "No"
+                }
+              </td>
+
+              <td>
+                ${statusBadge(
+                  item.status
+                )}
+              </td>
+
+            </tr>
+          `
+        ).join("");
+
+    } catch (error) {
+      console.error(error);
+
+      body.innerHTML = `
+        <tr>
+          <td
+            colspan="6"
+            class="table-empty"
+          >
+            Failed to load software products.
+          </td>
+        </tr>
+      `;
+
+      toast(
+        error.message,
+        "error"
+      );
+    }
+  }
+
+
+  /* =====================================================
+     BOOK PRODUCTS
+  ====================================================== */
+
+  function bookFormats(book) {
+    const formats = [];
+
+    if (
+      Number(
+        book.print_available
+      ) === 1
+    ) {
+      formats.push("Print");
+    }
+
+    if (
+      Number(
+        book.pdf_available
+      ) === 1
+    ) {
+      formats.push("PDF");
+    }
+
+    if (
+      Number(
+        book.epub_available
+      ) === 1
+    ) {
+      formats.push("EPUB");
+    }
+
+    return formats.length
+      ? formats.join(", ")
+      : "—";
+  }
+
+
+  async function loadBooks() {
+    const body =
+      $("booksTableBody");
+
+    if (!body) {
+      return;
+    }
+
+    body.innerHTML = `
+      <tr>
+        <td colspan="7">
+          Loading books…
+        </td>
+      </tr>
+    `;
+
+    try {
+      const data =
+        await api(
+          "/api/admin/books"
+        );
+
+      const books =
+        data.books || [];
+
+      if (!books.length) {
+        body.innerHTML = `
+          <tr>
+            <td
+              colspan="7"
+              class="table-empty"
+            >
+              No books registered yet.
+            </td>
+          </tr>
+        `;
+
+        return;
+      }
+
+      body.innerHTML =
+        books.map(
+          (book) => `
+            <tr>
+
+              <td>
+                <code>
+                  ${escapeHtml(
+                    book.product_code
+                  )}
+                </code>
+              </td>
+
+              <td>
+                <strong>
+                  ${escapeHtml(
+                    book.product_name
+                  )}
+                </strong>
+              </td>
+
+              <td>
+                ${escapeHtml(
+                  book.author_name ||
+                  "—"
+                )}
+              </td>
+
+              <td>
+                ${escapeHtml(
+                  bookFormats(book)
+                )}
+              </td>
+
+              <td>
+                NPR ${money(
+                  book.price_npr
+                )}
+              </td>
+
+              <td>
+                ${
+                  book.stock_quantity ===
+                  null
+                    ? "—"
+                    : Number(
+                        book.stock_quantity
+                      )
+                }
+              </td>
+
+              <td>
+                ${statusBadge(
+                  book.status
+                )}
+              </td>
+
+            </tr>
+          `
+        ).join("");
+
+    } catch (error) {
+      console.error(error);
+
+      body.innerHTML = `
+        <tr>
+          <td
+            colspan="7"
+            class="table-empty"
+          >
+            Failed to load books.
+          </td>
+        </tr>
+      `;
+
+      toast(
+        error.message,
+        "error"
+      );
+    }
+  }
+
+
+  /* =====================================================
+     SALES
+  ====================================================== */
+
   async function loadSales() {
     const body =
       $("salesTableBody");
 
-    if (!body) return;
+    if (!body) {
+      return;
+    }
 
     body.innerHTML = `
       <tr>
@@ -1236,137 +1753,172 @@
       }
 
       body.innerHTML =
-        allSales
-          .map(
-            (sale, index) => `
-              <tr>
+        allSales.map(
+          (sale, index) => `
+            <tr>
 
-                <td>
-                  ${index + 1}
-                </td>
+              <td>
+                ${index + 1}
+              </td>
 
-                <td>
-                  <strong>
-                    ${escapeHtml(
-                      sale.sale_number
-                    )}
-                  </strong>
-                </td>
-
-                <td>
+              <td>
+                <strong>
                   ${escapeHtml(
-                    sale.invoice_number ||
-                      "—"
+                    sale.sale_number
                   )}
-                </td>
+                </strong>
 
-                <td>
+                <br>
+
+                <small>
                   ${escapeHtml(
-                    sale.customer_name
+                    sale.product_name ||
+                    sale.product_code ||
+                    ""
                   )}
-                </td>
+                </small>
+              </td>
 
-                <td>
-                  ${escapeHtml(
-                    sale.customer_email
-                  )}
-                </td>
+              <td>
+                ${escapeHtml(
+                  sale.invoice_number ||
+                  "—"
+                )}
+              </td>
 
-                <td>
-                  ${escapeHtml(
-                    sale.customer_phone ||
-                      "—"
-                  )}
-                </td>
+              <td>
+                ${escapeHtml(
+                  sale.customer_name
+                )}
+              </td>
 
-                <td>
-                  ${escapeHtml(
-                    sale.payment_date ||
-                      "—"
-                  )}
-                </td>
+              <td>
+                ${escapeHtml(
+                  sale.customer_email
+                )}
+              </td>
 
-                <td>
-                  ${escapeHtml(
-                    sale.payment_method ||
-                      "—"
-                  )}
-                </td>
+              <td>
+                ${escapeHtml(
+                  sale.customer_phone ||
+                  "—"
+                )}
+              </td>
 
-                <td>
-                  ${escapeHtml(
-                    sale.transaction_reference ||
-                      "—"
-                  )}
-                </td>
+              <td>
+                ${escapeHtml(
+                  sale.payment_date ||
+                  "—"
+                )}
+              </td>
 
-                <td>
-                  NPR ${money(
-                    sale.total_paid_npr
-                  )}
-                </td>
+              <td>
+                ${escapeHtml(
+                  sale.payment_method ||
+                  "—"
+                )}
+              </td>
 
-                <td>
-                  <code>
-                    ${escapeHtml(
-                      sale.licence_key ||
-                        "Not issued"
-                    )}
-                  </code>
-                </td>
+              <td>
+                ${escapeHtml(
+                  sale.transaction_reference ||
+                  "—"
+                )}
+              </td>
 
-                <td>
-                  ${statusBadge(
-                    sale.licence_status ||
-                      "not_issued"
-                  )}
-                </td>
+              <td>
+                NPR ${money(
+                  sale.total_paid_npr
+                )}
+              </td>
 
-                <td>
-                  ${escapeHtml(
-                    sale.device_id ||
-                      "—"
-                  )}
-                </td>
+              <td>
+                ${
+                  sale.product_type ===
+                  "software"
+                    ? `
+                      <code>
+                        ${escapeHtml(
+                          sale.licence_key ||
+                          "Not issued"
+                        )}
+                      </code>
+                    `
+                    : "N/A"
+                }
+              </td>
 
-                <td>
-                  ${Number(
-                    sale.reset_count ||
-                      0
-                  )}
-                </td>
+              <td>
+                ${
+                  sale.product_type ===
+                  "software"
+                    ? statusBadge(
+                        sale.licence_status ||
+                        "not_issued"
+                      )
+                    : "N/A"
+                }
+              </td>
 
-                <td>
-                  ${yesNo(
-                    sale.invoice_sent
-                  )}
-                </td>
+              <td>
+                ${
+                  sale.product_type ===
+                  "software"
+                    ? escapeHtml(
+                        sale.device_id ||
+                        "—"
+                      )
+                    : "N/A"
+                }
+              </td>
 
-                <td>
-                  ${yesNo(
-                    sale.licence_email_sent
-                  )}
-                </td>
+              <td>
+                ${
+                  sale.product_type ===
+                  "software"
+                    ? Number(
+                        sale.reset_count ||
+                        0
+                      )
+                    : "N/A"
+                }
+              </td>
 
-                <td>
-                  ${escapeHtml(
-                    formatDate(
-                      sale.approved_at
-                    )
-                  )}
-                </td>
+              <td>
+                ${yesNo(
+                  sale.invoice_sent
+                )}
+              </td>
 
-                <td>
-                  ${escapeHtml(
-                    sale.notes ||
-                      "—"
-                  )}
-                </td>
+              <td>
+                ${
+                  sale.product_type ===
+                  "software"
+                    ? yesNo(
+                        sale.licence_email_sent
+                      )
+                    : "N/A"
+                }
+              </td>
 
-              </tr>
-            `
-          )
-          .join("");
+              <td>
+                ${escapeHtml(
+                  formatDate(
+                    sale.approved_at
+                  )
+                )}
+              </td>
+
+              <td>
+                ${escapeHtml(
+                  sale.notes ||
+                  "—"
+                )}
+              </td>
+
+            </tr>
+          `
+        ).join("");
 
     } catch (error) {
       console.error(error);
@@ -1384,11 +1936,272 @@
     }
   }
 
+
+  /* =====================================================
+     INVOICES
+  ====================================================== */
+
+  async function loadInvoices() {
+    const body =
+      $("invoiceTableBody");
+
+    if (!body) {
+      return;
+    }
+
+    body.innerHTML = `
+      <tr>
+        <td colspan="7">
+          Loading invoices…
+        </td>
+      </tr>
+    `;
+
+    try {
+      const data =
+        await api(
+          "/api/admin/invoices"
+        );
+
+      const invoices =
+        data.invoices || [];
+
+      if (!invoices.length) {
+        body.innerHTML = `
+          <tr>
+            <td
+              colspan="7"
+              class="table-empty"
+            >
+              No invoices yet.
+            </td>
+          </tr>
+        `;
+
+        return;
+      }
+
+      body.innerHTML =
+        invoices.map(
+          (invoice) => {
+
+            const pdf =
+              invoice.pdf_file_url
+                ? `
+                  <a
+                    class="receipt-link"
+                    href="${escapeHtml(
+                      invoice.pdf_file_url
+                    )}"
+                    target="_blank"
+                    rel="noopener"
+                  >
+                    Open PDF
+                  </a>
+                `
+                : "Not generated";
+
+            return `
+              <tr>
+
+                <td>
+                  <strong>
+                    ${escapeHtml(
+                      invoice.invoice_number
+                    )}
+                  </strong>
+
+                  <br>
+
+                  <small>
+                    ${escapeHtml(
+                      invoice.sale_number ||
+                      ""
+                    )}
+                  </small>
+                </td>
+
+                <td>
+                  ${escapeHtml(
+                    invoice.customer_name
+                  )}
+                </td>
+
+                <td>
+                  ${escapeHtml(
+                    invoice.customer_email
+                  )}
+                </td>
+
+                <td>
+                  NPR ${money(
+                    invoice.amount_npr
+                  )}
+                </td>
+
+                <td>
+                  ${escapeHtml(
+                    formatDate(
+                      invoice.invoice_date
+                    )
+                  )}
+                </td>
+
+                <td>
+                  ${
+                    Number(
+                      invoice.email_sent
+                    ) === 1
+                      ? statusBadge("confirmed")
+                      : statusBadge("pending")
+                  }
+                </td>
+
+                <td>
+                  ${pdf}
+                </td>
+
+              </tr>
+            `;
+          }
+        ).join("");
+
+    } catch (error) {
+      console.error(error);
+
+      body.innerHTML = `
+        <tr>
+          <td
+            colspan="7"
+            class="table-empty"
+          >
+            Failed to load invoices.
+          </td>
+        </tr>
+      `;
+    }
+  }
+
+
+  /* =====================================================
+     CUSTOMERS
+  ====================================================== */
+
+  async function loadCustomers() {
+    const body =
+      $("customersTableBody");
+
+    if (!body) {
+      return;
+    }
+
+    body.innerHTML = `
+      <tr>
+        <td colspan="6">
+          Loading customers…
+        </td>
+      </tr>
+    `;
+
+    try {
+      const data =
+        await api(
+          "/api/admin/customers"
+        );
+
+      const customers =
+        data.customers || [];
+
+      if (!customers.length) {
+        body.innerHTML = `
+          <tr>
+            <td
+              colspan="6"
+              class="table-empty"
+            >
+              No completed-sale customers yet.
+            </td>
+          </tr>
+        `;
+
+        return;
+      }
+
+      body.innerHTML =
+        customers.map(
+          (customer) => `
+            <tr>
+
+              <td>
+                <strong>
+                  ${escapeHtml(
+                    customer.customer_name
+                  )}
+                </strong>
+              </td>
+
+              <td>
+                ${escapeHtml(
+                  customer.customer_email
+                )}
+              </td>
+
+              <td>
+                ${escapeHtml(
+                  customer.customer_phone ||
+                  "—"
+                )}
+              </td>
+
+              <td>
+                —
+              </td>
+
+              <td>
+                ${Number(
+                  customer.total_sales ||
+                  0
+                )}
+              </td>
+
+              <td>
+                NPR ${money(
+                  customer.total_spent_npr
+                )}
+              </td>
+
+            </tr>
+          `
+        ).join("");
+
+    } catch (error) {
+      console.error(error);
+
+      body.innerHTML = `
+        <tr>
+          <td
+            colspan="6"
+            class="table-empty"
+          >
+            Failed to load customers.
+          </td>
+        </tr>
+      `;
+    }
+  }
+
+
+  /* =====================================================
+     ADMIN ACTIVITY
+  ====================================================== */
+
   async function loadActivity() {
     const body =
       $("activityTableBody");
 
-    if (!body) return;
+    if (!body) {
+      return;
+    }
 
     body.innerHTML = `
       <tr>
@@ -1423,8 +2236,8 @@
       }
 
       body.innerHTML =
-        activity
-          .map((row) => `
+        activity.map(
+          (row) => `
             <tr>
 
               <td>
@@ -1450,20 +2263,20 @@
               <td>
                 ${escapeHtml(
                   row.entity_type ||
-                    "—"
+                  "—"
                 )}
               </td>
 
               <td>
                 ${escapeHtml(
                   row.description ||
-                    "—"
+                  "—"
                 )}
               </td>
 
             </tr>
-          `)
-          .join("");
+          `
+        ).join("");
 
     } catch (error) {
       body.innerHTML = `
@@ -1479,9 +2292,12 @@
     }
   }
 
-  async function checkTarget(
-    target
-  ) {
+
+  /* =====================================================
+     WEBSITE HEALTH
+  ====================================================== */
+
+  async function checkTarget(target) {
     const controller =
       new AbortController();
 
@@ -1502,8 +2318,7 @@
           {
             method: "GET",
             cache: "no-store",
-            credentials:
-              "same-origin",
+            credentials: "same-origin",
             signal:
               controller.signal
           }
@@ -1511,19 +2326,18 @@
 
       return {
         ...target,
-        ok:
-          response.ok,
-        code:
-          response.status,
+        ok: response.ok,
+        code: response.status,
         latency:
           Math.max(
             1,
             Math.round(
               performance.now() -
-                start
+              start
             )
           )
       };
+
     } catch (error) {
       return {
         ...target,
@@ -1535,14 +2349,14 @@
             : "ERR",
         latency: null
       };
+
     } finally {
       clearTimeout(timeout);
     }
   }
 
-  function healthBadge(
-    result
-  ) {
+
+  function healthBadge(result) {
     return `
       <span
         class="status-badge ${
@@ -1559,6 +2373,7 @@
       </span>
     `;
   }
+
 
   async function runHealthChecks() {
     const body =
@@ -1583,52 +2398,56 @@
 
     if (body) {
       body.innerHTML =
-        results
-          .map(
-            (result) => `
-              <tr>
+        results.map(
+          (result) => `
+            <tr>
 
-                <td>
-                  <strong>
-                    ${escapeHtml(
-                      result.name
-                    )}
-                  </strong>
-                </td>
-
-                <td>
-                  <code>
-                    ${escapeHtml(
-                      result.path
-                    )}
-                  </code>
-                </td>
-
-                <td>
-                  ${healthBadge(
-                    result
+              <td>
+                <strong>
+                  ${escapeHtml(
+                    result.name
                   )}
-                  <small>
-                    ${escapeHtml(
-                      result.code
-                    )}
-                  </small>
-                </td>
+                </strong>
+              </td>
 
-                <td>
-                  ${
-                    result.latency
-                      ? `${result.latency} ms`
-                      : "—"
-                  }
-                </td>
+              <td>
+                <code>
+                  ${escapeHtml(
+                    result.path
+                  )}
+                </code>
+              </td>
 
-              </tr>
-            `
-          )
-          .join("");
+              <td>
+                ${healthBadge(
+                  result
+                )}
+
+                <small>
+                  ${escapeHtml(
+                    result.code
+                  )}
+                </small>
+              </td>
+
+              <td>
+                ${
+                  result.latency
+                    ? `${result.latency} ms`
+                    : "—"
+                }
+              </td>
+
+            </tr>
+          `
+        ).join("");
     }
   }
+
+
+  /* =====================================================
+     REFRESH
+  ====================================================== */
 
   async function refreshAdminData() {
     await Promise.allSettled([
@@ -1637,9 +2456,18 @@
       loadRecentOrders(),
       loadOrders(),
       loadPayments(),
-      loadSales()
+      loadSoftware(),
+      loadBooks(),
+      loadSales(),
+      loadInvoices(),
+      loadCustomers()
     ]);
   }
+
+
+  /* =====================================================
+     EVENT HANDLERS
+  ====================================================== */
 
   $("refreshAll")
     ?.addEventListener(
@@ -1647,11 +2475,13 @@
       refreshAdminData
     );
 
+
   $("refreshOrders")
     ?.addEventListener(
       "click",
       loadOrders
     );
+
 
   $("refreshSales")
     ?.addEventListener(
@@ -1659,11 +2489,13 @@
       loadSales
     );
 
+
   $("orderSearch")
     ?.addEventListener(
       "input",
       renderOrders
     );
+
 
   $("orderStatusFilter")
     ?.addEventListener(
@@ -1671,11 +2503,13 @@
       renderOrders
     );
 
+
   $("closeOrderModal")
     ?.addEventListener(
       "click",
       closeOrderModal
     );
+
 
   $("orderModal")
     ?.addEventListener(
@@ -1690,6 +2524,7 @@
       }
     );
 
+
   $("reviewOrderBtn")
     ?.addEventListener(
       "click",
@@ -1698,6 +2533,7 @@
           "under_review"
         )
     );
+
 
   $("rejectOrderBtn")
     ?.addEventListener(
@@ -1708,24 +2544,31 @@
         )
     );
 
+
   $("confirmPaymentBtn")
     ?.addEventListener(
       "click",
       confirmPayment
     );
 
+
   document.addEventListener(
     "keydown",
     (event) => {
       if (
-        event.key ===
-          "Escape" &&
-        !$("orderModal")?.hidden
+        event.key === "Escape" &&
+        $("orderModal") &&
+        !$("orderModal").hidden
       ) {
         closeOrderModal();
       }
     }
   );
+
+
+  /* =====================================================
+     STARTUP
+  ====================================================== */
 
   updateClock();
 
@@ -1735,8 +2578,11 @@
   );
 
   checkApi();
+
   loadDashboard();
+
   loadRecentOrders();
+
   runHealthChecks();
 
 })();
