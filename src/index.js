@@ -1,25 +1,16 @@
 const ADMIN_EMAIL = "durgajung.nits@gmail.com";
-
 const DEFAULT_PRODUCT_CODE = "MERO-MANDALI";
-
-
-/* =========================================================
-   BASIC HELPERS
-========================================================= */
+const LICENCE_API_URL = "https://mero-mandali-license-api.durgajung-nits.workers.dev/v1/admin/licenses";
 
 function json(data, status = 200) {
-  return new Response(
-    JSON.stringify(data),
-    {
-      status,
-      headers: {
-        "content-type": "application/json; charset=utf-8",
-        "cache-control": "no-store"
-      }
+  return new Response(JSON.stringify(data), {
+    status,
+    headers: {
+      "content-type": "application/json; charset=utf-8",
+      "cache-control": "no-store"
     }
-  );
+  });
 }
-
 
 async function readJson(request) {
   try {
@@ -29,94 +20,53 @@ async function readJson(request) {
   }
 }
 
-
 function clean(value) {
-  if (value === undefined || value === null) {
-    return null;
-  }
-
+  if (value === undefined || value === null) return null;
   const text = String(value).trim();
-
   return text === "" ? null : text;
 }
 
-
 function safeInt(value, fallback = 1) {
   const number = Number.parseInt(value, 10);
-
-  if (!Number.isFinite(number) || number < 1) {
-    return fallback;
-  }
-
-  return number;
+  return Number.isFinite(number) && number >= 1 ? number : fallback;
 }
-
 
 function currentYear() {
   return new Date().getUTCFullYear();
 }
 
-
 function makeNumber(prefix, id) {
   return `${prefix}-${currentYear()}-${String(id).padStart(5, "0")}`;
 }
-
 
 function makeTemporaryNumber(prefix) {
   return `${prefix}-TMP-${crypto.randomUUID()}`;
 }
 
-
 function getAdminEmail(request) {
   return (
-    request.headers.get(
-      "Cf-Access-Authenticated-User-Email"
-    ) ||
-    request.headers.get(
-      "CF-Access-Authenticated-User-Email"
-    ) ||
+    request.headers.get("Cf-Access-Authenticated-User-Email") ||
+    request.headers.get("CF-Access-Authenticated-User-Email") ||
     ""
-  )
-    .trim()
-    .toLowerCase();
+  ).trim().toLowerCase();
 }
-
 
 function isAdmin(request) {
-  return (
-    getAdminEmail(request) ===
-    ADMIN_EMAIL.toLowerCase()
-  );
+  return getAdminEmail(request) === ADMIN_EMAIL.toLowerCase();
 }
-
 
 function requireAdmin(request) {
   if (!isAdmin(request)) {
-    return json(
-      {
-        success: false,
-        error: "Unauthorized."
-      },
-      401
-    );
+    return json({ success: false, error: "Unauthorized." }, 401);
   }
-
   return null;
 }
 
-
 function clientIp(request) {
-  return (
-    request.headers.get("CF-Connecting-IP") ||
+  return request.headers.get("CF-Connecting-IP") ||
     request.headers.get("X-Forwarded-For") ||
-    ""
-  );
+    "";
 }
-
-
-/* =========================================================
-   ADMIN ACTIVITY
-========================================================= */
 
 async function recordAdminActivity(
   env,
@@ -127,8 +77,7 @@ async function recordAdminActivity(
   description = null
 ) {
   try {
-    await env.ADMIN_DB.prepare(
-      `
+    await env.ADMIN_DB.prepare(`
       INSERT INTO admin_activity (
         admin_email,
         action,
@@ -139,34 +88,22 @@ async function recordAdminActivity(
         user_agent
       )
       VALUES (?, ?, ?, ?, ?, ?, ?)
-      `
-    )
-      .bind(
-        getAdminEmail(request) || ADMIN_EMAIL,
-        action,
-        entityType,
-        entityId,
-        description,
-        clientIp(request),
-        request.headers.get("User-Agent") || ""
-      )
-      .run();
+    `).bind(
+      getAdminEmail(request) || ADMIN_EMAIL,
+      action,
+      entityType,
+      entityId,
+      description,
+      clientIp(request),
+      request.headers.get("User-Agent") || ""
+    ).run();
   } catch (error) {
-    console.error(
-      "Admin activity logging failed:",
-      error
-    );
+    console.error("Admin activity logging failed:", error);
   }
 }
 
-
-/* =========================================================
-   PRODUCT LOOKUP
-========================================================= */
-
 async function getProductByCode(env, productCode) {
-  return await env.ADMIN_DB.prepare(
-    `
+  return await env.ADMIN_DB.prepare(`
     SELECT
       id,
       product_code,
@@ -179,16 +116,215 @@ async function getProductByCode(env, productCode) {
     FROM products
     WHERE product_code = ?
     LIMIT 1
-    `
-  )
-    .bind(productCode)
-    .first();
+  `).bind(productCode).first();
 }
 
+async function getSaleById(env, saleId) {
+  return await env.ADMIN_DB.prepare(`
+    SELECT *
+    FROM sales
+    WHERE id = ?
+    LIMIT 1
+  `).bind(saleId).first();
+}
 
-/* =========================================================
-   HEALTH
-========================================================= */
+async function ensureCustomerLicence(env, sale) {
+  if (!sale || sale.product_type !== "software") {
+    return {
+      success: true,
+      sale
+    };
+  }
+
+  if (!clean(env.LICENSE_API_ADMIN_KEY)) {
+    return {
+      success: false,
+      status: 500,
+      error: "LICENSE_API_ADMIN_KEY is not configured."
+    };
+  }
+
+  if (
+    clean(sale.licence_key) &&
+    sale.licence_status === "issued"
+  ) {
+    return {
+      success: true,
+      sale
+    };
+  }
+
+  const marker = `Website sale ${sale.sale_number}`;
+
+  const headers = {
+    "content-type": "application/json; charset=utf-8",
+    "X-Admin-Key": env.LICENSE_API_ADMIN_KEY
+  };
+
+  /*
+   * Retry protection:
+   * Before generating a new licence, check whether the
+   * licence API already created one for this exact Sale.
+   */
+  try {
+    const lookupResponse = await fetch(
+      LICENCE_API_URL,
+      {
+        method: "GET",
+        headers
+      }
+    );
+
+    if (lookupResponse.ok) {
+      const payload = await lookupResponse.json();
+
+      const licences = Array.isArray(payload?.licenses)
+        ? payload.licenses
+        : Array.isArray(payload?.results)
+          ? payload.results
+          : [];
+
+      const existing = licences.find((item) => {
+        const notes = clean(item?.notes) || "";
+        return notes.includes(marker);
+      });
+
+      const existingKey = clean(
+        existing?.license_key
+      );
+
+      if (existingKey) {
+        await env.ADMIN_DB.prepare(`
+          UPDATE sales
+          SET
+            licence_key = ?,
+            licence_status = 'issued',
+            reset_count = COALESCE(reset_count, 0),
+            updated_at = CURRENT_TIMESTAMP
+          WHERE id = ?
+        `).bind(
+          existingKey,
+          sale.id
+        ).run();
+
+        return {
+          success: true,
+          sale: await getSaleById(
+            env,
+            sale.id
+          )
+        };
+      }
+    }
+  } catch (error) {
+    console.error(
+      "Licence lookup failed before issue:",
+      error
+    );
+  }
+
+  await env.ADMIN_DB.prepare(`
+    UPDATE sales
+    SET
+      licence_status = 'issuing',
+      updated_at = CURRENT_TIMESTAMP
+    WHERE id = ?
+  `).bind(
+    sale.id
+  ).run();
+
+  let response;
+  let payload = {};
+
+  try {
+    response = await fetch(
+      LICENCE_API_URL,
+      {
+        method: "POST",
+        headers,
+        body: JSON.stringify({
+          customer_name: sale.customer_name,
+          customer_email: sale.customer_email,
+          status: "active",
+          notes:
+            `${marker}; invoice ${sale.invoice_number || ""}; order ${sale.order_id}.`
+        })
+      }
+    );
+
+    try {
+      payload = await response.json();
+    } catch {
+      payload = {};
+    }
+  } catch (error) {
+    await env.ADMIN_DB.prepare(`
+      UPDATE sales
+      SET
+        licence_status = 'issue_failed',
+        updated_at = CURRENT_TIMESTAMP
+      WHERE id = ?
+    `).bind(
+      sale.id
+    ).run();
+
+    return {
+      success: false,
+      status: 502,
+      error:
+        `Licence API request failed: ${error.message}`
+    };
+  }
+
+  const licenceKey = clean(
+    payload?.license?.license_key
+  );
+
+  if (
+    !response.ok ||
+    payload?.success !== true ||
+    !licenceKey
+  ) {
+    await env.ADMIN_DB.prepare(`
+      UPDATE sales
+      SET
+        licence_status = 'issue_failed',
+        updated_at = CURRENT_TIMESTAMP
+      WHERE id = ?
+    `).bind(
+      sale.id
+    ).run();
+
+    return {
+      success: false,
+      status: response.status || 502,
+      error:
+        payload?.error ||
+        "Licence API did not create the customer licence."
+    };
+  }
+
+  await env.ADMIN_DB.prepare(`
+    UPDATE sales
+    SET
+      licence_key = ?,
+      licence_status = 'issued',
+      reset_count = COALESCE(reset_count, 0),
+      updated_at = CURRENT_TIMESTAMP
+    WHERE id = ?
+  `).bind(
+    licenceKey,
+    sale.id
+  ).run();
+
+  return {
+    success: true,
+    sale: await getSaleById(
+      env,
+      sale.id
+    )
+  };
+}
 
 async function health(env) {
   try {
@@ -215,28 +351,20 @@ async function health(env) {
   }
 }
 
-
-/* =========================================================
-   PUBLIC PRODUCT CATALOGUE
-========================================================= */
-
 async function publicProducts(env) {
-  const result =
-    await env.ADMIN_DB.prepare(
-      `
-      SELECT
-        product_code,
-        product_type,
-        product_name,
-        description,
-        price_npr,
-        status,
-        cover_image_url
-      FROM products
-      WHERE status = 'active'
-      ORDER BY product_type, product_name
-      `
-    ).all();
+  const result = await env.ADMIN_DB.prepare(`
+    SELECT
+      product_code,
+      product_type,
+      product_name,
+      description,
+      price_npr,
+      status,
+      cover_image_url
+    FROM products
+    WHERE status = 'active'
+    ORDER BY product_type, product_name
+  `).all();
 
   return json({
     success: true,
@@ -244,22 +372,20 @@ async function publicProducts(env) {
   });
 }
 
-
-/* =========================================================
-   PUBLIC ORDER SUBMISSION
-========================================================= */
-
 async function createOrder(request, env) {
   const body = await readJson(request);
 
-  const customerName =
-    clean(body.customer_name);
+  const customerName = clean(
+    body.customer_name
+  );
 
-  const customerEmail =
-    clean(body.customer_email);
+  const customerEmail = clean(
+    body.customer_email
+  );
 
-  const paymentMethod =
-    clean(body.payment_method);
+  const paymentMethod = clean(
+    body.payment_method
+  );
 
   if (!customerName) {
     return json(
@@ -295,11 +421,10 @@ async function createOrder(request, env) {
     clean(body.product_code) ||
     DEFAULT_PRODUCT_CODE;
 
-  const product =
-    await getProductByCode(
-      env,
-      productCode
-    );
+  const product = await getProductByCode(
+    env,
+    productCode
+  );
 
   if (!product) {
     return json(
@@ -315,17 +440,21 @@ async function createOrder(request, env) {
     return json(
       {
         success: false,
-        error: "This product is not currently available."
+        error:
+          "This product is not currently available."
       },
       400
     );
   }
 
-  const quantity =
-    safeInt(body.quantity, 1);
+  const quantity = safeInt(
+    body.quantity,
+    1
+  );
 
-  const unitPrice =
-    Number(product.price_npr || 0);
+  const unitPrice = Number(
+    product.price_npr || 0
+  );
 
   const totalAmount =
     unitPrice * quantity;
@@ -334,8 +463,7 @@ async function createOrder(request, env) {
     makeTemporaryNumber("ORDER");
 
   const orderInsert =
-    await env.ADMIN_DB.prepare(
-      `
+    await env.ADMIN_DB.prepare(`
       INSERT INTO orders (
         order_number,
         product_code,
@@ -359,55 +487,47 @@ async function createOrder(request, env) {
       VALUES (
         ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending', ?, ?, 'pending'
       )
-      `
-    )
-      .bind(
-        temporaryOrderNumber,
-        product.product_code,
-        product.product_name,
-        product.product_type,
-        customerName,
-        customerEmail,
-        clean(body.customer_phone),
-        clean(body.customer_address),
-        clean(body.church_organization),
-        totalAmount,
-        quantity,
-        unitPrice,
-        clean(body.delivery_format),
-        clean(body.delivery_method),
-        clean(body.tracking_reference),
-        clean(body.customer_notes)
-      )
-      .run();
+    `).bind(
+      temporaryOrderNumber,
+      product.product_code,
+      product.product_name,
+      product.product_type,
+      customerName,
+      customerEmail,
+      clean(body.customer_phone),
+      clean(body.customer_address),
+      clean(body.church_organization),
+      totalAmount,
+      quantity,
+      unitPrice,
+      clean(body.delivery_format),
+      clean(body.delivery_method),
+      clean(body.tracking_reference),
+      clean(body.customer_notes)
+    ).run();
 
-  const orderId =
-    Number(orderInsert.meta.last_row_id);
+  const orderId = Number(
+    orderInsert.meta.last_row_id
+  );
 
-  const orderNumber =
-    makeNumber(
-      "MM-ORD",
-      orderId
-    );
+  const orderNumber = makeNumber(
+    "MM-ORD",
+    orderId
+  );
 
-  await env.ADMIN_DB.prepare(
-    `
+  await env.ADMIN_DB.prepare(`
     UPDATE orders
     SET
       order_number = ?,
       updated_at = CURRENT_TIMESTAMP
     WHERE id = ?
-    `
-  )
-    .bind(
-      orderNumber,
-      orderId
-    )
-    .run();
+  `).bind(
+    orderNumber,
+    orderId
+  ).run();
 
   const paymentInsert =
-    await env.ADMIN_DB.prepare(
-      `
+    await env.ADMIN_DB.prepare(`
       INSERT INTO payments (
         order_id,
         payment_method,
@@ -419,18 +539,15 @@ async function createOrder(request, env) {
         status
       )
       VALUES (?, ?, ?, ?, ?, ?, ?, 'submitted')
-      `
-    )
-      .bind(
-        orderId,
-        paymentMethod,
-        clean(body.transaction_reference),
-        totalAmount,
-        clean(body.payment_date),
-        clean(body.receipt_file_url),
-        clean(body.receipt_file_name)
-      )
-      .run();
+    `).bind(
+      orderId,
+      paymentMethod,
+      clean(body.transaction_reference),
+      totalAmount,
+      clean(body.payment_date),
+      clean(body.receipt_file_url),
+      clean(body.receipt_file_name)
+    ).run();
 
   return json(
     {
@@ -440,52 +557,40 @@ async function createOrder(request, env) {
       order: {
         id: orderId,
         order_number: orderNumber,
-        product_code:
-          product.product_code,
-        product_name:
-          product.product_name,
-        product_type:
-          product.product_type,
-        amount_npr:
-          totalAmount,
+        product_code: product.product_code,
+        product_name: product.product_name,
+        product_type: product.product_type,
+        amount_npr: totalAmount,
         quantity
       },
-      payment_id:
-        Number(
-          paymentInsert.meta.last_row_id
-        )
+      payment_id: Number(
+        paymentInsert.meta.last_row_id
+      )
     },
     201
   );
 }
 
-
-/* =========================================================
-   ADMIN DASHBOARD
-========================================================= */
-
 async function adminDashboard(env) {
   const pendingOrders =
-    await env.ADMIN_DB.prepare(
-      `
+    await env.ADMIN_DB.prepare(`
       SELECT COUNT(*) AS count
       FROM orders
-      WHERE status IN ('pending', 'under_review')
-      `
-    ).first();
+      WHERE status IN (
+        'pending',
+        'under_review'
+      )
+    `).first();
 
   const confirmedPayments =
-    await env.ADMIN_DB.prepare(
-      `
+    await env.ADMIN_DB.prepare(`
       SELECT COUNT(*) AS count
       FROM payments
       WHERE status = 'confirmed'
-      `
-    ).first();
+    `).first();
 
   const sales =
-    await env.ADMIN_DB.prepare(
-      `
+    await env.ADMIN_DB.prepare(`
       SELECT
         COUNT(*) AS count,
         COALESCE(
@@ -493,12 +598,10 @@ async function adminDashboard(env) {
           0
         ) AS total
       FROM sales
-      `
-    ).first();
+    `).first();
 
   const pendingLicences =
-    await env.ADMIN_DB.prepare(
-      `
+    await env.ADMIN_DB.prepare(`
       SELECT COUNT(*) AS count
       FROM sales
       WHERE
@@ -507,85 +610,62 @@ async function adminDashboard(env) {
           licence_status IS NULL
           OR licence_status IN (
             'pending',
-            'not_issued'
+            'not_issued',
+            'issuing',
+            'issue_failed'
           )
         )
-      `
-    ).first();
+    `).first();
 
   const softwareProducts =
-    await env.ADMIN_DB.prepare(
-      `
+    await env.ADMIN_DB.prepare(`
       SELECT COUNT(*) AS count
       FROM products
       WHERE
         product_type = 'software'
         AND status = 'active'
-      `
-    ).first();
+    `).first();
 
   const bookProducts =
-    await env.ADMIN_DB.prepare(
-      `
+    await env.ADMIN_DB.prepare(`
       SELECT COUNT(*) AS count
       FROM products
       WHERE
         product_type = 'book'
         AND status = 'active'
-      `
-    ).first();
+    `).first();
 
   return json({
     success: true,
-
     dashboard: {
-      pending_orders:
-        Number(
-          pendingOrders?.count || 0
-        ),
-
-      confirmed_payments:
-        Number(
-          confirmedPayments?.count || 0
-        ),
-
-      total_sales:
-        Number(
-          sales?.count || 0
-        ),
-
-      total_sales_npr:
-        Number(
-          sales?.total || 0
-        ),
-
-      pending_licences:
-        Number(
-          pendingLicences?.count || 0
-        ),
-
-      active_software:
-        Number(
-          softwareProducts?.count || 0
-        ),
-
-      active_books:
-        Number(
-          bookProducts?.count || 0
-        )
+      pending_orders: Number(
+        pendingOrders?.count || 0
+      ),
+      confirmed_payments: Number(
+        confirmedPayments?.count || 0
+      ),
+      total_sales: Number(
+        sales?.count || 0
+      ),
+      total_sales_npr: Number(
+        sales?.total || 0
+      ),
+      pending_licences: Number(
+        pendingLicences?.count || 0
+      ),
+      active_software: Number(
+        softwareProducts?.count || 0
+      ),
+      active_books: Number(
+        bookProducts?.count || 0
+      )
     }
   });
 }
 
-
-/* =========================================================
-   ADMIN PRODUCTS
-========================================================= */
-
 async function adminProducts(env) {
   const result =
-    await env.ADMIN_DB.prepare(
-      `
+    await env.ADMIN_DB.prepare(`
       SELECT
         id,
         product_code,
@@ -599,8 +679,7 @@ async function adminProducts(env) {
         updated_at
       FROM products
       ORDER BY product_type, product_name
-      `
-    ).all();
+    `).all();
 
   return json({
     success: true,
@@ -608,15 +687,9 @@ async function adminProducts(env) {
   });
 }
 
-
-/* =========================================================
-   ADMIN SOFTWARE
-========================================================= */
-
 async function adminSoftware(env) {
   const result =
-    await env.ADMIN_DB.prepare(
-      `
+    await env.ADMIN_DB.prepare(`
       SELECT
         p.id,
         p.product_code,
@@ -642,8 +715,7 @@ async function adminSoftware(env) {
       WHERE p.product_type = 'software'
 
       ORDER BY p.product_name
-      `
-    ).all();
+    `).all();
 
   return json({
     success: true,
@@ -651,15 +723,9 @@ async function adminSoftware(env) {
   });
 }
 
-
-/* =========================================================
-   ADMIN BOOKS
-========================================================= */
-
 async function adminBooks(env) {
   const result =
-    await env.ADMIN_DB.prepare(
-      `
+    await env.ADMIN_DB.prepare(`
       SELECT
         p.id,
         p.product_code,
@@ -688,8 +754,7 @@ async function adminBooks(env) {
       WHERE p.product_type = 'book'
 
       ORDER BY p.product_name
-      `
-    ).all();
+    `).all();
 
   return json({
     success: true,
@@ -697,15 +762,9 @@ async function adminBooks(env) {
   });
 }
 
-
-/* =========================================================
-   ADMIN ORDERS LIST
-========================================================= */
-
 async function adminOrders(env) {
   const result =
-    await env.ADMIN_DB.prepare(
-      `
+    await env.ADMIN_DB.prepare(`
       SELECT
         o.*,
 
@@ -730,8 +789,7 @@ async function adminOrders(env) {
         )
 
       ORDER BY o.id DESC
-      `
-    ).all();
+    `).all();
 
   return json({
     success: true,
@@ -739,18 +797,12 @@ async function adminOrders(env) {
   });
 }
 
-
-/* =========================================================
-   ADMIN SINGLE ORDER
-========================================================= */
-
 async function adminGetOrder(
   env,
   orderId
 ) {
   const order =
-    await env.ADMIN_DB.prepare(
-      `
+    await env.ADMIN_DB.prepare(`
       SELECT
         o.*,
 
@@ -778,10 +830,9 @@ async function adminGetOrder(
       WHERE o.id = ?
 
       LIMIT 1
-      `
-    )
-      .bind(orderId)
-      .first();
+    `).bind(
+      orderId
+    ).first();
 
   if (!order) {
     return json(
@@ -799,11 +850,6 @@ async function adminGetOrder(
   });
 }
 
-
-/* =========================================================
-   UPDATE ORDER STATUS
-========================================================= */
-
 async function adminSetOrderStatus(
   request,
   env,
@@ -811,8 +857,9 @@ async function adminSetOrderStatus(
 ) {
   const body = await readJson(request);
 
-  const status =
-    clean(body.status);
+  const status = clean(
+    body.status
+  );
 
   const allowedStatuses = [
     "pending",
@@ -837,15 +884,15 @@ async function adminSetOrderStatus(
   }
 
   const existing =
-    await env.ADMIN_DB.prepare(
-      `
-      SELECT id, order_number
+    await env.ADMIN_DB.prepare(`
+      SELECT
+        id,
+        order_number
       FROM orders
       WHERE id = ?
-      `
-    )
-      .bind(orderId)
-      .first();
+    `).bind(
+      orderId
+    ).first();
 
   if (!existing) {
     return json(
@@ -857,8 +904,7 @@ async function adminSetOrderStatus(
     );
   }
 
-  await env.ADMIN_DB.prepare(
-    `
+  await env.ADMIN_DB.prepare(`
     UPDATE orders
     SET
       status = ?,
@@ -892,21 +938,19 @@ async function adminSetOrderStatus(
           ELSE completed_at
         END,
 
-      updated_at = CURRENT_TIMESTAMP
+      updated_at =
+        CURRENT_TIMESTAMP
 
     WHERE id = ?
-    `
-  )
-    .bind(
-      status,
-      clean(body.admin_notes),
-      status,
-      status,
-      status,
-      status,
-      orderId
-    )
-    .run();
+  `).bind(
+    status,
+    clean(body.admin_notes),
+    status,
+    status,
+    status,
+    status,
+    orderId
+  ).run();
 
   await recordAdminActivity(
     env,
@@ -924,11 +968,6 @@ async function adminSetOrderStatus(
   });
 }
 
-
-/* =========================================================
-   CONFIRM PAYMENT
-========================================================= */
-
 async function adminConfirmPayment(
   request,
   env,
@@ -937,16 +976,14 @@ async function adminConfirmPayment(
   const body = await readJson(request);
 
   const order =
-    await env.ADMIN_DB.prepare(
-      `
+    await env.ADMIN_DB.prepare(`
       SELECT *
       FROM orders
       WHERE id = ?
       LIMIT 1
-      `
-    )
-      .bind(orderId)
-      .first();
+    `).bind(
+      orderId
+    ).first();
 
   if (!order) {
     return json(
@@ -958,39 +995,80 @@ async function adminConfirmPayment(
     );
   }
 
+  /*
+   * If a Sales record already exists,
+   * do NOT create another Sale.
+   *
+   * If software licence issuance previously failed,
+   * retry only the missing licence step.
+   */
   const existingSale =
-    await env.ADMIN_DB.prepare(
-      `
+    await env.ADMIN_DB.prepare(`
       SELECT *
       FROM sales
       WHERE order_id = ?
       LIMIT 1
-      `
-    )
-      .bind(orderId)
-      .first();
+    `).bind(
+      orderId
+    ).first();
 
   if (existingSale) {
+    if (
+      existingSale.product_type === "software" &&
+      existingSale.licence_status !== "issued"
+    ) {
+      const licenceResult =
+        await ensureCustomerLicence(
+          env,
+          existingSale
+        );
+
+      if (!licenceResult.success) {
+        return json(
+          {
+            success: false,
+            payment_confirmed: true,
+            sale_created: true,
+            error:
+              licenceResult.error,
+            sale:
+              await getSaleById(
+                env,
+                existingSale.id
+              )
+          },
+          licenceResult.status || 502
+        );
+      }
+
+      return json({
+        success: true,
+        message:
+          "Payment was already confirmed. Customer licence is issued.",
+        sale:
+          licenceResult.sale
+      });
+    }
+
     return json({
       success: true,
       message:
         "Payment was already confirmed.",
-      sale: existingSale
+      sale:
+        existingSale
     });
   }
 
   const payment =
-    await env.ADMIN_DB.prepare(
-      `
+    await env.ADMIN_DB.prepare(`
       SELECT *
       FROM payments
       WHERE order_id = ?
       ORDER BY id DESC
       LIMIT 1
-      `
-    )
-      .bind(orderId)
-      .first();
+    `).bind(
+      orderId
+    ).first();
 
   if (!payment) {
     return json(
@@ -1006,53 +1084,52 @@ async function adminConfirmPayment(
   const adminEmail =
     getAdminEmail(request);
 
-  await env.ADMIN_DB.prepare(
-    `
+  await env.ADMIN_DB.prepare(`
     UPDATE payments
     SET
       status = 'confirmed',
       confirmed_by = ?,
-      confirmed_at = CURRENT_TIMESTAMP,
+      confirmed_at =
+        CURRENT_TIMESTAMP,
       admin_notes = ?,
-      updated_at = CURRENT_TIMESTAMP
+      updated_at =
+        CURRENT_TIMESTAMP
     WHERE id = ?
-    `
-  )
-    .bind(
-      adminEmail,
-      clean(body.admin_notes),
-      payment.id
-    )
-    .run();
+  `).bind(
+    adminEmail,
+    clean(body.admin_notes),
+    payment.id
+  ).run();
 
-  await env.ADMIN_DB.prepare(
-    `
+  await env.ADMIN_DB.prepare(`
     UPDATE orders
     SET
       status = 'completed',
       admin_notes = ?,
+
       reviewed_at =
         COALESCE(
           reviewed_at,
           CURRENT_TIMESTAMP
         ),
+
       approved_at =
         COALESCE(
           approved_at,
           CURRENT_TIMESTAMP
         ),
+
       completed_at =
         CURRENT_TIMESTAMP,
+
       updated_at =
         CURRENT_TIMESTAMP
+
     WHERE id = ?
-    `
-  )
-    .bind(
-      clean(body.admin_notes),
-      orderId
-    )
-    .run();
+  `).bind(
+    clean(body.admin_notes),
+    orderId
+  ).run();
 
   const temporarySaleNumber =
     makeTemporaryNumber("SALE");
@@ -1061,8 +1138,7 @@ async function adminConfirmPayment(
     order.product_type === "software";
 
   const saleInsert =
-    await env.ADMIN_DB.prepare(
-      `
+    await env.ADMIN_DB.prepare(`
       INSERT INTO sales (
         sale_number,
         order_id,
@@ -1108,55 +1184,51 @@ async function adminConfirmPayment(
         ?, ?,
         ?, CURRENT_TIMESTAMP, ?
       )
-      `
-    )
-      .bind(
-        temporarySaleNumber,
-        orderId,
-        payment.id,
+    `).bind(
+      temporarySaleNumber,
+      orderId,
+      payment.id,
 
-        order.customer_name,
-        order.customer_email,
-        order.customer_phone,
-        order.customer_address,
-        order.church_organization,
+      order.customer_name,
+      order.customer_email,
+      order.customer_phone,
+      order.customer_address,
+      order.church_organization,
 
-        order.product_code,
-        order.product_name,
-        order.product_type,
+      order.product_code,
+      order.product_name,
+      order.product_type,
 
-        order.quantity || 1,
-        order.unit_price_npr ||
-          order.amount_npr,
+      order.quantity || 1,
+      order.unit_price_npr ||
         order.amount_npr,
+      order.amount_npr,
 
-        payment.payment_method,
-        payment.transaction_reference,
-        payment.payment_date,
+      payment.payment_method,
+      payment.transaction_reference,
+      payment.payment_date,
 
-        order.delivery_format,
-        order.delivery_method,
-        order.delivery_status ||
-          "pending",
-        order.tracking_reference,
+      order.delivery_format,
+      order.delivery_method,
+      order.delivery_status ||
+        "pending",
+      order.tracking_reference,
 
-        isSoftware
-          ? "customer"
-          : null,
+      isSoftware
+        ? "customer"
+        : null,
 
-        isSoftware
-          ? "not_issued"
-          : null,
+      isSoftware
+        ? "not_issued"
+        : null,
 
-        adminEmail,
-        clean(body.admin_notes)
-      )
-      .run();
+      adminEmail,
+      clean(body.admin_notes)
+    ).run();
 
-  const saleId =
-    Number(
-      saleInsert.meta.last_row_id
-    );
+  const saleId = Number(
+    saleInsert.meta.last_row_id
+  );
 
   const saleNumber =
     makeNumber(
@@ -1170,25 +1242,21 @@ async function adminConfirmPayment(
       saleId
     );
 
-  await env.ADMIN_DB.prepare(
-    `
+  await env.ADMIN_DB.prepare(`
     UPDATE sales
     SET
       sale_number = ?,
       invoice_number = ?,
-      updated_at = CURRENT_TIMESTAMP
+      updated_at =
+        CURRENT_TIMESTAMP
     WHERE id = ?
-    `
-  )
-    .bind(
-      saleNumber,
-      invoiceNumber,
-      saleId
-    )
-    .run();
+  `).bind(
+    saleNumber,
+    invoiceNumber,
+    saleId
+  ).run();
 
-  await env.ADMIN_DB.prepare(
-    `
+  await env.ADMIN_DB.prepare(`
     INSERT INTO invoices (
       invoice_number,
       sale_id,
@@ -1199,20 +1267,19 @@ async function adminConfirmPayment(
       amount_npr,
       signed_by
     )
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-    `
-  )
-    .bind(
-      invoiceNumber,
-      saleId,
-      orderId,
-      order.customer_name,
-      order.customer_email,
-      order.product_name,
-      order.amount_npr,
-      "Durga Jung Kunwar"
+    VALUES (
+      ?, ?, ?, ?, ?, ?, ?, ?
     )
-    .run();
+  `).bind(
+    invoiceNumber,
+    saleId,
+    orderId,
+    order.customer_name,
+    order.customer_email,
+    order.product_name,
+    order.amount_npr,
+    "Durga Jung Kunwar"
+  ).run();
 
   await recordAdminActivity(
     env,
@@ -1223,66 +1290,103 @@ async function adminConfirmPayment(
     `${order.order_number} confirmed as ${saleNumber}; invoice ${invoiceNumber}.`
   );
 
-  const sale =
-    await env.ADMIN_DB.prepare(
-      `
-      SELECT *
-      FROM sales
-      WHERE id = ?
-      `
-    )
-      .bind(saleId)
-      .first();
+  let sale =
+    await getSaleById(
+      env,
+      saleId
+    );
+
+  /*
+   * This is the new automatic licence step.
+   */
+  if (isSoftware) {
+    const licenceResult =
+      await ensureCustomerLicence(
+        env,
+        sale
+      );
+
+    if (!licenceResult.success) {
+      await recordAdminActivity(
+        env,
+        request,
+        "LICENCE_ISSUE_FAILED",
+        "sale",
+        saleId,
+        `${saleNumber}: ${licenceResult.error}`
+      );
+
+      return json(
+        {
+          success: false,
+          payment_confirmed: true,
+          sale_created: true,
+          invoice_created: true,
+          error:
+            licenceResult.error,
+          sale:
+            await getSaleById(
+              env,
+              saleId
+            )
+        },
+        licenceResult.status || 502
+      );
+    }
+
+    sale =
+      licenceResult.sale;
+
+    await recordAdminActivity(
+      env,
+      request,
+      "LICENCE_ISSUED",
+      "sale",
+      saleId,
+      `${saleNumber}: customer licence issued.`
+    );
+  }
 
   return json({
     success: true,
+
     message:
-      "Payment confirmed and permanent Sales record created.",
+      isSoftware
+        ? "Payment confirmed, Sales record and invoice created, and customer licence issued."
+        : "Payment confirmed and permanent Sales record created.",
+
     sale
   });
 }
 
-
-/* =========================================================
-   SALES
-========================================================= */
-
 async function adminSales(env) {
   const result =
-    await env.ADMIN_DB.prepare(
-      `
+    await env.ADMIN_DB.prepare(`
       SELECT *
       FROM sales
       ORDER BY id DESC
-      `
-    ).all();
+    `).all();
 
   return json({
     success: true,
-    sales: result.results || []
+    sales:
+      result.results || []
   });
 }
-
-
-/* =========================================================
-   SINGLE SALE
-========================================================= */
 
 async function adminGetSale(
   env,
   saleId
 ) {
   const sale =
-    await env.ADMIN_DB.prepare(
-      `
+    await env.ADMIN_DB.prepare(`
       SELECT *
       FROM sales
       WHERE id = ?
       LIMIT 1
-      `
-    )
-      .bind(saleId)
-      .first();
+    `).bind(
+      saleId
+    ).first();
 
   if (!sale) {
     return json(
@@ -1300,15 +1404,9 @@ async function adminGetSale(
   });
 }
 
-
-/* =========================================================
-   INVOICES
-========================================================= */
-
 async function adminInvoices(env) {
   const result =
-    await env.ADMIN_DB.prepare(
-      `
+    await env.ADMIN_DB.prepare(`
       SELECT
         i.*,
         s.sale_number,
@@ -1321,8 +1419,7 @@ async function adminInvoices(env) {
         ON s.id = i.sale_id
 
       ORDER BY i.id DESC
-      `
-    ).all();
+    `).all();
 
   return json({
     success: true,
@@ -1331,15 +1428,9 @@ async function adminInvoices(env) {
   });
 }
 
-
-/* =========================================================
-   CUSTOMERS
-========================================================= */
-
 async function adminCustomers(env) {
   const result =
-    await env.ADMIN_DB.prepare(
-      `
+    await env.ADMIN_DB.prepare(`
       SELECT
         customer_email,
 
@@ -1366,8 +1457,7 @@ async function adminCustomers(env) {
       GROUP BY customer_email
 
       ORDER BY latest_purchase DESC
-      `
-    ).all();
+    `).all();
 
   return json({
     success: true,
@@ -1376,21 +1466,14 @@ async function adminCustomers(env) {
   });
 }
 
-
-/* =========================================================
-   ADMIN ACTIVITY LIST
-========================================================= */
-
 async function adminActivity(env) {
   const result =
-    await env.ADMIN_DB.prepare(
-      `
+    await env.ADMIN_DB.prepare(`
       SELECT *
       FROM admin_activity
       ORDER BY id DESC
       LIMIT 200
-      `
-    ).all();
+    `).all();
 
   return json({
     success: true,
@@ -1398,11 +1481,6 @@ async function adminActivity(env) {
       result.results || []
   });
 }
-
-
-/* =========================================================
-   SALES EXPORT
-========================================================= */
 
 function csvValue(value) {
   if (
@@ -1412,20 +1490,16 @@ function csvValue(value) {
     return "";
   }
 
-  return `"${String(value)
-    .replaceAll('"', '""')}"`;
+  return `"${String(value).replaceAll('"', '""')}"`;
 }
-
 
 async function exportSales(env) {
   const result =
-    await env.ADMIN_DB.prepare(
-      `
+    await env.ADMIN_DB.prepare(`
       SELECT *
       FROM sales
       ORDER BY id ASC
-      `
-    ).all();
+    `).all();
 
   const sales =
     result.results || [];
@@ -1492,19 +1566,17 @@ async function exportSales(env) {
         sale.approved_by,
         sale.approved_at,
         sale.notes
-      ]
-        .map(csvValue)
-        .join(",")
+      ].map(
+        csvValue
+      ).join(",")
     );
 
-  const csv =
-    [
-      headers
-        .map(csvValue)
-        .join(","),
-
-      ...rows
-    ].join("\r\n");
+  const csv = [
+    headers
+      .map(csvValue)
+      .join(","),
+    ...rows
+  ].join("\r\n");
 
   return new Response(
     csv,
@@ -1523,13 +1595,7 @@ async function exportSales(env) {
   );
 }
 
-
-/* =========================================================
-   ROUTER
-========================================================= */
-
 export default {
-
   async fetch(
     request,
     env
@@ -1544,11 +1610,9 @@ export default {
       const method =
         request.method.toUpperCase();
 
-
-      /* -----------------------------------------------
-         PUBLIC API
-      ------------------------------------------------ */
-
+      /*
+       * Public routes
+       */
       if (
         path === "/api/health" &&
         method === "GET"
@@ -1556,14 +1620,12 @@ export default {
         return health(env);
       }
 
-
       if (
         path === "/api/products" &&
         method === "GET"
       ) {
         return publicProducts(env);
       }
-
 
       if (
         path === "/api/orders" &&
@@ -1575,11 +1637,9 @@ export default {
         );
       }
 
-
-      /* -----------------------------------------------
-         ADMIN API SECURITY
-      ------------------------------------------------ */
-
+      /*
+       * Protect all admin API routes.
+       */
       if (
         path.startsWith(
           "/api/admin/"
@@ -1593,63 +1653,50 @@ export default {
         }
       }
 
-
-      /* -----------------------------------------------
-         DASHBOARD
-      ------------------------------------------------ */
-
       if (
-        path ===
-          "/api/admin/dashboard" &&
+        path === "/api/admin/dashboard" &&
         method === "GET"
       ) {
-        return adminDashboard(env);
+        return adminDashboard(
+          env
+        );
       }
-
-
-      /* -----------------------------------------------
-         PRODUCTS
-      ------------------------------------------------ */
 
       if (
-        path ===
-          "/api/admin/products" &&
+        path === "/api/admin/products" &&
         method === "GET"
       ) {
-        return adminProducts(env);
+        return adminProducts(
+          env
+        );
       }
-
 
       if (
-        path ===
-          "/api/admin/software" &&
+        path === "/api/admin/software" &&
         method === "GET"
       ) {
-        return adminSoftware(env);
+        return adminSoftware(
+          env
+        );
       }
-
 
       if (
-        path ===
-          "/api/admin/books" &&
+        path === "/api/admin/books" &&
         method === "GET"
       ) {
-        return adminBooks(env);
+        return adminBooks(
+          env
+        );
       }
-
-
-      /* -----------------------------------------------
-         ORDERS
-      ------------------------------------------------ */
 
       if (
-        path ===
-          "/api/admin/orders" &&
+        path === "/api/admin/orders" &&
         method === "GET"
       ) {
-        return adminOrders(env);
+        return adminOrders(
+          env
+        );
       }
-
 
       const orderDetailMatch =
         path.match(
@@ -1667,7 +1714,6 @@ export default {
           )
         );
       }
-
 
       const orderStatusMatch =
         path.match(
@@ -1687,7 +1733,6 @@ export default {
         );
       }
 
-
       const confirmPaymentMatch =
         path.match(
           /^\/api\/admin\/orders\/(\d+)\/confirm-payment$/
@@ -1706,19 +1751,14 @@ export default {
         );
       }
 
-
-      /* -----------------------------------------------
-         SALES
-      ------------------------------------------------ */
-
       if (
-        path ===
-          "/api/admin/sales" &&
+        path === "/api/admin/sales" &&
         method === "GET"
       ) {
-        return adminSales(env);
+        return adminSales(
+          env
+        );
       }
-
 
       const saleDetailMatch =
         path.match(
@@ -1737,58 +1777,41 @@ export default {
         );
       }
 
-
       if (
-        path ===
-          "/api/admin/export-sales" &&
+        path === "/api/admin/export-sales" &&
         method === "GET"
       ) {
-        return exportSales(env);
+        return exportSales(
+          env
+        );
       }
-
-
-      /* -----------------------------------------------
-         INVOICES
-      ------------------------------------------------ */
 
       if (
-        path ===
-          "/api/admin/invoices" &&
+        path === "/api/admin/invoices" &&
         method === "GET"
       ) {
-        return adminInvoices(env);
+        return adminInvoices(
+          env
+        );
       }
-
-
-      /* -----------------------------------------------
-         CUSTOMERS
-      ------------------------------------------------ */
 
       if (
-        path ===
-          "/api/admin/customers" &&
+        path === "/api/admin/customers" &&
         method === "GET"
       ) {
-        return adminCustomers(env);
+        return adminCustomers(
+          env
+        );
       }
-
-
-      /* -----------------------------------------------
-         ACTIVITY
-      ------------------------------------------------ */
 
       if (
-        path ===
-          "/api/admin/activity" &&
+        path === "/api/admin/activity" &&
         method === "GET"
       ) {
-        return adminActivity(env);
+        return adminActivity(
+          env
+        );
       }
-
-
-      /* -----------------------------------------------
-         UNKNOWN ADMIN API
-      ------------------------------------------------ */
 
       if (
         path.startsWith(
@@ -1805,15 +1828,12 @@ export default {
         );
       }
 
-
-      /* -----------------------------------------------
-         STATIC WEBSITE
-      ------------------------------------------------ */
-
+      /*
+       * All normal website files.
+       */
       return env.ASSETS.fetch(
         request
       );
-
     } catch (error) {
       console.error(
         "Worker error:",
