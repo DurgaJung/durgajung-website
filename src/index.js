@@ -24,6 +24,9 @@ const GUIDE_URL =
 
 const SOFTWARE_VERSION = "1.0.2";
 
+const SIGNATURE_ASSET_PATH =
+  "/assets/images/Durga_Jung_Kunwar_Signature_Transparent.png";
+
 
 function json(data, status = 200) {
   return new Response(
@@ -31,10 +34,8 @@ function json(data, status = 200) {
     {
       status,
       headers: {
-        "content-type":
-          "application/json; charset=utf-8",
-        "cache-control":
-          "no-store"
+        "content-type": "application/json; charset=utf-8",
+        "cache-control": "no-store"
       }
     }
   );
@@ -372,6 +373,38 @@ function licenceCertificateNumber(
 }
 
 
+async function loadSignatureBytes(
+  request,
+  env
+) {
+  const assetUrl =
+    new URL(
+      SIGNATURE_ASSET_PATH,
+      request.url
+    );
+
+  const response =
+    await env.ASSETS.fetch(
+      new Request(
+        assetUrl.toString(),
+        {
+          method: "GET"
+        }
+      )
+    );
+
+  if (!response.ok) {
+    throw new Error(
+      `Signature asset could not be loaded. HTTP ${response.status}`
+    );
+  }
+
+  return new Uint8Array(
+    await response.arrayBuffer()
+  );
+}
+
+
 function drawText(
   page,
   text,
@@ -395,6 +428,43 @@ function drawText(
           0.12,
           0.12
         )
+    }
+  );
+}
+
+
+function drawCenteredText(
+  page,
+  text,
+  centerX,
+  y,
+  options = {}
+) {
+  const value =
+    pdfText(text);
+
+  const font =
+    options.font;
+
+  const size =
+    options.size || 10;
+
+  const width =
+    font.widthOfTextAtSize(
+      value,
+      size
+    );
+
+  drawText(
+    page,
+    value,
+    centerX - width / 2,
+    y,
+    {
+      font,
+      size,
+      color:
+        options.color
     }
   );
 }
@@ -542,7 +612,8 @@ function addPdfMetadata(
 
 async function createInvoicePdf(
   sale,
-  order
+  order,
+  signatureBytes
 ) {
   const pdfDoc =
     await PDFDocument.create();
@@ -555,6 +626,11 @@ async function createInvoicePdf(
   const bold =
     await pdfDoc.embedFont(
       StandardFonts.HelveticaBold
+    );
+
+  const signatureImage =
+    await pdfDoc.embedPng(
+      signatureBytes
     );
 
   addPdfMetadata(
@@ -938,10 +1014,30 @@ async function createInvoicePdf(
     page,
     "AUTHORIZED BY",
     48,
-    150,
+    170,
     {
       font: bold,
-      size: 10
+      size: 9
+    }
+  );
+
+  const invoiceSignatureWidth =
+    165;
+
+  const invoiceSignatureHeight =
+    invoiceSignatureWidth *
+    signatureImage.height /
+    signatureImage.width;
+
+  page.drawImage(
+    signatureImage,
+    {
+      x: 48,
+      y: 92,
+      width:
+        invoiceSignatureWidth,
+      height:
+        invoiceSignatureHeight
     }
   );
 
@@ -949,10 +1045,10 @@ async function createInvoicePdf(
     page,
     "Durga Jung Kunwar",
     48,
-    125,
+    82,
     {
       font: bold,
-      size: 14
+      size: 13
     }
   );
 
@@ -960,40 +1056,29 @@ async function createInvoicePdf(
     page,
     "Developer / Owner - Mero Mandali Software",
     48,
-    107,
+    66,
     {
       font,
-      size: 9
+      size: 8.5
     }
   );
 
   drawText(
     page,
-    "developer@durgajung.com.np",
+    "developer@durgajung.com.np | durgajung.com.np",
     48,
-    91,
+    51,
     {
       font,
-      size: 9
-    }
-  );
-
-  drawText(
-    page,
-    "durgajung.com.np",
-    48,
-    75,
-    {
-      font,
-      size: 9
+      size: 8
     }
   );
 
   drawText(
     page,
     "Official electronically generated and authorized invoice.",
-    325,
-    75,
+    320,
+    51,
     {
       font,
       size: 8
@@ -1006,7 +1091,8 @@ async function createInvoicePdf(
 
 async function createLicenceCertificatePdf(
   sale,
-  order
+  order,
+  signatureBytes
 ) {
   const pdfDoc =
     await PDFDocument.create();
@@ -1019,6 +1105,11 @@ async function createLicenceCertificatePdf(
   const bold =
     await pdfDoc.embedFont(
       StandardFonts.HelveticaBold
+    );
+
+  const signatureImage =
+    await pdfDoc.embedPng(
+      signatureBytes
     );
 
   const certificateNumber =
@@ -1269,26 +1360,28 @@ async function createLicenceCertificatePdf(
         width - 110,
         {
           font,
-          size: 9,
-          lineHeight: 13
+          size: 8.5,
+          lineHeight: 11.5
         }
-      ) - 8;
+      ) - 5;
   }
 
-  y -= 5;
+  const bottomTop =
+    y - 5;
 
   drawText(
     page,
     "PURCHASE INCLUDES",
     55,
-    y,
+    bottomTop,
     {
       font: bold,
-      size: 11
+      size: 10
     }
   );
 
-  y -= 22;
+  let purchaseY =
+    bottomTop - 20;
 
   const includes = [
     "Mero Mandali Software version 1.0.2",
@@ -1302,61 +1395,111 @@ async function createLicenceCertificatePdf(
   for (
     const item of includes
   ) {
-    drawText(
-      page,
-      `- ${item}`,
-      65,
-      y,
-      {
-        font,
-        size: 9
-      }
-    );
-
-    y -= 17;
+    purchaseY =
+      drawWrappedText(
+        page,
+        `- ${item}`,
+        62,
+        purchaseY,
+        260,
+        {
+          font,
+          size: 7.8,
+          lineHeight: 10
+        }
+      ) - 3;
   }
 
-  drawText(
+  const authCenterX =
+    440;
+
+  drawCenteredText(
     page,
     "AUTHORIZED BY",
-    55,
-    135,
+    authCenterX,
+    bottomTop,
     {
       font: bold,
       size: 9
     }
   );
 
-  drawText(
+  const certificateSignatureWidth =
+    145;
+
+  const certificateSignatureHeight =
+    certificateSignatureWidth *
+    signatureImage.height /
+    signatureImage.width;
+
+  page.drawImage(
+    signatureImage,
+    {
+      x:
+        authCenterX -
+        certificateSignatureWidth / 2,
+      y:
+        bottomTop -
+        78,
+      width:
+        certificateSignatureWidth,
+      height:
+        certificateSignatureHeight
+    }
+  );
+
+  drawCenteredText(
     page,
     "Durga Jung Kunwar",
-    55,
-    110,
+    authCenterX,
+    bottomTop - 94,
     {
       font: bold,
-      size: 14
+      size: 11
     }
   );
 
-  drawText(
+  drawCenteredText(
     page,
-    "Developer / Owner - Mero Mandali Software",
-    55,
-    92,
+    "Developer / Owner",
+    authCenterX,
+    bottomTop - 109,
     {
       font,
-      size: 9
+      size: 7.8
     }
   );
 
-  drawText(
+  drawCenteredText(
     page,
-    "developer@durgajung.com.np | durgajung.com.np",
-    55,
-    75,
+    "Mero Mandali Software",
+    authCenterX,
+    bottomTop - 121,
     {
       font,
-      size: 9
+      size: 7.8
+    }
+  );
+
+  drawCenteredText(
+    page,
+    "developer@durgajung.com.np",
+    authCenterX,
+    bottomTop - 137,
+    {
+      font,
+      size: 7.1
+    }
+  );
+
+  drawCenteredText(
+    page,
+    "durgajung.com.np",
+    authCenterX,
+    bottomTop - 149,
+    {
+      font,
+      size: 7.1
     }
   );
 
@@ -1526,11 +1669,6 @@ async function ensureCustomerLicence(
       env.LICENSE_API_ADMIN_KEY
   };
 
-  /*
-   * Retry protection:
-   * check whether this Sale already
-   * has a licence in the licence API.
-   */
   try {
     const lookupResponse =
       await fetch(
@@ -1831,6 +1969,7 @@ function makeCustomerEmailHtml(
   font-family:Arial,Helvetica,sans-serif;
   color:#1f2937;
 ">
+
   <div style="
     max-width:680px;
     margin:0 auto;
@@ -1843,6 +1982,7 @@ function makeCustomerEmailHtml(
       padding:28px;
       border-radius:12px 12px 0 0;
     ">
+
       <div style="
         font-size:25px;
         font-weight:700;
@@ -1857,6 +1997,7 @@ function makeCustomerEmailHtml(
       ">
         Church Presentation Software
       </div>
+
     </div>
 
     <div style="
@@ -1865,7 +2006,9 @@ function makeCustomerEmailHtml(
       border-radius:0 0 12px 12px;
     ">
 
-      <p>Dear <strong>${name}</strong>,</p>
+      <p>
+        Dear <strong>${name}</strong>,
+      </p>
 
       <p>
         Thank you for purchasing
@@ -1881,6 +2024,7 @@ function makeCustomerEmailHtml(
         border:1px solid #d9e2ec;
         border-radius:8px;
       ">
+
         <div style="
           font-size:12px;
           font-weight:700;
@@ -1899,6 +2043,7 @@ function makeCustomerEmailHtml(
         ">
           ${licenceKey}
         </div>
+
       </div>
 
       <table style="
@@ -1907,20 +2052,33 @@ function makeCustomerEmailHtml(
         font-size:14px;
         margin:20px 0;
       ">
+
         <tr>
-          <td style="padding:6px 0;font-weight:700;">
+          <td style="
+            padding:6px 0;
+            font-weight:700;
+          ">
             Invoice
           </td>
-          <td style="padding:6px 0;">
+
+          <td style="
+            padding:6px 0;
+          ">
             ${invoiceNumber}
           </td>
         </tr>
 
         <tr>
-          <td style="padding:6px 0;font-weight:700;">
+          <td style="
+            padding:6px 0;
+            font-weight:700;
+          ">
             Licence Certificate
           </td>
-          <td style="padding:6px 0;">
+
+          <td style="
+            padding:6px 0;
+          ">
             ${escapeHtml(
               certificateNumber
             )}
@@ -1928,37 +2086,57 @@ function makeCustomerEmailHtml(
         </tr>
 
         <tr>
-          <td style="padding:6px 0;font-weight:700;">
+          <td style="
+            padding:6px 0;
+            font-weight:700;
+          ">
             Sale
           </td>
-          <td style="padding:6px 0;">
+
+          <td style="
+            padding:6px 0;
+          ">
             ${saleNumber}
           </td>
         </tr>
 
         <tr>
-          <td style="padding:6px 0;font-weight:700;">
+          <td style="
+            padding:6px 0;
+            font-weight:700;
+          ">
             Order
           </td>
-          <td style="padding:6px 0;">
+
+          <td style="
+            padding:6px 0;
+          ">
             ${orderNumber}
           </td>
         </tr>
 
         <tr>
-          <td style="padding:6px 0;font-weight:700;">
+          <td style="
+            padding:6px 0;
+            font-weight:700;
+          ">
             Total Paid
           </td>
-          <td style="padding:6px 0;">
+
+          <td style="
+            padding:6px 0;
+          ">
             ${amount}
           </td>
         </tr>
+
       </table>
 
       <div style="
         margin:25px 0;
         text-align:center;
       ">
+
         <a
           href="${INSTALLER_URL}"
           style="
@@ -1973,6 +2151,7 @@ function makeCustomerEmailHtml(
         >
           Download Mero Mandali ${SOFTWARE_VERSION}
         </a>
+
       </div>
 
       <p>
@@ -1990,8 +2169,14 @@ function makeCustomerEmailHtml(
       </p>
 
       <ul>
-        <li>Official Invoice PDF</li>
-        <li>Customer Licence Certificate PDF</li>
+        <li>
+          Official Invoice PDF
+        </li>
+
+        <li>
+          Customer Licence Certificate PDF
+        </li>
+
         <li>
           English + Nepali Installation,
           Setup & Programme Operating Guide
@@ -2009,8 +2194,12 @@ function makeCustomerEmailHtml(
         margin:28px 0;
       ">
 
-      <p style="margin-bottom:4px;">
-        <strong>Durga Jung Kunwar</strong>
+      <p style="
+        margin-bottom:4px;
+      ">
+        <strong>
+          Durga Jung Kunwar
+        </strong>
       </p>
 
       <p style="
@@ -2023,8 +2212,11 @@ function makeCustomerEmailHtml(
         developer@durgajung.com.np<br>
         durgajung.com.np
       </p>
+
     </div>
+
   </div>
+
 </body>
 </html>
   `;
@@ -2163,16 +2355,24 @@ async function sendCustomerDelivery(
   let licenceDocument;
 
   try {
+    const signatureBytes =
+      await loadSignatureBytes(
+        request,
+        env
+      );
+
     invoiceBytes =
       await createInvoicePdf(
         sale,
-        order
+        order,
+        signatureBytes
       );
 
     licenceDocument =
       await createLicenceCertificatePdf(
         sale,
-        order
+        order,
+        signatureBytes
       );
   } catch (error) {
     await recordAdminActivity(
@@ -2334,10 +2534,6 @@ async function sendCustomerDelivery(
     };
   }
 
-  /*
-   * Mark delivery only AFTER
-   * Resend has accepted the email.
-   */
   await env.ADMIN_DB
     .prepare(`
       UPDATE sales
@@ -3262,10 +3458,6 @@ async function adminConfirmPayment(
     );
   }
 
-  /*
-   * Existing Sale:
-   * never create a duplicate.
-   */
   let existingSale =
     await env.ADMIN_DB
       .prepare(`
@@ -3280,9 +3472,6 @@ async function adminConfirmPayment(
       .first();
 
   if (existingSale) {
-    /*
-     * Retry licence issuance if needed.
-     */
     if (
       existingSale.product_type ===
         "software" &&
@@ -3340,10 +3529,6 @@ async function adminConfirmPayment(
       );
     }
 
-    /*
-     * If licence exists but delivery
-     * was not completed, retry email.
-     */
     if (
       existingSale.product_type ===
         "software"
@@ -3736,9 +3921,6 @@ async function adminConfirmPayment(
       `${saleNumber}: customer licence issued.`
     );
 
-    /*
-     * Automatic customer email.
-     */
     const deliveryResult =
       await sendCustomerDelivery(
         request,
@@ -4108,9 +4290,6 @@ export default {
         request.method
           .toUpperCase();
 
-      /*
-       * Public routes
-       */
       if (
         path ===
           "/api/health" &&
@@ -4142,9 +4321,6 @@ export default {
         );
       }
 
-      /*
-       * Protect admin API routes.
-       */
       if (
         path.startsWith(
           "/api/admin/"
@@ -4345,9 +4521,6 @@ export default {
         );
       }
 
-      /*
-       * Normal website files.
-       */
       return env.ASSETS.fetch(
         request
       );
