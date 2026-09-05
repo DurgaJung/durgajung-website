@@ -1090,8 +1090,9 @@
 
               <p class="paid-note">
                 Your payment submission will be recorded securely for
-                verification. Your licence is issued only after the payment
-                has been approved.
+                verification. After payment approval, your licence and
+                purchase documents will be sent automatically to your
+                registered email address.
               </p>
 
             </div>
@@ -1187,10 +1188,15 @@
       return "";
     }
 
-    return String(element.value || "").trim();
+    return String(
+      element.value || ""
+    ).trim();
   }
 
-  function showResult(type, message) {
+  function showResult(
+    type,
+    message
+  ) {
     resultBox.className =
       "payment-result " + type;
 
@@ -1215,15 +1221,27 @@
         now.getFullYear();
 
       const month =
-        String(now.getMonth() + 1)
-          .padStart(2, "0");
+        String(
+          now.getMonth() + 1
+        ).padStart(
+          2,
+          "0"
+        );
 
       const day =
-        String(now.getDate())
-          .padStart(2, "0");
+        String(
+          now.getDate()
+        ).padStart(
+          2,
+          "0"
+        );
 
       paymentDateInput.value =
-        year + "-" + month + "-" + day;
+        year +
+        "-" +
+        month +
+        "-" +
+        day;
     }
   }
 
@@ -1237,25 +1255,39 @@
       clearResult();
 
       const customerName =
-        trimValue(customerNameInput);
+        trimValue(
+          customerNameInput
+        );
 
       const customerEmail =
-        trimValue(customerEmailInput);
+        trimValue(
+          customerEmailInput
+        );
 
       const customerPhone =
-        trimValue(customerPhoneInput);
+        trimValue(
+          customerPhoneInput
+        );
 
       const paymentMethod =
-        trimValue(paymentMethodInput);
+        trimValue(
+          paymentMethodInput
+        );
 
       const transactionReference =
-        trimValue(transactionReferenceInput);
+        trimValue(
+          transactionReferenceInput
+        );
 
       const paymentDate =
-        trimValue(paymentDateInput);
+        trimValue(
+          paymentDateInput
+        );
 
       const customerNotes =
-        trimValue(customerNotesInput);
+        trimValue(
+          customerNotesInput
+        );
 
       if (!customerName) {
         showResult(
@@ -1375,7 +1407,9 @@
               },
 
               body:
-                JSON.stringify(payload)
+                JSON.stringify(
+                  payload
+                )
             }
           );
 
@@ -1417,70 +1451,13 @@
               orderNumber +
               ". Amount: NPR " +
               Number(amount).toLocaleString() +
-              ". Your payment will now be verified."
-            : "Payment submission received successfully. Your payment will now be verified."
+              ". Your payment will now be verified. After approval, your licence and purchase documents will be sent automatically to your registered email address."
+            : "Payment submission received successfully. Your payment will now be verified. After approval, your licence and purchase documents will be sent automatically to your registered email address."
         );
 
         form.reset();
 
         setToday();
-
-        if (orderNumber) {
-          const subject =
-            encodeURIComponent(
-              "Mero Mandali Payment Submitted - " +
-              orderNumber
-            );
-
-          const body =
-            encodeURIComponent(
-              "Dear Mero Mandali Sales Team,\n\n" +
-              "I have submitted my Mero Mandali payment information through the website.\n\n" +
-              "Order Number: " +
-              orderNumber +
-              "\n" +
-              "Customer Name: " +
-              customerName +
-              "\n" +
-              "Customer Email: " +
-              customerEmail +
-              "\n" +
-              "Phone: " +
-              (customerPhone || "-") +
-              "\n" +
-              "Payment Method: " +
-              paymentMethod +
-              "\n" +
-              "Transaction / Reference: " +
-              transactionReference +
-              "\n" +
-              "Payment Date: " +
-              paymentDate +
-              "\n" +
-              "Amount: NPR " +
-              Number(amount).toLocaleString() +
-              "\n\n" +
-              "Please verify my payment.\n\n" +
-              "Thank you."
-            );
-
-          const gmailUrl =
-            "https://mail.google.com/mail/?view=cm&fs=1" +
-            "&to=" +
-            encodeURIComponent(
-              "sales@durgajung.com.np"
-            ) +
-            "&su=" +
-            subject +
-            "&body=" +
-            body;
-
-          window.open(
-            gmailUrl,
-            "_blank",
-            "noopener,noreferrer"
-          );
-        }
 
       } catch (error) {
         showResult(
