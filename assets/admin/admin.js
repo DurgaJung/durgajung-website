@@ -17,6 +17,7 @@
   let currentOrderId = null;
   let allOrders = [];
   let allSales = [];
+  let allComments = [];
 
   const healthTargets = [
     ["Home", "/"],
@@ -105,6 +106,10 @@
 
       case "website":
         runHealthChecks();
+        break;
+
+      case "engagement":
+        loadEngagementSection();
         break;
     }
   }
@@ -208,6 +213,15 @@
         maximumFractionDigits: 2
       }
     ).format(number);
+  }
+
+
+  function numberValue(value) {
+    const number = Number(value || 0);
+
+    return Number.isFinite(number)
+      ? number
+      : 0;
   }
 
 
@@ -482,6 +496,50 @@
      DASHBOARD
   ====================================================== */
 
+  function updateDashboardEngagementMetrics(
+    dashboard = {}
+  ) {
+    if ($("metricTotalViews")) {
+      $("metricTotalViews").textContent =
+        numberValue(
+          dashboard.total_views
+        );
+    }
+
+    if ($("metricTotalLikes")) {
+      $("metricTotalLikes").textContent =
+        numberValue(
+          dashboard.total_likes
+        );
+    }
+
+    if ($("metricTotalComments")) {
+      $("metricTotalComments").textContent =
+        numberValue(
+          dashboard.total_comments
+        );
+    }
+
+    if ($("metricTotalShares")) {
+      $("metricTotalShares").textContent =
+        numberValue(
+          dashboard.total_shares
+        );
+    }
+
+    if ($("metricHiddenComments")) {
+      $("metricHiddenComments").textContent =
+        numberValue(
+          dashboard.hidden_comments
+        );
+    }
+
+    updateHiddenCommentBadge(
+      dashboard.hidden_comments
+    );
+  }
+
+
   async function loadDashboard() {
     try {
       const data =
@@ -534,6 +592,10 @@
             ? String(count)
             : "";
       }
+
+      updateDashboardEngagementMetrics(
+        dashboard
+      );
 
     } catch (error) {
       console.error(
@@ -2192,6 +2254,864 @@
 
 
   /* =====================================================
+     WEBSITE ENGAGEMENT
+  ====================================================== */
+
+  function updateHiddenCommentBadge(value) {
+    const badge =
+      $("hiddenCommentBadge");
+
+    if (!badge) {
+      return;
+    }
+
+    const count =
+      numberValue(value);
+
+    badge.textContent =
+      count > 0
+        ? String(count)
+        : "";
+  }
+
+
+  function setEngagementTotals(
+    totals = {}
+  ) {
+    const views =
+      numberValue(
+        totals.views
+      );
+
+    const likes =
+      numberValue(
+        totals.likes
+      );
+
+    const comments =
+      numberValue(
+        totals.comments
+      );
+
+    const shares =
+      numberValue(
+        totals.shares
+      );
+
+    const hidden =
+      numberValue(
+        totals.hidden_comments
+      );
+
+
+    if ($("engagementMetricViews")) {
+      $("engagementMetricViews").textContent =
+        views;
+    }
+
+    if ($("engagementMetricLikes")) {
+      $("engagementMetricLikes").textContent =
+        likes;
+    }
+
+    if ($("engagementMetricComments")) {
+      $("engagementMetricComments").textContent =
+        comments;
+    }
+
+    if ($("engagementMetricShares")) {
+      $("engagementMetricShares").textContent =
+        shares;
+    }
+
+    if ($("engagementMetricHidden")) {
+      $("engagementMetricHidden").textContent =
+        hidden;
+    }
+
+
+    if ($("metricTotalViews")) {
+      $("metricTotalViews").textContent =
+        views;
+    }
+
+    if ($("metricTotalLikes")) {
+      $("metricTotalLikes").textContent =
+        likes;
+    }
+
+    if ($("metricTotalComments")) {
+      $("metricTotalComments").textContent =
+        comments;
+    }
+
+    if ($("metricTotalShares")) {
+      $("metricTotalShares").textContent =
+        shares;
+    }
+
+    if ($("metricHiddenComments")) {
+      $("metricHiddenComments").textContent =
+        hidden;
+    }
+
+    updateHiddenCommentBadge(
+      hidden
+    );
+  }
+
+
+  function renderEngagementPages(
+    pages
+  ) {
+    const body =
+      $("engagementTableBody");
+
+    if (!body) {
+      return;
+    }
+
+    if (!pages.length) {
+      body.innerHTML = `
+        <tr>
+          <td
+            colspan="7"
+            class="table-empty"
+          >
+            No engagement records yet.
+          </td>
+        </tr>
+      `;
+
+      return;
+    }
+
+    body.innerHTML =
+      pages.map(
+        (page) => `
+          <tr>
+
+            <td>
+              <strong>
+                ${escapeHtml(
+                  page.title ||
+                  page.content_key ||
+                  "Untitled"
+                )}
+              </strong>
+
+              <br>
+
+              <small>
+                ${escapeHtml(
+                  page.content_key ||
+                  ""
+                )}
+              </small>
+            </td>
+
+            <td>
+              <code>
+                ${escapeHtml(
+                  page.page_path ||
+                  "—"
+                )}
+              </code>
+            </td>
+
+            <td>
+              ${escapeHtml(
+                page.content_type ||
+                "page"
+              )}
+            </td>
+
+            <td>
+              <strong>
+                ${numberValue(
+                  page.views
+                )}
+              </strong>
+            </td>
+
+            <td>
+              ${numberValue(
+                page.likes
+              )}
+            </td>
+
+            <td>
+              ${numberValue(
+                page.comments
+              )}
+            </td>
+
+            <td>
+              ${numberValue(
+                page.shares
+              )}
+            </td>
+
+          </tr>
+        `
+      ).join("");
+  }
+
+
+  async function loadEngagement() {
+    const body =
+      $("engagementTableBody");
+
+    if (body) {
+      body.innerHTML = `
+        <tr>
+          <td colspan="7">
+            Loading engagement statistics…
+          </td>
+        </tr>
+      `;
+    }
+
+    try {
+      const data =
+        await api(
+          "/api/admin/engagement"
+        );
+
+      const totals =
+        data.totals || {};
+
+      const pages =
+        Array.isArray(
+          data.pages
+        )
+          ? data.pages
+          : [];
+
+      setEngagementTotals(
+        totals
+      );
+
+      renderEngagementPages(
+        pages
+      );
+
+      return data;
+
+    } catch (error) {
+      console.error(
+        "Engagement load failed:",
+        error
+      );
+
+      if (body) {
+        body.innerHTML = `
+          <tr>
+            <td
+              colspan="7"
+              class="table-empty"
+            >
+              Failed to load engagement statistics.
+            </td>
+          </tr>
+        `;
+      }
+
+      throw error;
+    }
+  }
+
+
+  /* =====================================================
+     COMMENT MODERATION
+  ====================================================== */
+
+  function commentPageLabel(
+    comment
+  ) {
+    return (
+      comment.title ||
+      comment.content_title ||
+      comment.page_title ||
+      comment.content_key ||
+      "—"
+    );
+  }
+
+
+  function commentPagePath(
+    comment
+  ) {
+    return (
+      comment.page_path ||
+      comment.path ||
+      ""
+    );
+  }
+
+
+  function filterComments() {
+    const search =
+      String(
+        $("commentSearch")?.value ||
+        ""
+      )
+        .trim()
+        .toLowerCase();
+
+    const status =
+      String(
+        $("commentStatusFilter")?.value ||
+        ""
+      );
+
+    return allComments.filter(
+      (comment) => {
+
+        const commentStatus =
+          String(
+            comment.status ||
+            "approved"
+          );
+
+        const matchesStatus =
+          !status ||
+          commentStatus === status;
+
+        const haystack = [
+          comment.id,
+          comment.content_key,
+          commentPageLabel(comment),
+          commentPagePath(comment),
+          comment.commenter_name,
+          comment.commenter_email,
+          comment.comment_text,
+          comment.status
+        ]
+          .join(" ")
+          .toLowerCase();
+
+        const matchesSearch =
+          !search ||
+          haystack.includes(
+            search
+          );
+
+        return (
+          matchesStatus &&
+          matchesSearch
+        );
+      }
+    );
+  }
+
+
+  function createCell(
+    row,
+    text,
+    className = ""
+  ) {
+    const cell =
+      document.createElement("td");
+
+    if (className) {
+      cell.className =
+        className;
+    }
+
+    cell.textContent =
+      text ?? "—";
+
+    row.appendChild(
+      cell
+    );
+
+    return cell;
+  }
+
+
+  function createCommentStatusBadge(
+    status
+  ) {
+    const value =
+      String(
+        status ||
+        "approved"
+      ).toLowerCase();
+
+    const span =
+      document.createElement("span");
+
+    span.className =
+      `status-badge ${value}`;
+
+    span.textContent =
+      value
+        .replaceAll("_", " ")
+        .replace(/\b\w/g, (letter) =>
+          letter.toUpperCase()
+        );
+
+    return span;
+  }
+
+
+  function createModerationButton(
+    label,
+    className,
+    handler
+  ) {
+    const button =
+      document.createElement("button");
+
+    button.type =
+      "button";
+
+    button.className =
+      className;
+
+    button.textContent =
+      label;
+
+    button.addEventListener(
+      "click",
+      handler
+    );
+
+    return button;
+  }
+
+
+  function renderComments() {
+    const body =
+      $("commentsTableBody");
+
+    if (!body) {
+      return;
+    }
+
+    const comments =
+      filterComments();
+
+    body.textContent =
+      "";
+
+    if (!comments.length) {
+      const row =
+        document.createElement("tr");
+
+      const cell =
+        document.createElement("td");
+
+      cell.colSpan =
+        8;
+
+      cell.className =
+        "table-empty";
+
+      cell.textContent =
+        "No matching comments.";
+
+      row.appendChild(
+        cell
+      );
+
+      body.appendChild(
+        row
+      );
+
+      return;
+    }
+
+
+    comments.forEach(
+      (comment) => {
+
+        const row =
+          document.createElement("tr");
+
+        createCell(
+          row,
+          String(
+            comment.id ?? "—"
+          )
+        );
+
+
+        const pageCell =
+          document.createElement("td");
+
+        const pageStrong =
+          document.createElement("strong");
+
+        pageStrong.textContent =
+          commentPageLabel(
+            comment
+          );
+
+        pageCell.appendChild(
+          pageStrong
+        );
+
+        const path =
+          commentPagePath(
+            comment
+          );
+
+        if (path) {
+          pageCell.appendChild(
+            document.createElement("br")
+          );
+
+          const small =
+            document.createElement("small");
+
+          small.textContent =
+            path;
+
+          pageCell.appendChild(
+            small
+          );
+        }
+
+        row.appendChild(
+          pageCell
+        );
+
+
+        createCell(
+          row,
+          comment.commenter_name ||
+          "—",
+          "comment-name-cell"
+        );
+
+
+        createCell(
+          row,
+          comment.commenter_email ||
+          "—",
+          "comment-email-cell"
+        );
+
+
+        createCell(
+          row,
+          comment.comment_text ||
+          "",
+          "comment-text-cell"
+        );
+
+
+        const statusCell =
+          document.createElement("td");
+
+        statusCell.appendChild(
+          createCommentStatusBadge(
+            comment.status
+          )
+        );
+
+        row.appendChild(
+          statusCell
+        );
+
+
+        createCell(
+          row,
+          formatDate(
+            comment.created_at
+          )
+        );
+
+
+        const actionCell =
+          document.createElement("td");
+
+        const actions =
+          document.createElement("div");
+
+        actions.className =
+          "table-actions comment-actions";
+
+
+        const status =
+          String(
+            comment.status ||
+            "approved"
+          ).toLowerCase();
+
+
+        if (status === "hidden") {
+          actions.appendChild(
+            createModerationButton(
+              "Approve",
+              "table-btn comment-approve-btn",
+              () => {
+                updateCommentStatus(
+                  comment.id,
+                  "approved"
+                );
+              }
+            )
+          );
+        } else {
+          actions.appendChild(
+            createModerationButton(
+              "Hide",
+              "table-btn comment-hide-btn",
+              () => {
+                updateCommentStatus(
+                  comment.id,
+                  "hidden"
+                );
+              }
+            )
+          );
+        }
+
+
+        actions.appendChild(
+          createModerationButton(
+            "Delete",
+            "table-btn comment-delete-btn",
+            () => {
+              deleteComment(
+                comment.id,
+                comment.commenter_name,
+                comment.comment_text
+              );
+            }
+          )
+        );
+
+
+        actionCell.appendChild(
+          actions
+        );
+
+        row.appendChild(
+          actionCell
+        );
+
+        body.appendChild(
+          row
+        );
+      }
+    );
+  }
+
+
+  async function loadComments() {
+    const body =
+      $("commentsTableBody");
+
+    if (body) {
+      body.innerHTML = `
+        <tr>
+          <td colspan="8">
+            Loading comments…
+          </td>
+        </tr>
+      `;
+    }
+
+    try {
+      const data =
+        await api(
+          "/api/admin/comments"
+        );
+
+      allComments =
+        Array.isArray(
+          data.comments
+        )
+          ? data.comments
+          : [];
+
+      renderComments();
+
+      return data;
+
+    } catch (error) {
+      console.error(
+        "Comments load failed:",
+        error
+      );
+
+      allComments =
+        [];
+
+      if (body) {
+        body.innerHTML = `
+          <tr>
+            <td
+              colspan="8"
+              class="table-empty"
+            >
+              Failed to load comments.
+            </td>
+          </tr>
+        `;
+      }
+
+      throw error;
+    }
+  }
+
+
+  async function updateCommentStatus(
+    id,
+    status
+  ) {
+    const commentId =
+      Number(id);
+
+    if (
+      !Number.isInteger(commentId) ||
+      commentId <= 0
+    ) {
+      toast(
+        "Invalid comment ID.",
+        "error"
+      );
+
+      return;
+    }
+
+    try {
+      const data =
+        await api(
+          `/api/admin/comments/${commentId}/status`,
+          {
+            method: "PATCH",
+            body: JSON.stringify({
+              status
+            })
+          }
+        );
+
+      toast(
+        data.message ||
+        (
+          status === "hidden"
+            ? "Comment hidden."
+            : "Comment approved."
+        ),
+        "success"
+      );
+
+      await Promise.allSettled([
+        loadEngagement(),
+        loadComments(),
+        loadDashboard()
+      ]);
+
+    } catch (error) {
+      toast(
+        error.message ||
+        "Could not update comment.",
+        "error"
+      );
+    }
+  }
+
+
+  async function deleteComment(
+    id,
+    commenterName,
+    commentText
+  ) {
+    const commentId =
+      Number(id);
+
+    if (
+      !Number.isInteger(commentId) ||
+      commentId <= 0
+    ) {
+      toast(
+        "Invalid comment ID.",
+        "error"
+      );
+
+      return;
+    }
+
+    const preview =
+      String(
+        commentText || ""
+      )
+        .trim()
+        .slice(0, 100);
+
+    const message =
+      [
+        "Permanently delete this comment?",
+        "",
+        commenterName
+          ? `Name: ${commenterName}`
+          : "",
+        preview
+          ? `Comment: ${preview}${String(commentText || "").length > 100 ? "…" : ""}`
+          : "",
+        "",
+        "This cannot be undone."
+      ]
+        .filter(
+          (line) =>
+            line !== ""
+        )
+        .join("\n");
+
+    const confirmed =
+      window.confirm(
+        message
+      );
+
+    if (!confirmed) {
+      return;
+    }
+
+    try {
+      const data =
+        await api(
+          `/api/admin/comments/${commentId}`,
+          {
+            method: "DELETE"
+          }
+        );
+
+      toast(
+        data.message ||
+        "Comment permanently deleted.",
+        "success"
+      );
+
+      await Promise.allSettled([
+        loadEngagement(),
+        loadComments(),
+        loadDashboard()
+      ]);
+
+    } catch (error) {
+      toast(
+        error.message ||
+        "Could not delete comment.",
+        "error"
+      );
+    }
+  }
+
+
+  async function loadEngagementSection() {
+    await Promise.allSettled([
+      loadEngagement(),
+      loadComments()
+    ]);
+  }
+
+
+  /* =====================================================
      ADMIN ACTIVITY
   ====================================================== */
 
@@ -2460,7 +3380,9 @@
       loadBooks(),
       loadSales(),
       loadInvoices(),
-      loadCustomers()
+      loadCustomers(),
+      loadEngagement(),
+      loadComments()
     ]);
   }
 
@@ -2490,6 +3412,20 @@
     );
 
 
+  $("refreshEngagement")
+    ?.addEventListener(
+      "click",
+      async () => {
+        await loadEngagementSection();
+
+        toast(
+          "Engagement data refreshed.",
+          "success"
+        );
+      }
+    );
+
+
   $("orderSearch")
     ?.addEventListener(
       "input",
@@ -2501,6 +3437,20 @@
     ?.addEventListener(
       "change",
       renderOrders
+    );
+
+
+  $("commentSearch")
+    ?.addEventListener(
+      "input",
+      renderComments
+    );
+
+
+  $("commentStatusFilter")
+    ?.addEventListener(
+      "change",
+      renderComments
     );
 
 
@@ -2582,6 +3532,10 @@
   loadDashboard();
 
   loadRecentOrders();
+
+  loadEngagement();
+
+  loadComments();
 
   runHealthChecks();
 
