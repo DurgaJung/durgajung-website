@@ -3,254 +3,1394 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
+
 <title>Sermons &amp; Bible Studies | Durga Jung Kunwar</title>
-<meta name="description" content="Sermons, Bible studies and biblical teaching resources by Durga Jung Kunwar.">
+
+<meta
+  name="description"
+  content="Sermons, Bible studies and biblical teaching resources by Durga Jung Kunwar."
+>
+
 <link rel="icon" href="/assets/images/favicon.webp">
+
+<!-- Shared website styles include the engagement interface -->
+<link rel="stylesheet" href="/assets/css/style.css">
+
 <style>
-:root{--gold:#986719;--gold2:#a8741e;--ink:#202020;--muted:#555;--line:#dedbd4;--wash:#faf9f6;--max:1180px}
-*{box-sizing:border-box}
-html{scroll-behavior:smooth}
-body{margin:0;color:var(--ink);background:#fff;font-family:"Segoe UI",Arial,"Noto Sans Devanagari",Mangal,sans-serif;line-height:1.62}
-img{max-width:100%;display:block} a{color:inherit}
-.container{width:min(var(--max),calc(100% - 40px));margin:auto}
-.site-header{background:#111}
-.brand-banner{width:100%;max-height:300px;object-fit:cover;object-position:center}
-.nav-wrap{position:sticky;top:0;z-index:50;background:#fff;border-bottom:1px solid #e7e4de;box-shadow:0 4px 18px rgba(0,0,0,.035)}
-.nav{min-height:72px;display:flex;align-items:center;justify-content:space-between;gap:28px}
-.brand-mini{font-family:Georgia,"Times New Roman",serif;font-size:24px;font-weight:700;color:var(--gold);text-decoration:none;white-space:nowrap}
-.nav-links{display:flex;align-items:center;gap:2px;list-style:none;padding:0;margin:0}
-.nav-links a{position:relative;display:block;padding:25px 10px 23px;text-decoration:none;font-size:14px;font-weight:700;color:#303030}
-.nav-links a::after{content:"";position:absolute;left:10px;right:10px;bottom:0;height:3px;background:var(--gold2);transform:scaleX(0);transition:.2s}
-.nav-links a:hover,.nav-links a.active{color:var(--gold)}
-.nav-links a:hover::after,.nav-links a.active::after{transform:scaleX(1)}
-.menu-btn{display:none;border:1px solid #d8d5cf;background:#fff;border-radius:8px;padding:8px 12px;font-weight:700}
-.hero{padding:54px 0 38px;background:var(--wash);border-bottom:1px solid var(--line)}
-.eyebrow{font-size:13px;text-transform:uppercase;letter-spacing:.14em;color:var(--gold2);font-weight:800}
-.hero h1{font-family:Georgia,"Times New Roman",serif;font-size:clamp(42px,5vw,62px);line-height:1.08;margin:6px 0;color:#1f1f1f}
-.hero .np{color:var(--gold);font-size:clamp(22px,2.7vw,30px);font-weight:700;margin:0}
-.content{padding:46px 0 70px}
-.intro{display:grid;grid-template-columns:1fr 1fr;gap:26px;margin-bottom:38px}
-.panel{border:1px solid var(--line);border-radius:12px;background:#fff;padding:24px}
-.panel p{margin:0;color:#444}
-.featured{display:grid;grid-template-columns:240px 1fr;gap:30px;padding:28px;border:1px solid #d9d6cf;border-radius:14px;background:linear-gradient(135deg,#fff 0%,#fbf7ef 100%);box-shadow:0 12px 30px rgba(0,0,0,.055);margin-bottom:44px}
-.featured img{width:100%;height:100%;max-height:320px;object-fit:cover;border-radius:10px}
-.label{display:inline-block;padding:5px 10px;border-radius:999px;background:#f0e3c7;color:#755015;font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.04em}
-.featured h2{font-family:Georgia,"Times New Roman",serif;font-size:clamp(30px,3.6vw,44px);line-height:1.12;margin:12px 0 5px}
-.passage{color:var(--gold);font-weight:800;margin-bottom:14px}
-.featured p{color:#444;margin:0 0 12px}
-.actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}
-.btn{display:inline-flex;align-items:center;justify-content:center;background:#232323;color:#fff;text-decoration:none;border-radius:5px;padding:10px 16px;font-weight:700;font-size:14px}
-.btn.gold{background:var(--gold)}
-.rules{margin:18px 0 0;padding-left:20px;color:#444}
-.rules li{margin:5px 0}
-.section-head{display:flex;justify-content:space-between;gap:20px;align-items:end;margin-bottom:22px}
-.section-head h2{font-family:Georgia,"Times New Roman",serif;font-size:36px;margin:0}
-.section-head p{margin:0;color:#777;font-size:14px}
-.library{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
-.card{border:1px solid var(--line);border-radius:12px;background:#fff;padding:24px;min-height:300px;display:flex;flex-direction:column;box-shadow:0 5px 18px rgba(0,0,0,.035)}
-
-.card-thumb{width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:8px;margin-bottom:14px}
-.card .actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
-.card .actions .btn{flex:1;min-width:120px;padding:9px 11px;font-size:12.5px}
-
-.card h3{font-size:21px;line-height:1.25;margin:12px 0 4px}
-.card p{font-size:14px;color:#4a4a4a;margin:0 0 12px}
-.card .bottom{margin-top:auto;padding-top:14px;border-top:1px solid #eeeae3;color:#777;font-size:12.5px;font-weight:700}
-.note{margin-top:34px;padding:20px 22px;border-left:4px solid var(--gold2);background:#fbf7ef;border-radius:8px;color:#574b38}
-.footer{background:#f1f1ef;border-top:1px solid #ddd;padding:32px 0;text-align:center}
-.footer p{margin:5px 0;font-size:14px} .footer .rights{font-weight:800}
-.skip{position:absolute;left:-9999px} .skip:focus{left:10px;top:10px;z-index:100;background:#fff;padding:10px;border:1px solid #000}
-@media(max-width:900px){
-  .featured{grid-template-columns:1fr}
-  .featured img{max-height:420px;object-fit:contain;background:#f4f1ea}
-  .library{grid-template-columns:1fr 1fr}
-  .nav-links{position:absolute;left:0;right:0;top:72px;display:none;flex-direction:column;align-items:stretch;background:#fff;padding:10px 20px 16px;border-bottom:1px solid var(--line);box-shadow:0 14px 28px rgba(0,0,0,.08)}
-  .nav-links.open{display:flex}
-  .nav-links a{padding:12px 10px}
-  .nav-links a::after{display:none}
-  .menu-btn{display:block}
+:root{
+  --gold:#986719;
+  --gold2:#a8741e;
+  --ink:#202020;
+  --muted:#555;
+  --line:#dedbd4;
+  --wash:#faf9f6;
+  --max:1180px
 }
+
+*{box-sizing:border-box}
+
+html{scroll-behavior:smooth}
+
+body{
+  margin:0;
+  color:var(--ink);
+  background:#fff;
+  font-family:"Segoe UI",Arial,"Noto Sans Devanagari",Mangal,sans-serif;
+  line-height:1.62
+}
+
+img{
+  max-width:100%;
+  display:block
+}
+
+a{color:inherit}
+
+.container{
+  width:min(var(--max),calc(100% - 40px));
+  margin:auto
+}
+
+.site-header{
+  background:#111
+}
+
+.brand-banner{
+  width:100%;
+  max-height:300px;
+  object-fit:cover;
+  object-position:center
+}
+
+.nav-wrap{
+  position:sticky;
+  top:0;
+  z-index:50;
+  background:#fff;
+  border-bottom:1px solid #e7e4de;
+  box-shadow:0 4px 18px rgba(0,0,0,.035)
+}
+
+.nav{
+  min-height:72px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:28px
+}
+
+.brand-mini{
+  font-family:Georgia,"Times New Roman",serif;
+  font-size:24px;
+  font-weight:700;
+  color:var(--gold);
+  text-decoration:none;
+  white-space:nowrap
+}
+
+.nav-links{
+  display:flex;
+  align-items:center;
+  gap:2px;
+  list-style:none;
+  padding:0;
+  margin:0
+}
+
+.nav-links a{
+  position:relative;
+  display:block;
+  padding:25px 10px 23px;
+  text-decoration:none;
+  font-size:14px;
+  font-weight:700;
+  color:#303030
+}
+
+.nav-links a::after{
+  content:"";
+  position:absolute;
+  left:10px;
+  right:10px;
+  bottom:0;
+  height:3px;
+  background:var(--gold2);
+  transform:scaleX(0);
+  transition:.2s
+}
+
+.nav-links a:hover,
+.nav-links a.active{
+  color:var(--gold)
+}
+
+.nav-links a:hover::after,
+.nav-links a.active::after{
+  transform:scaleX(1)
+}
+
+.menu-btn{
+  display:none;
+  border:1px solid #d8d5cf;
+  background:#fff;
+  border-radius:8px;
+  padding:8px 12px;
+  font-weight:700
+}
+
+.hero{
+  padding:54px 0 38px;
+  background:var(--wash);
+  border-bottom:1px solid var(--line)
+}
+
+.eyebrow{
+  font-size:13px;
+  text-transform:uppercase;
+  letter-spacing:.14em;
+  color:var(--gold2);
+  font-weight:800
+}
+
+.hero h1{
+  font-family:Georgia,"Times New Roman",serif;
+  font-size:clamp(42px,5vw,62px);
+  line-height:1.08;
+  margin:6px 0;
+  color:#1f1f1f
+}
+
+.hero .np{
+  color:var(--gold);
+  font-size:clamp(22px,2.7vw,30px);
+  font-weight:700;
+  margin:0
+}
+
+.content{
+  padding:46px 0 70px
+}
+
+.intro{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:26px;
+  margin-bottom:38px
+}
+
+.panel{
+  border:1px solid var(--line);
+  border-radius:12px;
+  background:#fff;
+  padding:24px
+}
+
+.panel p{
+  margin:0;
+  color:#444
+}
+
+.featured{
+  display:grid;
+  grid-template-columns:240px 1fr;
+  gap:30px;
+  padding:28px;
+  border:1px solid #d9d6cf;
+  border-radius:14px;
+  background:linear-gradient(135deg,#fff 0%,#fbf7ef 100%);
+  box-shadow:0 12px 30px rgba(0,0,0,.055);
+  margin-bottom:44px
+}
+
+.featured img{
+  width:100%;
+  height:100%;
+  max-height:320px;
+  object-fit:cover;
+  border-radius:10px
+}
+
+.label{
+  display:inline-block;
+  padding:5px 10px;
+  border-radius:999px;
+  background:#f0e3c7;
+  color:#755015;
+  font-size:12px;
+  font-weight:800;
+  text-transform:uppercase;
+  letter-spacing:.04em
+}
+
+.featured h2{
+  font-family:Georgia,"Times New Roman",serif;
+  font-size:clamp(30px,3.6vw,44px);
+  line-height:1.12;
+  margin:12px 0 5px
+}
+
+.passage{
+  color:var(--gold);
+  font-weight:800;
+  margin-bottom:14px
+}
+
+.featured p{
+  color:#444;
+  margin:0 0 12px
+}
+
+.actions{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  margin-top:18px
+}
+
+.btn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  background:#232323;
+  color:#fff;
+  text-decoration:none;
+  border-radius:5px;
+  padding:10px 16px;
+  font-weight:700;
+  font-size:14px
+}
+
+.btn.gold{
+  background:var(--gold)
+}
+
+.rules{
+  margin:18px 0 0;
+  padding-left:20px;
+  color:#444
+}
+
+.rules li{
+  margin:5px 0
+}
+
+.section-head{
+  display:flex;
+  justify-content:space-between;
+  gap:20px;
+  align-items:end;
+  margin-bottom:22px
+}
+
+.section-head h2{
+  font-family:Georgia,"Times New Roman",serif;
+  font-size:36px;
+  margin:0
+}
+
+.section-head p{
+  margin:0;
+  color:#777;
+  font-size:14px
+}
+
+.library{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:22px
+}
+
+.card{
+  border:1px solid var(--line);
+  border-radius:12px;
+  background:#fff;
+  padding:24px;
+  min-height:300px;
+  display:flex;
+  flex-direction:column;
+  box-shadow:0 5px 18px rgba(0,0,0,.035)
+}
+
+.card-thumb{
+  width:100%;
+  aspect-ratio:16/9;
+  object-fit:cover;
+  border-radius:8px;
+  margin-bottom:14px
+}
+
+.card .actions{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  margin-top:14px
+}
+
+.card .actions .btn{
+  flex:1;
+  min-width:120px;
+  padding:9px 11px;
+  font-size:12.5px
+}
+
+.card h3{
+  font-size:21px;
+  line-height:1.25;
+  margin:12px 0 4px
+}
+
+.card p{
+  font-size:14px;
+  color:#4a4a4a;
+  margin:0 0 12px
+}
+
+.card .bottom{
+  margin-top:auto;
+  padding-top:14px;
+  border-top:1px solid #eeeae3;
+  color:#777;
+  font-size:12.5px;
+  font-weight:700
+}
+
+.note{
+  margin-top:34px;
+  padding:20px 22px;
+  border-left:4px solid var(--gold2);
+  background:#fbf7ef;
+  border-radius:8px;
+  color:#574b38
+}
+
+.footer{
+  background:#f1f1ef;
+  border-top:1px solid #ddd;
+  padding:32px 0;
+  text-align:center
+}
+
+.footer p{
+  margin:5px 0;
+  font-size:14px
+}
+
+.footer .rights{
+  font-weight:800
+}
+
+.skip{
+  position:absolute;
+  left:-9999px
+}
+
+.skip:focus{
+  left:10px;
+  top:10px;
+  z-index:100;
+  background:#fff;
+  padding:10px;
+  border:1px solid #000
+}
+
+@media(max-width:900px){
+
+  .featured{
+    grid-template-columns:1fr
+  }
+
+  .featured img{
+    max-height:420px;
+    object-fit:contain;
+    background:#f4f1ea
+  }
+
+  .library{
+    grid-template-columns:1fr 1fr
+  }
+
+  .nav-links{
+    position:absolute;
+    left:0;
+    right:0;
+    top:72px;
+    display:none;
+    flex-direction:column;
+    align-items:stretch;
+    background:#fff;
+    padding:10px 20px 16px;
+    border-bottom:1px solid var(--line);
+    box-shadow:0 14px 28px rgba(0,0,0,.08)
+  }
+
+  .nav-links.open{
+    display:flex
+  }
+
+  .nav-links a{
+    padding:12px 10px
+  }
+
+  .nav-links a::after{
+    display:none
+  }
+
+  .menu-btn{
+    display:block
+  }
+}
+
 @media(max-width:700px){
-  .container{width:min(100% - 26px,var(--max))}
-  .brand-mini{font-size:20px}
-  .intro,.library{grid-template-columns:1fr}
-  .section-head{display:block}
-  .section-head p{margin-top:5px}
-  .brand-banner{min-height:140px;object-fit:cover;object-position:30% center}
+
+  .container{
+    width:min(100% - 26px,var(--max))
+  }
+
+  .brand-mini{
+    font-size:20px
+  }
+
+  .intro,
+  .library{
+    grid-template-columns:1fr
+  }
+
+  .section-head{
+    display:block
+  }
+
+  .section-head p{
+    margin-top:5px
+  }
+
+  .brand-banner{
+    min-height:140px;
+    object-fit:cover;
+    object-position:30% center
+  }
 }
 </style>
 </head>
+
 <body>
-<a class="skip" href="#main">Skip to content</a>
-<header class="site-header"><img class="brand-banner" src="/assets/images/banner.webp" alt="Durga Jung Kunwar - Ministry, Translation, Projects"></header>
+
+<a class="skip" href="#main">
+  Skip to content
+</a>
+
+<header class="site-header">
+
+  <img
+    class="brand-banner"
+    src="/assets/images/banner.webp"
+    alt="Durga Jung Kunwar - Ministry, Translation, Projects"
+  >
+
+</header>
 
 <div class="nav-wrap">
-<nav class="nav container" aria-label="Main navigation">
-<a class="brand-mini" href="/index.html">Durga Jung Kunwar</a>
-<button class="menu-btn" id="menuBtn" aria-expanded="false" aria-label="Toggle navigation">&#9776; Menu</button>
-<ul class="nav-links" id="navLinks">
-<li><a href="/index.html">Home</a></li>
-<li><a href="/about.html">About Me</a></li>
-<li><a href="/ministry.html">Ministry</a></li>
-<li><a href="/books.html">Books &amp; Translations</a></li>
-<li><a class="active" href="/sermons.html">Sermons</a></li>
-<li><a href="/software.html">Software Projects</a></li>
-<li><a href="/gallery.html">Gallery</a></li>
-<li><a href="/contact.html">Contact</a></li>
-</ul>
-</nav>
+
+  <nav
+    class="nav container"
+    aria-label="Main navigation"
+  >
+
+    <a
+      class="brand-mini"
+      href="/index.html"
+    >
+      Durga Jung Kunwar
+    </a>
+
+    <button
+      class="menu-btn"
+      type="button"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+    >
+      ☰ Menu
+    </button>
+
+    <ul class="nav-links">
+
+      <li>
+        <a href="/index.html">
+          Home
+        </a>
+      </li>
+
+      <li>
+        <a href="/about.html">
+          About Me
+        </a>
+      </li>
+
+      <li>
+        <a href="/ministry.html">
+          Ministry
+        </a>
+      </li>
+
+      <li>
+        <a href="/books.html">
+          Books &amp; Translations
+        </a>
+      </li>
+
+      <li>
+        <a
+          class="active"
+          href="/sermons.html"
+        >
+          Sermons
+        </a>
+      </li>
+
+      <li>
+        <a href="/software.html">
+          Software Projects
+        </a>
+      </li>
+
+      <li>
+        <a href="/gallery.html">
+          Gallery
+        </a>
+      </li>
+
+      <li>
+        <a href="/contact.html">
+          Contact
+        </a>
+      </li>
+
+    </ul>
+
+  </nav>
+
 </div>
 
 <main id="main">
-<section class="hero">
-<div class="container">
-<div class="eyebrow">Biblical Teaching</div>
-<h1>Sermons &amp; Bible Studies</h1>
-<p class="np">&#2346;&#2381;&#2352;&#2357;&#2330;&#2344; &#2340;&#2341;&#2366; &#2348;&#2366;&#2311;&#2348;&#2354; &#2309;&#2343;&#2381;&#2351;&#2351;&#2344;</p>
-</div>
-</section>
 
-<section class="content">
-<div class="container">
-<div class="intro">
-<div class="panel"><p>This section presents sermons, Bible studies, devotional messages, and teaching materials prepared for church services, house fellowships, seminars, and personal study. The aim is to explain Scripture clearly and encourage faithful Christian living.</p></div>
-<div class="panel"><p>&#2351;&#2360; &#2326;&#2339;&#2381;&#2337;&#2350;&#2366; &#2350;&#2339;&#2381;&#2337;&#2354;&#2368;&#2325;&#2366; &#2310;&#2352;&#2366;&#2343;&#2344;&#2366; &#2360;&#2375;&#2357;&#2366;, &#2328;&#2352;&#2375;&#2354;&#2369; &#2360;&#2329;&#2381;&#2327;&#2340;&#2367;, &#2327;&#2379;&#2359;&#2381;&#2336;&#2368; &#2340;&#2341;&#2366; &#2357;&#2381;&#2351;&#2325;&#2381;&#2340;&#2367;&#2327;&#2340; &#2309;&#2343;&#2381;&#2351;&#2351;&#2344;&#2325;&#2366; &#2354;&#2366;&#2327;&#2367; &#2340;&#2351;&#2366;&#2352; &#2327;&#2352;&#2367;&#2319;&#2325;&#2366; &#2346;&#2381;&#2352;&#2357;&#2330;&#2344;, &#2348;&#2366;&#2311;&#2348;&#2354; &#2309;&#2343;&#2381;&#2351;&#2351;&#2344;, &#2310;&#2340;&#2381;&#2350;&#2367;&#2325; &#2360;&#2344;&#2381;&#2342;&#2375;&#2358; &#2340;&#2341;&#2366; &#2358;&#2367;&#2325;&#2381;&#2359;&#2339; &#2360;&#2366;&#2350;&#2327;&#2381;&#2352;&#2368;&#2361;&#2352;&#2370; &#2346;&#2381;&#2352;&#2360;&#2381;&#2340;&#2369;&#2340; &#2327;&#2352;&#2367;&#2344;&#2381;&#2331;&#2344;&#2381; &#2404; &#2351;&#2360;&#2325;&#2379; &#2313;&#2342;&#2381;&#2342;&#2375;&#2358;&#2381;&#2351; &#2343;&#2352;&#2381;&#2350;&#2358;&#2366;&#2360;&#2381;&#2340;&#2381;&#2352;&#2354;&#2366;&#2312; &#2360;&#2381;&#2346;&#2359;&#2381;&#2335; &#2352;&#2370;&#2346;&#2350;&#2366; &#2357;&#2381;&#2351;&#2366;&#2326;&#2381;&#2351;&#2366; &#2327;&#2352;&#2381;&#2344;&#2369; &#2352; &#2357;&#2367;&#2358;&#2381;&#2357;&#2366;&#2360;&#2351;&#2379;&#2327;&#2381;&#2351; &#2326;&#2381;&#2352;&#2368;&#2359;&#2381;&#2335;&#2367;&#2351;&#2344; &#2332;&#2368;&#2357;&#2344;&#2325;&#2366; &#2354;&#2366;&#2327;&#2367; &#2313;&#2340;&#2381;&#2360;&#2366;&#2361;&#2367;&#2340; &#2327;&#2352;&#2381;&#2344;&#2369; &#2361;&#2379; &#2404;</p></div>
-</div>
+  <!-- =====================================================
+       HERO
+       ===================================================== -->
 
-<article class="featured">
-<div><img src="/assets/images/sermons/running-the-race.webp" alt="Running the Race by the Rules sermon cover"></div>
-<div>
-<span class="label">Featured Sermon</span>
-<h2>Running the Race by the Rules</h2>
-<div class="passage">Hebrews 12:1-3 &#8226; 2 Timothy 2:5 &#8226; 1 Corinthians 9:24-27</div>
-<p>A sermon on running the Christian race according to God&#8217;s rules: faithful church attendance, love for believers, Spirit-filled living, confessing Christ, holy living, and carrying the Gospel to the whole world.</p>
-<p>&#2361;&#2367;&#2348;&#2381;&#2352;&#2370; &#2407;&#2408;:&#2407;&#8211;&#2409;, &#2408; &#2340;&#2367;&#2350;&#2379;&#2341;&#2368; &#2408;:&#2411; &#2352; &#2407; &#2325;&#2379;&#2352;&#2367;&#2344;&#2381;&#2341;&#2368; &#2415;:&#2408;&#2410;&#8211;&#2408;&#2413; &#2348;&#2366;&#2335; &#2326;&#2381;&#2352;&#2368;&#2359;&#2381;&#2335;&#2367;&#2351;&#2344; &#2332;&#2368;&#2357;&#2344;&#2354;&#2366;&#2312; &#2344;&#2367;&#2351;&#2350;&#2309;&#2344;&#2369;&#2360;&#2366;&#2352; &#2342;&#2380;&#2337;&#2344;&#2369;&#2346;&#2352;&#2381;&#2344;&#2375; &#2310;&#2340;&#2381;&#2350;&#2367;&#2325; &#2342;&#2380;&#2337;&#2325;&#2366; &#2352;&#2370;&#2346;&#2350;&#2366; &#2346;&#2381;&#2352;&#2360;&#2381;&#2340;&#2369;&#2340; &#2327;&#2352;&#2367;&#2319;&#2325;&#2379; &#2360;&#2344;&#2381;&#2342;&#2375;&#2358; &#2404;</p>
-<div class="actions">
-<a class="btn gold" href="/sermon-running-the-race.html">Read Sermon</a>
-<a class="btn" href="/assets/pdfs/sermons/running-the-race.pdf" download>Download PDF</a>
-</div>
-<ol class="rules">
-<li>Faithfully attend the house of God</li>
-<li>Love the brethren</li>
-<li>Be Spirit-filled</li>
-<li>Confess Christ before people</li>
-<li>Live a holy life</li>
-<li>Carry the Gospel to the whole world</li>
-</ol>
-</div>
-</article>
+  <section class="hero">
 
-<div class="section-head">
-<div><h2>Sermon Library</h2></div>
-<p>More written, audio and video resources will be added over time.</p>
-</div>
+    <div class="container">
 
-<div class="library">
+      <div class="eyebrow">
+        Biblical Teaching
+      </div>
 
-<article class="card">
-<div>
-<img class="card-thumb" src="/assets/images/sermons/need-for-good-leadership.webp" alt="The Need for Good Leadership sermon thumbnail">
-<span class="label">Nepali Sermon</span>
-<h3>असल नेतृत्वको आवश्यकता</h3>
-<div class="passage">न्यायकर्ता २१:२५</div>
-<p>नेतृत्वको अभाव र खराब नेतृत्वका परिणाम, असल नेतृत्वका बाइबलीय गुण, नेपालको सन्दर्भ, र ख्रीष्टियनहरूको जिम्मेवारीसम्बन्धी सन्देश।</p>
-<div class="actions">
-<a class="btn gold" href="/sermon-need-for-good-leadership.html">Read Sermon</a>
-<a class="btn" href="/assets/pdfs/sermons/need-for-good-leadership.pdf" download>Download PDF</a>
-</div>
-</div>
-<div class="bottom">Judges 21:25</div>
-</article>
+      <h1>
+        Sermons &amp; Bible Studies
+      </h1>
 
+      <p class="np">
+        प्रवचन तथा बाइबल अध्ययन
+      </p>
 
-<article class="card">
-<div>
-<img class="card-thumb" src="/assets/images/sermons/unity-in-the-church.webp" alt="Unity in the Church sermon thumbnail">
-<span class="label">Three-Session Nepali Sermon</span>
-<h3>मण्डलीमा एकता</h3>
-<div class="passage">यूहन्ना १७:२०–२३ • १ कोरिन्थी १:१०–१३ • १२:१२–२७</div>
-<p>मण्डलीको अर्थ र एकताको महत्त्व, विभाजनका कारण, र प्रेम, सत्य, नम्रता तथा क्षमाद्वारा एकता कायम राख्ने बाइबलीय सन्देश।</p>
-<div class="actions">
-<a class="btn gold" href="/sermon-unity-in-the-church.html">Read Sermon</a>
-<a class="btn" href="/assets/pdfs/sermons/unity-in-the-church.pdf" download>Download PDF</a>
-</div>
-</div>
-<div class="bottom">John 17:20–23 • 1 Corinthians 1:10–13 • 12:12–27</div>
-</article>
+    </div>
 
+  </section>
 
-<article class="card">
-<div>
-<img class="card-thumb" src="/assets/images/sermons/walk-worthy-of-our-calling.webp" alt="Walk Worthy of Our Calling sermon thumbnail">
-<span class="label">Nepali Sermon</span>
-<h3>बोलावटको योग्य चालमा हिँड!</h3>
-<div class="passage">एफिसी ४:१</div>
-<p>एफिसी ४:१ का आधारमा परमेश्वरको उच्च र पवित्र बोलावटअनुसार जीवन, चालचलन र व्यवहार हुनुपर्ने सन्देश।</p>
-<div class="actions">
-<a class="btn gold" href="/sermon-walk-worthy-of-our-calling.html">Read Sermon</a>
-<a class="btn" href="/assets/pdfs/sermons/walk-worthy-of-our-calling.pdf" download>Download PDF</a>
-</div>
-</div>
-<div class="bottom">Ephesians 4:1</div>
-</article>
+  <!-- =====================================================
+       SERMON CONTENT
+       ===================================================== -->
 
-<article class="card">
-<div>
-<img class="card-thumb" src="/assets/images/sermons/good-for-evil.webp" alt="Good in Return for Evil sermon thumbnail">
-<span class="label">Nepali Sermon</span>
-<h3>&#2326;&#2352;&#2366;&#2348;&#2368;&#2325;&#2379; &#2348;&#2342;&#2354;&#2366;&#2350;&#2366; &#2349;&#2354;&#2366;&#2311; &#8211; &#2326;&#2381;&#2352;&#2368;&#2359;&#2381;&#2335;&#2367;&#2351; &#2332;&#2368;&#2357;&#2344;&#2325;&#2379; &#2346;&#2361;&#2367;&#2330;&#2366;&#2344;</h3>
-<div class="passage">&#2407; &#2341;&#2375;&#2360;&#2354;&#2379;&#2344;&#2367;&#2325;&#2368; &#2411;:&#2407;&#2411;</div>
-<p>&#2407; &#2341;&#2375;&#2360;&#2354;&#2379;&#2344;&#2367;&#2325;&#2368; &#2411;:&#2407;&#2411; &#2350;&#2366; &#2310;&#2343;&#2366;&#2352;&#2367;&#2340; &#2351;&#2379; &#2360;&#2344;&#2381;&#2342;&#2375;&#2358;&#2354;&#2375; &#2326;&#2352;&#2366;&#2348;&#2368;&#2325;&#2379; &#2348;&#2342;&#2354;&#2366;&#2350;&#2366; &#2326;&#2352;&#2366;&#2348;&#2368; &#2344;&#2327;&#2352;&#2368;, &#2319;&#2325;-&#2309;&#2352;&#2381;&#2325;&#2366;&#2360;&#2305;&#2327; &#2352; &#2360;&#2348;&#2376; &#2350;&#2366;&#2344;&#2367;&#2360;&#2361;&#2352;&#2370;&#2360;&#2305;&#2327; &#2360;&#2343;&#2376;&#2305; &#2349;&#2354;&#2366;&#2311; &#2327;&#2352;&#2381;&#2344;&#2375; &#2326;&#2381;&#2352;&#2368;&#2359;&#2381;&#2335;&#2367;&#2351; &#2332;&#2368;&#2357;&#2344;&#2325;&#2379; &#2346;&#2361;&#2367;&#2330;&#2366;&#2344;&#2354;&#2366;&#2312; &#2360;&#2381;&#2346;&#2359;&#2381;&#2335; &#2327;&#2352;&#2381;&#2331;&#2404;</p>
-<div class="actions">
-<a class="btn gold" href="/sermon-good-for-evil.html">Read Sermon</a>
-<a class="btn" href="/assets/pdfs/sermons/good-for-evil.pdf" download>Download PDF</a>
-</div>
-</div>
-<div class="bottom">1 Thessalonians 5:15</div>
-</article>
+  <section class="content">
 
+    <div class="container">
 
-<article class="card">
-<div>
-<img class="card-thumb" src="/assets/images/sermons/life-without-compromise.webp" alt="Life Without Compromise sermon thumbnail">
-<span class="label">Two-Session Nepali Sermon</span>
-<h3>&#2332;&#2368;&#2357;&#2344; &#2348;&#2367;&#2344;&#2366; &#2360;&#2350;&#2381;&#2333;&#2380;&#2340;&#2366;</h3>
-<div class="passage">&#2352;&#2379;&#2350; &#2407;&#2408;:&#2408; &#8226; &#2350;&#2340;&#2381;&#2340;&#2368; &#2413;:&#2407;&#2409;-&#2407;&#2410;</div>
-<p>&#2352;&#2379;&#2350; &#2407;&#2408;:&#2408; &#2352; &#2350;&#2340;&#2381;&#2340;&#2368; &#2413;:&#2407;&#2409;-&#2407;&#2410; &#2325;&#2366; &#2310;&#2343;&#2366;&#2352;&#2350;&#2366; &#2360;&#2306;&#2360;&#2366;&#2352;&#2325;&#2379; &#2342;&#2348;&#2366;&#2348;, &#2346;&#2381;&#2352;&#2354;&#2379;&#2349;&#2344; &#2352; &#2360;&#2332;&#2367;&#2354;&#2379; &#2348;&#2366;&#2335;&#2379;&#2360;&#2305;&#2327; &#2360;&#2350;&#2381;&#2333;&#2380;&#2340;&#2366; &#2344;&#2327;&#2352;&#2368; &#2346;&#2352;&#2350;&#2375;&#2358;&#2381;&#2357;&#2352;&#2325;&#2379; &#2357;&#2330;&#2344;, &#2360;&#2340;&#2381;&#2351;&#2340;&#2366; &#2352; &#2357;&#2367;&#2358;&#2381;&#2357;&#2366;&#2360;&#2350;&#2366; &#2309;&#2337;&#2367;&#2327; &#2352;&#2361;&#2344; &#2360;&#2367;&#2325;&#2366;&#2313;&#2344;&#2375; &#2342;&#2369;&#2312;-&#2360;&#2340;&#2381;&#2352;&#2368;&#2351; &#2360;&#2344;&#2381;&#2342;&#2375;&#2358; &#2404;</p>
-<div class="actions">
-<a class="btn gold" href="/sermon-life-without-compromise.html">Read Sermon</a>
-<a class="btn" href="/assets/pdfs/sermons/life-without-compromise.pdf" download>Download PDF</a>
-</div>
-</div>
-<div class="bottom">Romans 12:2 &#8226; Matthew 7:13-14</div>
-</article>
+      <div class="intro">
 
-<article class="card">
-<div><span class="label">Sermon</span><h3>Treasure in Jars of Clay</h3><div class="passage">2 Corinthians 4:7&#8211;9</div><p>A message on human weakness, God&#8217;s power, perseverance, and faithful ministry in difficult circumstances.</p><p>&#2350;&#2366;&#2344;&#2357;&#2368;&#2351; &#2325;&#2350;&#2332;&#2379;&#2352;&#2368;, &#2346;&#2352;&#2350;&#2375;&#2358;&#2381;&#2357;&#2352;&#2325;&#2379; &#2358;&#2325;&#2381;&#2340;&#2367;, &#2325;&#2336;&#2367;&#2344; &#2346;&#2352;&#2367;&#2360;&#2381;&#2341;&#2367;&#2340;&#2367;&#2350;&#2366; &#2343;&#2376;&#2352;&#2381;&#2351; &#2352; &#2357;&#2367;&#2358;&#2381;&#2357;&#2366;&#2360;&#2351;&#2379;&#2327;&#2381;&#2351; &#2360;&#2375;&#2357;&#2325;&#2366;&#2312;&#2325;&#2379; &#2357;&#2367;&#2359;&#2351;&#2350;&#2366; &#2360;&#2344;&#2381;&#2342;&#2375;&#2358; &#2404;</p></div>
-<div class="bottom">PDF / audio / video links can be added later.</div>
-</article>
+        <div class="panel">
 
-<article class="card">
-<div><span class="label">Bible Study</span><h3>The Knowledge of the Glory of the Lord</h3><div class="passage">Habakkuk 2:14</div><p>A biblical reflection on God&#8217;s glory, His sovereign purpose, and the hope expressed in Habakkuk&#8217;s prophecy.</p><p>&#2346;&#2352;&#2350;&#2375;&#2358;&#2381;&#2357;&#2352;&#2325;&#2379; &#2350;&#2361;&#2367;&#2350;&#2366;, &#2313;&#2361;&#2366;&#2305;&#2325;&#2379; &#2360;&#2366;&#2352;&#2381;&#2357;&#2349;&#2380;&#2350;&#2367;&#2325; &#2313;&#2342;&#2381;&#2342;&#2375;&#2358;&#2381;&#2351; &#2352; &#2361;&#2348;&#2325;&#2370;&#2325;&#2325;&#2379; &#2349;&#2357;&#2367;&#2359;&#2381;&#2351;&#2357;&#2366;&#2339;&#2368;&#2350;&#2366; &#2357;&#2381;&#2351;&#2325;&#2381;&#2340; &#2310;&#2358;&#2366;&#2325;&#2379; &#2357;&#2367;&#2359;&#2351;&#2350;&#2366; &#2348;&#2366;&#2311;&#2348;&#2354;&#2368;&#2351; &#2350;&#2344;&#2344; &#2404;</p></div>
-<div class="bottom">Additional study notes can be added later.</div>
-</article>
-</div>
+          <p>
+            This section presents sermons, Bible studies, devotional messages,
+            and teaching materials prepared for church services, house
+            fellowships, seminars, and personal study. The aim is to explain
+            Scripture clearly and encourage faithful Christian living.
+          </p>
 
-<div class="note">New sermons can be added here without changing the overall design. As the library grows, we can organize them by Bible book, topic, or sermon series.</div>
-</div>
-</section>
+        </div>
+
+        <div class="panel">
+
+          <p>
+            यस खण्डमा मण्डलीका आराधना सेवा, घरेलु सङ्गति, गोष्ठी तथा व्यक्तिगत
+            अध्ययनका लागि तयार गरिएका प्रवचन, बाइबल अध्ययन, आत्मिक सन्देश तथा
+            शिक्षण सामग्रीहरू प्रस्तुत गरिन्छन् । यसको उद्देश्य धर्मशास्त्रलाई
+            स्पष्ट रूपमा व्याख्या गर्नु र विश्वासयोग्य ख्रीष्टियन जीवनका लागि
+            उत्साहित गर्नु हो ।
+          </p>
+
+        </div>
+
+      </div>
+
+      <!-- =================================================
+           FEATURED SERMON
+           ================================================= -->
+
+      <article class="featured">
+
+        <div>
+
+          <img
+            src="/assets/images/sermons/running-the-race.webp"
+            alt="Running the Race by the Rules sermon cover"
+          >
+
+        </div>
+
+        <div>
+
+          <span class="label">
+            Featured Sermon
+          </span>
+
+          <h2>
+            Running the Race by the Rules
+          </h2>
+
+          <div class="passage">
+            Hebrews 12:1-3 • 2 Timothy 2:5 • 1 Corinthians 9:24-27
+          </div>
+
+          <p>
+            A sermon on running the Christian race according to God’s rules:
+            faithful church attendance, love for believers, Spirit-filled
+            living, confessing Christ, holy living, and carrying the Gospel
+            to the whole world.
+          </p>
+
+          <p>
+            हिब्रू १२:१–३, २ तिमोथी २:५ र १ कोरिन्थी ९:२४–२७ बाट ख्रीष्टियन
+            जीवनलाई नियमानुसार दौडनुपर्ने आत्मिक दौडका रूपमा प्रस्तुत गरिएको
+            सन्देश ।
+          </p>
+
+          <div class="actions">
+
+            <a
+              class="btn gold"
+              href="/sermon-running-the-race.html"
+            >
+              Read Sermon
+            </a>
+
+            <a
+              class="btn"
+              href="/assets/pdfs/sermons/running-the-race.pdf"
+              download
+            >
+              Download PDF
+            </a>
+
+          </div>
+
+          <ol class="rules">
+            <li>Faithfully attend the house of God</li>
+            <li>Love the brethren</li>
+            <li>Be Spirit-filled</li>
+            <li>Confess Christ before people</li>
+            <li>Live a holy life</li>
+            <li>Carry the Gospel to the whole world</li>
+          </ol>
+
+        </div>
+
+      </article>
+
+      <!-- =================================================
+           SERMON LIBRARY
+           ================================================= -->
+
+      <div class="section-head">
+
+        <div>
+          <h2>
+            Sermon Library
+          </h2>
+        </div>
+
+        <p>
+          More written, audio and video resources will be added over time.
+        </p>
+
+      </div>
+
+      <div class="library">
+
+        <!-- GOOD LEADERSHIP -->
+
+        <article class="card">
+
+          <div>
+
+            <img
+              class="card-thumb"
+              src="/assets/images/sermons/need-for-good-leadership.webp"
+              alt="The Need for Good Leadership sermon thumbnail"
+            >
+
+            <span class="label">
+              Nepali Sermon
+            </span>
+
+            <h3>
+              असल नेतृत्वको आवश्यकता
+            </h3>
+
+            <div class="passage">
+              न्यायकर्ता २१:२५
+            </div>
+
+            <p>
+              नेतृत्वको अभाव र खराब नेतृत्वका परिणाम, असल नेतृत्वका बाइबलीय
+              गुण, नेपालको सन्दर्भ, र ख्रीष्टियनहरूको जिम्मेवारीसम्बन्धी सन्देश।
+            </p>
+
+            <div class="actions">
+
+              <a
+                class="btn gold"
+                href="/sermon-need-for-good-leadership.html"
+              >
+                Read Sermon
+              </a>
+
+              <a
+                class="btn"
+                href="/assets/pdfs/sermons/need-for-good-leadership.pdf"
+                download
+              >
+                Download PDF
+              </a>
+
+            </div>
+
+          </div>
+
+          <div class="bottom">
+            Judges 21:25
+          </div>
+
+        </article>
+
+        <!-- UNITY -->
+
+        <article class="card">
+
+          <div>
+
+            <img
+              class="card-thumb"
+              src="/assets/images/sermons/unity-in-the-church.webp"
+              alt="Unity in the Church sermon thumbnail"
+            >
+
+            <span class="label">
+              Three-Session Nepali Sermon
+            </span>
+
+            <h3>
+              मण्डलीमा एकता
+            </h3>
+
+            <div class="passage">
+              यूहन्ना १७:२०–२३ • १ कोरिन्थी १:१०–१३ • १२:१२–२७
+            </div>
+
+            <p>
+              मण्डलीको अर्थ र एकताको महत्त्व, विभाजनका कारण, र प्रेम, सत्य,
+              नम्रता तथा क्षमाद्वारा एकता कायम राख्ने बाइबलीय सन्देश।
+            </p>
+
+            <div class="actions">
+
+              <a
+                class="btn gold"
+                href="/sermon-unity-in-the-church.html"
+              >
+                Read Sermon
+              </a>
+
+              <a
+                class="btn"
+                href="/assets/pdfs/sermons/unity-in-the-church.pdf"
+                download
+              >
+                Download PDF
+              </a>
+
+            </div>
+
+          </div>
+
+          <div class="bottom">
+            John 17:20–23 • 1 Corinthians 1:10–13 • 12:12–27
+          </div>
+
+        </article>
+
+        <!-- WALK WORTHY -->
+
+        <article class="card">
+
+          <div>
+
+            <img
+              class="card-thumb"
+              src="/assets/images/sermons/walk-worthy-of-our-calling.webp"
+              alt="Walk Worthy of Our Calling sermon thumbnail"
+            >
+
+            <span class="label">
+              Nepali Sermon
+            </span>
+
+            <h3>
+              बोलावटको योग्य चालमा हिँड!
+            </h3>
+
+            <div class="passage">
+              एफिसी ४:१
+            </div>
+
+            <p>
+              एफिसी ४:१ का आधारमा परमेश्वरको उच्च र पवित्र बोलावटअनुसार जीवन,
+              चालचलन र व्यवहार हुनुपर्ने सन्देश।
+            </p>
+
+            <div class="actions">
+
+              <a
+                class="btn gold"
+                href="/sermon-walk-worthy-of-our-calling.html"
+              >
+                Read Sermon
+              </a>
+
+              <a
+                class="btn"
+                href="/assets/pdfs/sermons/walk-worthy-of-our-calling.pdf"
+                download
+              >
+                Download PDF
+              </a>
+
+            </div>
+
+          </div>
+
+          <div class="bottom">
+            Ephesians 4:1
+          </div>
+
+        </article>
+
+        <!-- GOOD FOR EVIL -->
+
+        <article class="card">
+
+          <div>
+
+            <img
+              class="card-thumb"
+              src="/assets/images/sermons/good-for-evil.webp"
+              alt="Good in Return for Evil sermon thumbnail"
+            >
+
+            <span class="label">
+              Nepali Sermon
+            </span>
+
+            <h3>
+              खराबीको बदलामा भलाइ – ख्रीष्टियन जीवनको पहिचान
+            </h3>
+
+            <div class="passage">
+              १ थेसलोनिकी ५:१५
+            </div>
+
+            <p>
+              १ थेसलोनिकी ५:१५ मा आधारित यो सन्देशले खराबीको बदलामा खराबी नगरी,
+              एक-अर्कासँग र सबै मानिसहरूसँग सधैँ भलाइ गर्ने ख्रीष्टियन जीवनको
+              पहिचानलाई स्पष्ट गर्छ।
+            </p>
+
+            <div class="actions">
+
+              <a
+                class="btn gold"
+                href="/sermon-good-for-evil.html"
+              >
+                Read Sermon
+              </a>
+
+              <a
+                class="btn"
+                href="/assets/pdfs/sermons/good-for-evil.pdf"
+                download
+              >
+                Download PDF
+              </a>
+
+            </div>
+
+          </div>
+
+          <div class="bottom">
+            1 Thessalonians 5:15
+          </div>
+
+        </article>
+
+        <!-- LIFE WITHOUT COMPROMISE -->
+
+        <article class="card">
+
+          <div>
+
+            <img
+              class="card-thumb"
+              src="/assets/images/sermons/life-without-compromise.webp"
+              alt="Life Without Compromise sermon thumbnail"
+            >
+
+            <span class="label">
+              Two-Session Nepali Sermon
+            </span>
+
+            <h3>
+              जीवन बिना सम्झौता
+            </h3>
+
+            <div class="passage">
+              रोम १२:२ • मत्ती ७:१३-१४
+            </div>
+
+            <p>
+              रोम १२:२ र मत्ती ७:१३-१४ का आधारमा संसारको दबाब, प्रलोभन र सजिलो
+              बाटोसँग सम्झौता नगरी परमेश्वरको वचन, सत्यता र विश्वासमा अडिग रहन
+              सिकाउने दुई-सत्रीय सन्देश ।
+            </p>
+
+            <div class="actions">
+
+              <a
+                class="btn gold"
+                href="/sermon-life-without-compromise.html"
+              >
+                Read Sermon
+              </a>
+
+              <a
+                class="btn"
+                href="/assets/pdfs/sermons/life-without-compromise.pdf"
+                download
+              >
+                Download PDF
+              </a>
+
+            </div>
+
+          </div>
+
+          <div class="bottom">
+            Romans 12:2 • Matthew 7:13-14
+          </div>
+
+        </article>
+
+        <!-- TREASURE IN JARS OF CLAY -->
+
+        <article class="card">
+
+          <div>
+
+            <span class="label">
+              Sermon
+            </span>
+
+            <h3>
+              Treasure in Jars of Clay
+            </h3>
+
+            <div class="passage">
+              2 Corinthians 4:7–9
+            </div>
+
+            <p>
+              A message on human weakness, God’s power, perseverance, and
+              faithful ministry in difficult circumstances.
+            </p>
+
+            <p>
+              मानवीय कमजोरी, परमेश्वरको शक्ति, कठिन परिस्थितिमा धैर्य र
+              विश्वासयोग्य सेवकाईको विषयमा सन्देश ।
+            </p>
+
+          </div>
+
+          <div class="bottom">
+            PDF / audio / video links can be added later.
+          </div>
+
+        </article>
+
+        <!-- GLORY OF THE LORD -->
+
+        <article class="card">
+
+          <div>
+
+            <span class="label">
+              Bible Study
+            </span>
+
+            <h3>
+              The Knowledge of the Glory of the Lord
+            </h3>
+
+            <div class="passage">
+              Habakkuk 2:14
+            </div>
+
+            <p>
+              A biblical reflection on God’s glory, His sovereign purpose,
+              and the hope expressed in Habakkuk’s prophecy.
+            </p>
+
+            <p>
+              परमेश्वरको महिमा, उहाँको सार्वभौमिक उद्देश्य र हबकूकको
+              भविष्यवाणीमा व्यक्त आशाको विषयमा बाइबलीय मनन ।
+            </p>
+
+          </div>
+
+          <div class="bottom">
+            Additional study notes can be added later.
+          </div>
+
+        </article>
+
+      </div>
+
+      <div class="note">
+        New sermons can be added here without changing the overall design.
+        As the library grows, we can organize them by Bible book, topic,
+        or sermon series.
+      </div>
+
+    </div>
+
+  </section>
+
+  <!-- =====================================================
+       WEBSITE ENGAGEMENT
+       ===================================================== -->
+
+  <section
+    class="engagement-section"
+    data-engagement-root
+    data-content-key="sermons"
+    data-page-path="/sermons.html"
+    data-content-title="Sermons & Bible Studies"
+    data-content-type="page"
+    aria-labelledby="engagement-title"
+  >
+
+    <div class="container">
+
+      <div class="engagement-card">
+
+        <div class="engagement-heading">
+
+          <h2 id="engagement-title">
+            Connect &amp; Respond
+          </h2>
+
+          <p>
+            View, like, comment, or share this page.
+          </p>
+
+        </div>
+
+        <div
+          class="engagement-actions"
+          aria-label="Page engagement"
+        >
+
+          <!-- VIEWS -->
+
+          <div
+            class="engagement-action"
+            aria-label="Page views"
+          >
+
+            <span
+              class="engagement-icon"
+              aria-hidden="true"
+            >
+              👁
+            </span>
+
+            <span class="engagement-action-label">
+              Views
+            </span>
+
+            <span
+              class="engagement-count"
+              id="engagement-views"
+            >
+              0
+            </span>
+
+          </div>
+
+          <!-- LIKE -->
+
+          <button
+            class="engagement-action"
+            id="engagement-like-btn"
+            type="button"
+            aria-pressed="false"
+            aria-label="Like this page"
+          >
+
+            <span
+              class="engagement-icon"
+              aria-hidden="true"
+            >
+              👍
+            </span>
+
+            <span
+              class="engagement-action-label"
+              id="engagement-like-label"
+            >
+              Like
+            </span>
+
+            <span
+              class="engagement-count"
+              id="engagement-likes"
+            >
+              0
+            </span>
+
+          </button>
+
+          <!-- COMMENTS -->
+
+          <button
+            class="engagement-action"
+            id="engagement-comments-btn"
+            type="button"
+            aria-label="Go to comments"
+          >
+
+            <span
+              class="engagement-icon"
+              aria-hidden="true"
+            >
+              💬
+            </span>
+
+            <span class="engagement-action-label">
+              Comments
+            </span>
+
+            <span
+              class="engagement-count"
+              id="engagement-comments"
+            >
+              0
+            </span>
+
+          </button>
+
+          <!-- SHARE -->
+
+          <button
+            class="engagement-action"
+            id="engagement-share-btn"
+            type="button"
+            aria-label="Share this page"
+          >
+
+            <span
+              class="engagement-icon"
+              aria-hidden="true"
+            >
+              ↗
+            </span>
+
+            <span class="engagement-action-label">
+              Share
+            </span>
+
+            <span
+              class="engagement-count"
+              id="engagement-shares"
+            >
+              0
+            </span>
+
+          </button>
+
+        </div>
+
+        <div class="engagement-body">
+
+          <p
+            class="engagement-status"
+            id="engagement-status"
+            role="status"
+            aria-live="polite"
+            hidden
+          ></p>
+
+          <h3>
+            Leave a Comment
+          </h3>
+
+          <form
+            class="comment-form"
+            id="engagement-comment-form"
+          >
+
+            <div class="comment-form-grid">
+
+              <div class="comment-field">
+
+                <label for="commenter-name">
+                  Name
+                </label>
+
+                <input
+                  id="commenter-name"
+                  name="commenter_name"
+                  type="text"
+                  maxlength="80"
+                  autocomplete="name"
+                  required
+                >
+
+              </div>
+
+              <div class="comment-field">
+
+                <label for="commenter-email">
+                  Email
+                  <span class="muted">
+                    (optional)
+                  </span>
+                </label>
+
+                <input
+                  id="commenter-email"
+                  name="commenter_email"
+                  type="email"
+                  maxlength="254"
+                  autocomplete="email"
+                >
+
+              </div>
+
+              <div class="comment-field full">
+
+                <label for="comment-text">
+                  Comment
+                </label>
+
+                <textarea
+                  id="comment-text"
+                  name="comment_text"
+                  maxlength="2000"
+                  required
+                ></textarea>
+
+                <p class="comment-help">
+                  Maximum 2,000 characters.
+                  Your email address is not displayed publicly.
+                </p>
+
+              </div>
+
+            </div>
+
+            <div class="comment-submit-row">
+
+              <button
+                class="btn gold"
+                id="comment-submit"
+                type="submit"
+              >
+                Post Comment
+              </button>
+
+            </div>
+
+          </form>
+
+          <div class="engagement-comments-wrap">
+
+            <div class="engagement-comments-title">
+
+              <h3>
+                Comments
+              </h3>
+
+            </div>
+
+            <div
+              class="engagement-comments-list"
+              id="engagement-comments-list"
+              aria-live="polite"
+            >
+
+              <p class="engagement-empty">
+                Loading comments...
+              </p>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </section>
+
 </main>
 
 <footer class="footer">
-<div class="container">
-<p class="rights">&#169; 2026 Durga Jung Kunwar. All rights reserved.</p>
-<p>Ministry &#8226; Translation &#8226; Sermons &#8226; Software Projects</p>
-</div>
+
+  <div class="container">
+
+    <p class="rights">
+      © 2026 Durga Jung Kunwar. All rights reserved.
+    </p>
+
+    <p>
+      Ministry • Translation • Sermons • Software Projects
+    </p>
+
+  </div>
+
 </footer>
 
-<script>
-const b=document.getElementById('menuBtn'),n=document.getElementById('navLinks');
-if(b&&n){b.addEventListener('click',()=>{const o=n.classList.toggle('open');b.setAttribute('aria-expanded',o?'true':'false')})}
-</script>
+<!-- Shared navigation + engagement JavaScript -->
+<script src="/assets/js/main.js"></script>
+
 </body>
 </html>
