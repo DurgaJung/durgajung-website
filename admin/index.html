@@ -29,11 +29,9 @@
   ></script>
 </head>
 
-
 <body>
 
 <div class="admin-shell">
-
 
   <!-- =====================================================
        SIDEBAR
@@ -65,9 +63,6 @@
       aria-label="Admin navigation"
     >
 
-
-      <!-- Dashboard -->
-
       <button
         class="nav-item active"
         type="button"
@@ -77,8 +72,6 @@
         Dashboard
       </button>
 
-
-      <!-- Orders -->
 
       <button
         class="nav-item"
@@ -95,8 +88,6 @@
       </button>
 
 
-      <!-- Payments -->
-
       <button
         class="nav-item"
         type="button"
@@ -106,8 +97,6 @@
         Payments
       </button>
 
-
-      <!-- Software -->
 
       <button
         class="nav-item"
@@ -119,8 +108,6 @@
       </button>
 
 
-      <!-- Books -->
-
       <button
         class="nav-item"
         type="button"
@@ -130,8 +117,6 @@
         Books
       </button>
 
-
-      <!-- Sales -->
 
       <button
         class="nav-item"
@@ -143,8 +128,6 @@
       </button>
 
 
-      <!-- Licenses -->
-
       <button
         class="nav-item"
         type="button"
@@ -154,8 +137,6 @@
         Licenses
       </button>
 
-
-      <!-- Invoices -->
 
       <button
         class="nav-item"
@@ -167,8 +148,6 @@
       </button>
 
 
-      <!-- Customers -->
-
       <button
         class="nav-item"
         type="button"
@@ -178,8 +157,6 @@
         Customers
       </button>
 
-
-      <!-- Downloads -->
 
       <button
         class="nav-item"
@@ -191,8 +168,6 @@
       </button>
 
 
-      <!-- Website -->
-
       <button
         class="nav-item"
         type="button"
@@ -203,7 +178,22 @@
       </button>
 
 
-      <!-- Activity -->
+      <!-- NEW ENGAGEMENT MENU -->
+
+      <button
+        class="nav-item"
+        type="button"
+        data-section="engagement"
+      >
+        <span>♥</span>
+        Engagement
+
+        <b
+          id="hiddenCommentBadge"
+          class="nav-badge"
+        ></b>
+      </button>
+
 
       <button
         class="nav-item"
@@ -215,8 +205,6 @@
       </button>
 
 
-      <!-- Security -->
-
       <button
         class="nav-item"
         type="button"
@@ -226,8 +214,6 @@
         Security
       </button>
 
-
-      <!-- Settings -->
 
       <button
         class="nav-item"
@@ -276,13 +262,11 @@
   </aside>
 
 
-
   <!-- =====================================================
        MAIN AREA
   ====================================================== -->
 
   <main class="main-area">
-
 
     <!-- TOP BAR -->
 
@@ -306,7 +290,7 @@
         </div>
 
         <div class="top-subtitle">
-          Software · Books · Orders · Payments · Sales · Invoices
+          Software · Books · Orders · Payments · Sales · Website Engagement
         </div>
 
       </div>
@@ -335,9 +319,7 @@
     </header>
 
 
-
     <div class="content">
-
 
       <!-- =================================================
            DASHBOARD
@@ -361,9 +343,9 @@
             </h1>
 
             <p class="lead">
-              Monitor software and book orders, customer
-              payments, completed sales, invoices, licences
-              and delivery activity.
+              Monitor software and book orders, customer payments,
+              completed sales, invoices, licences, delivery activity
+              and public website engagement.
             </p>
 
           </div>
@@ -384,11 +366,9 @@
         </div>
 
 
-
-        <!-- DASHBOARD METRICS -->
+        <!-- BUSINESS METRICS -->
 
         <div class="metric-grid">
-
 
           <article class="metric-card">
 
@@ -410,7 +390,6 @@
           </article>
 
 
-
           <article class="metric-card">
 
             <div class="metric-label">
@@ -429,7 +408,6 @@
             </div>
 
           </article>
-
 
 
           <article class="metric-card">
@@ -455,7 +433,6 @@
           </article>
 
 
-
           <article class="metric-card">
 
             <div class="metric-label">
@@ -478,9 +455,139 @@
         </div>
 
 
+        <!-- WEBSITE ENGAGEMENT SUMMARY -->
+
+        <div class="dashboard-subheading">
+
+          <div>
+
+            <h2>
+              Website Engagement
+            </h2>
+
+            <p>
+              Public activity recorded across the website.
+            </p>
+
+          </div>
+
+
+          <button
+            class="secondary-btn"
+            type="button"
+            data-open-section="engagement"
+          >
+            Manage Engagement
+          </button>
+
+        </div>
+
+
+        <div class="metric-grid engagement-dashboard-metrics">
+
+          <article class="metric-card">
+
+            <div class="metric-label">
+              Total Views
+            </div>
+
+            <div
+              id="metricTotalViews"
+              class="metric-value neutral"
+            >
+              —
+            </div>
+
+            <div class="metric-note">
+              Recorded page views
+            </div>
+
+          </article>
+
+
+          <article class="metric-card">
+
+            <div class="metric-label">
+              Total Likes
+            </div>
+
+            <div
+              id="metricTotalLikes"
+              class="metric-value"
+            >
+              —
+            </div>
+
+            <div class="metric-note">
+              Active public likes
+            </div>
+
+          </article>
+
+
+          <article class="metric-card">
+
+            <div class="metric-label">
+              Total Comments
+            </div>
+
+            <div
+              id="metricTotalComments"
+              class="metric-value"
+            >
+              —
+            </div>
+
+            <div class="metric-note">
+              All stored comments
+            </div>
+
+          </article>
+
+
+          <article class="metric-card">
+
+            <div class="metric-label">
+              Total Shares
+            </div>
+
+            <div
+              id="metricTotalShares"
+              class="metric-value"
+            >
+              —
+            </div>
+
+            <div class="metric-note">
+              Recorded share actions
+            </div>
+
+          </article>
+
+
+          <article class="metric-card">
+
+            <div class="metric-label">
+              Hidden Comments
+            </div>
+
+            <div
+              id="metricHiddenComments"
+              class="metric-value neutral"
+            >
+              —
+            </div>
+
+            <div class="metric-note">
+              Comments hidden from public view
+            </div>
+
+          </article>
+
+        </div>
+
 
         <div class="dashboard-grid">
-
 
           <!-- RECENT ORDERS -->
 
@@ -547,7 +654,6 @@
           </article>
 
 
-
           <!-- SYSTEM STATUS -->
 
           <article class="panel">
@@ -558,7 +664,6 @@
 
 
             <div class="module-list">
-
 
               <div class="module-row">
 
@@ -617,42 +722,54 @@
 
               <div class="module-row">
 
-  <span>
-    Licence API
-  </span>
+                <span>
+                  Website Engagement
+                </span>
 
-  <strong class="status-ok">
-    ONLINE
-  </strong>
+                <strong class="status-ok">
+                  READY
+                </strong>
 
-</div>
-
-
-             <div class="module-row">
-
-  <span>
-    Invoice System
-  </span>
-
-  <strong class="status-ok">
-    READY
-  </strong>
-
-</div>
-
+              </div>
 
 
               <div class="module-row">
 
-  <span>
-    Email Delivery
-  </span>
+                <span>
+                  Licence API
+                </span>
 
-  <strong class="status-ok">
-    ONLINE
-  </strong>
+                <strong class="status-ok">
+                  ONLINE
+                </strong>
 
-</div>
+              </div>
+
+
+              <div class="module-row">
+
+                <span>
+                  Invoice System
+                </span>
+
+                <strong class="status-ok">
+                  READY
+                </strong>
+
+              </div>
+
+
+              <div class="module-row">
+
+                <span>
+                  Email Delivery
+                </span>
+
+                <strong class="status-ok">
+                  ONLINE
+                </strong>
+
+              </div>
 
             </div>
 
@@ -661,7 +778,6 @@
         </div>
 
       </section>
-
 
 
       <!-- =================================================
@@ -705,12 +821,9 @@
         </div>
 
 
-
         <article class="panel">
 
-
           <div class="toolbar">
-
 
             <select id="orderStatusFilter">
 
@@ -750,7 +863,6 @@
           </div>
 
 
-
           <div class="table-wrap">
 
             <table class="admin-table wide-table">
@@ -758,7 +870,6 @@
               <thead>
 
                 <tr>
-
                   <th>S.N.</th>
                   <th>Order No.</th>
                   <th>Customer</th>
@@ -771,7 +882,6 @@
                   <th>Status</th>
                   <th>Submitted</th>
                   <th>Action</th>
-
                 </tr>
 
               </thead>
@@ -796,7 +906,6 @@
         </article>
 
       </section>
-
 
 
       <!-- =================================================
@@ -830,7 +939,6 @@
         </div>
 
 
-
         <article class="panel">
 
           <div class="table-wrap">
@@ -840,7 +948,6 @@
               <thead>
 
                 <tr>
-
                   <th>S.N.</th>
                   <th>Order</th>
                   <th>Customer</th>
@@ -851,7 +958,6 @@
                   <th>Receipt</th>
                   <th>Status</th>
                   <th>Action</th>
-
                 </tr>
 
               </thead>
@@ -876,7 +982,6 @@
         </article>
 
       </section>
-
 
 
       <!-- =================================================
@@ -911,7 +1016,6 @@
         </div>
 
 
-
         <article class="panel">
 
           <div class="panel-head">
@@ -939,14 +1043,12 @@
               <thead>
 
                 <tr>
-
                   <th>Product Code</th>
                   <th>Software Name</th>
                   <th>Version</th>
                   <th>Price</th>
                   <th>Licence Required</th>
                   <th>Status</th>
-
                 </tr>
 
               </thead>
@@ -971,7 +1073,6 @@
         </article>
 
       </section>
-
 
 
       <!-- =================================================
@@ -1005,7 +1106,6 @@
         </div>
 
 
-
         <article class="panel">
 
           <div class="panel-head">
@@ -1032,7 +1132,6 @@
               <thead>
 
                 <tr>
-
                   <th>Product Code</th>
                   <th>Book Title</th>
                   <th>Author</th>
@@ -1040,7 +1139,6 @@
                   <th>Price</th>
                   <th>Stock</th>
                   <th>Status</th>
-
                 </tr>
 
               </thead>
@@ -1065,7 +1163,6 @@
         </article>
 
       </section>
-
 
 
       <!-- =================================================
@@ -1121,7 +1218,6 @@
         </div>
 
 
-
         <article class="panel">
 
           <div class="table-wrap">
@@ -1131,7 +1227,6 @@
               <thead>
 
                 <tr>
-
                   <th>S.N.</th>
                   <th>Sale No.</th>
                   <th>Invoice No.</th>
@@ -1150,7 +1245,6 @@
                   <th>Licence Sent</th>
                   <th>Approved</th>
                   <th>Notes</th>
-
                 </tr>
 
               </thead>
@@ -1175,7 +1269,6 @@
         </article>
 
       </section>
-
 
 
       <!-- =================================================
@@ -1210,9 +1303,7 @@
         </div>
 
 
-
         <article class="panel">
-
 
           <div class="notice-box">
 
@@ -1246,7 +1337,6 @@
       </section>
 
 
-
       <!-- =================================================
            INVOICES
       ================================================== -->
@@ -1278,7 +1368,6 @@
         </div>
 
 
-
         <article class="panel">
 
           <div class="table-wrap">
@@ -1288,7 +1377,6 @@
               <thead>
 
                 <tr>
-
                   <th>Invoice No.</th>
                   <th>Customer</th>
                   <th>Email</th>
@@ -1296,7 +1384,6 @@
                   <th>Date</th>
                   <th>Email Status</th>
                   <th>PDF</th>
-
                 </tr>
 
               </thead>
@@ -1321,7 +1408,6 @@
         </article>
 
       </section>
-
 
 
       <!-- =================================================
@@ -1355,7 +1441,6 @@
         </div>
 
 
-
         <article class="panel">
 
           <div class="table-wrap">
@@ -1365,14 +1450,12 @@
               <thead>
 
                 <tr>
-
                   <th>Customer</th>
                   <th>Email</th>
                   <th>Phone</th>
                   <th>Orders</th>
                   <th>Sales</th>
                   <th>Total Spent</th>
-
                 </tr>
 
               </thead>
@@ -1397,7 +1480,6 @@
         </article>
 
       </section>
-
 
 
       <!-- =================================================
@@ -1431,12 +1513,9 @@
         </div>
 
 
-
         <article class="panel">
 
-
           <div class="delivery-list">
-
 
             <div class="delivery-item">
 
@@ -1509,7 +1588,6 @@
       </section>
 
 
-
       <!-- =================================================
            WEBSITE
       ================================================== -->
@@ -1540,7 +1618,6 @@
         </div>
 
 
-
         <article class="panel health-table-wrap">
 
           <table class="health-table">
@@ -1548,12 +1625,10 @@
             <thead>
 
               <tr>
-
                 <th>Page</th>
                 <th>Path</th>
                 <th>Status</th>
                 <th>Response</th>
-
               </tr>
 
             </thead>
@@ -1577,6 +1652,307 @@
 
       </section>
 
+
+      <!-- =================================================
+           ENGAGEMENT
+      ================================================== -->
+
+      <section
+        id="section-engagement"
+        class="admin-section"
+      >
+
+        <div class="section-heading">
+
+          <div>
+
+            <p class="eyebrow">
+              WEBSITE ENGAGEMENT
+            </p>
+
+            <h1>
+              Engagement
+            </h1>
+
+            <p class="lead">
+              Monitor public page views, likes, comments and shares.
+              Review comments and hide, approve or permanently delete
+              them when necessary.
+            </p>
+
+          </div>
+
+
+          <button
+            id="refreshEngagement"
+            class="secondary-btn"
+            type="button"
+          >
+            Refresh Engagement
+          </button>
+
+        </div>
+
+
+        <!-- ENGAGEMENT TOTALS -->
+
+        <div class="metric-grid engagement-section-metrics">
+
+          <article class="metric-card">
+
+            <div class="metric-label">
+              Total Views
+            </div>
+
+            <div
+              id="engagementMetricViews"
+              class="metric-value neutral"
+            >
+              —
+            </div>
+
+            <div class="metric-note">
+              Recorded views across all pages
+            </div>
+
+          </article>
+
+
+          <article class="metric-card">
+
+            <div class="metric-label">
+              Total Likes
+            </div>
+
+            <div
+              id="engagementMetricLikes"
+              class="metric-value"
+            >
+              —
+            </div>
+
+            <div class="metric-note">
+              Current public likes
+            </div>
+
+          </article>
+
+
+          <article class="metric-card">
+
+            <div class="metric-label">
+              Total Comments
+            </div>
+
+            <div
+              id="engagementMetricComments"
+              class="metric-value"
+            >
+              —
+            </div>
+
+            <div class="metric-note">
+              Approved and hidden comments
+            </div>
+
+          </article>
+
+
+          <article class="metric-card">
+
+            <div class="metric-label">
+              Total Shares
+            </div>
+
+            <div
+              id="engagementMetricShares"
+              class="metric-value"
+            >
+              —
+            </div>
+
+            <div class="metric-note">
+              Recorded share actions
+            </div>
+
+          </article>
+
+
+          <article class="metric-card">
+
+            <div class="metric-label">
+              Hidden Comments
+            </div>
+
+            <div
+              id="engagementMetricHidden"
+              class="metric-value neutral"
+            >
+              —
+            </div>
+
+            <div class="metric-note">
+              Not visible on public pages
+            </div>
+
+          </article>
+
+        </div>
+
+
+        <!-- ENGAGEMENT BY PAGE -->
+
+        <article class="panel engagement-panel">
+
+          <div class="panel-head">
+
+            <div>
+
+              <h2>
+                Engagement by Page
+              </h2>
+
+              <p>
+                Views, likes, comments and shares for each
+                registered public page.
+              </p>
+
+            </div>
+
+          </div>
+
+
+          <div class="table-wrap">
+
+            <table class="admin-table engagement-table">
+
+              <thead>
+
+                <tr>
+                  <th>Page</th>
+                  <th>Path</th>
+                  <th>Type</th>
+                  <th>Views</th>
+                  <th>Likes</th>
+                  <th>Comments</th>
+                  <th>Shares</th>
+                </tr>
+
+              </thead>
+
+
+              <tbody id="engagementTableBody">
+
+                <tr>
+
+                  <td colspan="7">
+                    Loading engagement statistics…
+                  </td>
+
+                </tr>
+
+              </tbody>
+
+            </table>
+
+          </div>
+
+        </article>
+
+
+        <!-- COMMENT MODERATION -->
+
+        <article class="panel engagement-panel">
+
+          <div class="panel-head">
+
+            <div>
+
+              <h2>
+                Comment Moderation
+              </h2>
+
+              <p>
+                Approved comments are public. Hidden comments remain
+                stored but are not displayed on the public website.
+              </p>
+
+            </div>
+
+          </div>
+
+
+          <div class="toolbar engagement-toolbar">
+
+            <select
+              id="commentStatusFilter"
+              aria-label="Filter comments by status"
+            >
+
+              <option value="">
+                All Comments
+              </option>
+
+              <option value="approved">
+                Approved
+              </option>
+
+              <option value="hidden">
+                Hidden
+              </option>
+
+            </select>
+
+
+            <input
+              id="commentSearch"
+              type="search"
+              placeholder="Search page, name, email or comment…"
+              aria-label="Search comments"
+            >
+
+          </div>
+
+
+          <div class="table-wrap">
+
+            <table class="admin-table comments-admin-table">
+
+              <thead>
+
+                <tr>
+                  <th>ID</th>
+                  <th>Page</th>
+                  <th>Name</th>
+                  <th>Email</th>
+                  <th>Comment</th>
+                  <th>Status</th>
+                  <th>Submitted</th>
+                  <th>Action</th>
+                </tr>
+
+              </thead>
+
+
+              <tbody id="commentsTableBody">
+
+                <tr>
+
+                  <td colspan="8">
+                    Loading comments…
+                  </td>
+
+                </tr>
+
+              </tbody>
+
+            </table>
+
+          </div>
+
+        </article>
+
+      </section>
 
 
       <!-- =================================================
@@ -1610,7 +1986,6 @@
         </div>
 
 
-
         <article class="panel">
 
           <div class="table-wrap">
@@ -1620,13 +1995,11 @@
               <thead>
 
                 <tr>
-
                   <th>Date</th>
                   <th>Admin</th>
                   <th>Action</th>
                   <th>Type</th>
                   <th>Description</th>
-
                 </tr>
 
               </thead>
@@ -1653,7 +2026,6 @@
       </section>
 
 
-
       <!-- =================================================
            SECURITY
       ================================================== -->
@@ -1678,7 +2050,6 @@
           </div>
 
         </div>
-
 
 
         <article class="panel">
@@ -1718,7 +2089,6 @@
       </section>
 
 
-
       <!-- =================================================
            SETTINGS
       ================================================== -->
@@ -1745,9 +2115,7 @@
         </div>
 
 
-
         <article class="panel settings-panel">
-
 
           <div class="setting-row">
 
@@ -1768,7 +2136,6 @@
             </span>
 
           </div>
-
 
 
           <div class="setting-row">
@@ -1792,7 +2159,6 @@
           </div>
 
 
-
           <div class="setting-row">
 
             <div>
@@ -1814,6 +2180,26 @@
           </div>
 
 
+          <div class="setting-row">
+
+            <div>
+
+              <strong>
+                Website Engagement Database
+              </strong>
+
+              <p>
+                Views, likes, comments and shares
+              </p>
+
+            </div>
+
+            <code>
+              durgajung-admin-db
+            </code>
+
+          </div>
+
 
           <div class="setting-row">
 
@@ -1834,7 +2220,6 @@
             </code>
 
           </div>
-
 
 
           <div class="setting-row">
@@ -1861,13 +2246,11 @@
 
       </section>
 
-
     </div>
 
   </main>
 
 </div>
-
 
 
 <!-- =====================================================
@@ -1886,7 +2269,6 @@
     aria-modal="true"
     aria-labelledby="orderModalTitle"
   >
-
 
     <div class="modal-head">
 
@@ -1915,12 +2297,10 @@
     </div>
 
 
-
     <div
       id="orderModalContent"
       class="order-detail-grid"
     ></div>
-
 
 
     <div class="modal-notes">
@@ -1936,7 +2316,6 @@
       ></textarea>
 
     </div>
-
 
 
     <div class="modal-actions">
@@ -1974,7 +2353,6 @@
 </div>
 
 
-
 <!-- =====================================================
      TOAST
 ====================================================== -->
@@ -1985,7 +2363,6 @@
   aria-live="polite"
   aria-atomic="true"
 ></div>
-
 
 </body>
 
