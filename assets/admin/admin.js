@@ -2061,7 +2061,13 @@
                     Open PDF
                   </a>
                 `
-                : "Not generated";
+                : invoice.pdf_file_name
+                  ? `
+                    <span class="status-badge confirmed">
+                      Generated
+                    </span>
+                  `
+                  : "Not generated";
 
             return `
               <tr>
