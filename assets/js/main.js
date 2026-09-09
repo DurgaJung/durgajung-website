@@ -178,7 +178,7 @@
 
     if (type === "like") {
       return (
-        `<svg ${common}><path d="M20.8 5.8a5.1 5.1 0 0 0-7.2 0L12 7.4l-1.6-1.6a5.1 5.1 0 0 0-7.2 7.2L12 21l8.8-8a5.1 5.1 0 0 0 0-7.2Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>`
+        `<svg ${common}><path d="M7 10v10H4a2 2 0 0 1-2-2v-6a2 2 0 0 1 2-2h3Z" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><path d="M7 10 11 3a2.1 2.1 0 0 1 3.9 1.3L14.2 8H20a2 2 0 0 1 2 2.4l-1.5 7A3.2 3.2 0 0 1 17.4 20H7V10Z" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>`
       );
     }
 
@@ -710,12 +710,41 @@
         return;
       }
 
+      const wasLiked = this.currentLiked;
+      const previousCount = Number(
+        String(this.likesCount ? this.likesCount.textContent : "0")
+          .replace(/[^0-9.-]/g, "") || 0
+      );
+
       this.likeButton.disabled = true;
       this.setStatus("");
 
+      /* Immediate feedback so the Like button never appears unresponsive. */
+      this.currentLiked = !wasLiked;
+      this.likeButton.classList.toggle("is-liked", this.currentLiked);
+      this.likeButton.setAttribute(
+        "aria-pressed",
+        String(this.currentLiked)
+      );
+
+      if (this.likeLabel) {
+        this.likeLabel.textContent =
+          this.currentLiked ? "Liked" : "Like";
+      }
+
+      this.setCount(
+        this.likesCount,
+        Math.max(
+          0,
+          previousCount + (this.currentLiked ? 1 : -1)
+        )
+      );
+
       try {
-        if (this.currentLiked) {
-          await apiRequest("/api/engagement/like", {
+        let result;
+
+        if (wasLiked) {
+          result = await apiRequest("/api/engagement/like", {
             method: "DELETE",
             body: {
               content_key: this.contentKey,
@@ -723,17 +752,62 @@
             }
           });
         } else {
-          await apiRequest("/api/engagement/like", {
+          result = await apiRequest("/api/engagement/like", {
             method: "POST",
             body: this.payload()
           });
         }
 
-        await this.load();
+        this.currentLiked = Boolean(result.liked);
+
+        this.likeButton.classList.toggle(
+          "is-liked",
+          this.currentLiked
+        );
+        this.likeButton.setAttribute(
+          "aria-pressed",
+          String(this.currentLiked)
+        );
+
+        if (this.likeLabel) {
+          this.likeLabel.textContent =
+            this.currentLiked ? "Liked" : "Like";
+        }
+
+        this.setCount(this.likesCount, result.likes);
+
+        try {
+          await this.load();
+        } catch (refreshError) {
+          console.warn(
+            `Like saved but refresh failed for ${this.contentKey}:`,
+            refreshError
+          );
+        }
       } catch (error) {
+        /* Restore the old state if the server rejects the request. */
+        this.currentLiked = wasLiked;
+        this.likeButton.classList.toggle("is-liked", wasLiked);
+        this.likeButton.setAttribute(
+          "aria-pressed",
+          String(wasLiked)
+        );
+
+        if (this.likeLabel) {
+          this.likeLabel.textContent =
+            wasLiked ? "Liked" : "Like";
+        }
+
+        this.setCount(this.likesCount, previousCount);
+
         this.setStatus(
           error.message || "Unable to update your like.",
           "error"
+        );
+
+        console.error(
+          `Like update failed for ${this.contentKey}:`,
+          error
         );
       } finally {
         this.likeButton.disabled = false;
