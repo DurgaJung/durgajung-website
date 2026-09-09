@@ -1086,3 +1086,552 @@ a.brand-mini:focus,
         justify-self: stretch;
     }
 }
+
+
+/* =========================================================
+   FINAL COLORED SERMON ENGAGEMENT
+   Modern per-sermon Views / Like / Comments / Share
+   ========================================================= */
+
+:root{
+    --eng-blue:#2563eb;
+    --eng-blue-soft:#eff6ff;
+    --eng-blue-line:#bfdbfe;
+
+    --eng-red:#e11d48;
+    --eng-red-soft:#fff1f2;
+    --eng-red-line:#fecdd3;
+
+    --eng-green:#15803d;
+    --eng-green-soft:#f0fdf4;
+    --eng-green-line:#bbf7d0;
+
+    --eng-purple:#7c3aed;
+    --eng-purple-soft:#f5f3ff;
+    --eng-purple-line:#ddd6fe;
+
+    --eng-panel:#ffffff;
+    --eng-panel-line:#e7e5e4;
+    --eng-panel-shadow:0 14px 36px rgba(23,23,23,.08);
+}
+
+/* Sermon listing: each sermon gets its own compact engagement unit */
+.sermon-engagement{
+    width:100%;
+    margin-top:18px;
+    padding-top:16px;
+    border-top:1px solid #eee8de;
+}
+
+.featured > .sermon-engagement{
+    grid-column:1 / -1;
+    margin-top:0;
+    padding-top:18px;
+}
+
+.sermon-engagement .engagement-actions{
+    display:grid;
+    grid-template-columns:repeat(4,minmax(0,1fr));
+    gap:10px;
+    width:100%;
+}
+
+.sermon-engagement .engagement-action{
+    min-width:0;
+    min-height:48px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    border:1px solid transparent;
+    border-radius:14px;
+    padding:10px 12px;
+    background:#fff;
+    color:#333;
+    font-size:13px;
+    font-weight:800;
+    line-height:1;
+    box-shadow:0 5px 14px rgba(0,0,0,.045);
+    transition:
+        transform .18s ease,
+        box-shadow .18s ease,
+        border-color .18s ease,
+        background .18s ease,
+        color .18s ease;
+}
+
+.sermon-engagement button.engagement-action{
+    appearance:none;
+    cursor:pointer;
+}
+
+.sermon-engagement .engagement-icon{
+    width:20px;
+    height:20px;
+    display:inline-grid;
+    place-items:center;
+    flex:0 0 20px;
+}
+
+.sermon-engagement .engagement-icon svg{
+    width:20px;
+    height:20px;
+    display:block;
+}
+
+.sermon-engagement .engagement-action-label{
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+}
+
+.sermon-engagement .engagement-count{
+    min-width:24px;
+    height:24px;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    padding:0 7px;
+    border-radius:999px;
+    background:rgba(255,255,255,.78);
+    font-size:11px;
+    font-weight:900;
+    box-shadow:inset 0 0 0 1px rgba(0,0,0,.055);
+}
+
+/* Views — blue */
+.sermon-engagement .engagement-action--views{
+    color:var(--eng-blue);
+    background:var(--eng-blue-soft);
+    border-color:var(--eng-blue-line);
+}
+
+/* Like — red/pink */
+.sermon-engagement .engagement-action--like{
+    color:var(--eng-red);
+    background:var(--eng-red-soft);
+    border-color:var(--eng-red-line);
+}
+
+.sermon-engagement .engagement-action--like.is-liked{
+    color:#fff;
+    background:linear-gradient(135deg,#f43f5e,#be123c);
+    border-color:#be123c;
+    box-shadow:0 8px 20px rgba(225,29,72,.22);
+}
+
+.sermon-engagement .engagement-action--like.is-liked .engagement-count{
+    background:rgba(255,255,255,.2);
+    color:#fff;
+    box-shadow:inset 0 0 0 1px rgba(255,255,255,.22);
+}
+
+.sermon-engagement .engagement-action--like.is-liked svg path{
+    fill:currentColor;
+}
+
+/* Comments — green */
+.sermon-engagement .engagement-action--comments{
+    color:var(--eng-green);
+    background:var(--eng-green-soft);
+    border-color:var(--eng-green-line);
+}
+
+/* Share — purple */
+.sermon-engagement .engagement-action--share{
+    color:var(--eng-purple);
+    background:var(--eng-purple-soft);
+    border-color:var(--eng-purple-line);
+}
+
+.sermon-engagement .engagement-action:focus-visible{
+    outline:3px solid rgba(168,116,30,.28);
+    outline-offset:3px;
+}
+
+.sermon-engagement button.engagement-action:disabled{
+    opacity:.56;
+    cursor:not-allowed;
+    transform:none!important;
+}
+
+@media (hover:hover){
+    .sermon-engagement button.engagement-action:hover{
+        transform:translateY(-2px);
+        box-shadow:0 10px 22px rgba(0,0,0,.09);
+    }
+
+    .sermon-engagement .engagement-action--like:hover{
+        border-color:#fda4af;
+    }
+
+    .sermon-engagement .engagement-action--comments:hover{
+        border-color:#86efac;
+    }
+
+    .sermon-engagement .engagement-action--share:hover{
+        border-color:#c4b5fd;
+    }
+}
+
+/* Compact comments panel under the selected sermon */
+.sermon-comment-panel{
+    margin-top:14px;
+    padding:18px;
+    border:1px solid var(--eng-panel-line);
+    border-radius:16px;
+    background:linear-gradient(180deg,#fff 0%,#fcfbf8 100%);
+    box-shadow:var(--eng-panel-shadow);
+}
+
+.sermon-comment-panel[hidden]{
+    display:none!important;
+}
+
+.sermon-comment-panel.is-open{
+    animation:sermonCommentOpen .18s ease-out;
+}
+
+@keyframes sermonCommentOpen{
+    from{
+        opacity:0;
+        transform:translateY(-5px);
+    }
+    to{
+        opacity:1;
+        transform:none;
+    }
+}
+
+.sermon-comment-panel-head{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    margin-bottom:14px;
+}
+
+.sermon-comment-panel-head h3{
+    margin:0;
+    font-family:Georgia,"Times New Roman",serif;
+    font-size:20px;
+    line-height:1.2;
+    color:#292524;
+}
+
+.sermon-comment-close{
+    width:34px;
+    height:34px;
+    display:grid;
+    place-items:center;
+    border:1px solid #e7e2d9;
+    border-radius:50%;
+    background:#fff;
+    color:#57534e;
+    font-size:22px;
+    line-height:1;
+    cursor:pointer;
+    transition:background .18s ease,color .18s ease,transform .18s ease;
+}
+
+.sermon-comment-close:hover{
+    background:#f5f5f4;
+    color:#111827;
+    transform:rotate(3deg);
+}
+
+.sermon-comment-panel .comment-form{
+    margin:0;
+}
+
+.sermon-comment-panel .comment-form-grid{
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:12px;
+}
+
+.sermon-comment-panel .comment-field.full{
+    grid-column:1 / -1;
+}
+
+.sermon-comment-panel label{
+    display:block;
+    margin-bottom:6px;
+    color:#57534e;
+    font-size:12px;
+    font-weight:800;
+}
+
+.sermon-comment-panel input,
+.sermon-comment-panel textarea{
+    width:100%;
+    border:1px solid #ddd6ce;
+    border-radius:11px;
+    padding:10px 12px;
+    background:#fff;
+    color:#292524;
+    font:inherit;
+    transition:border-color .18s ease,box-shadow .18s ease;
+}
+
+.sermon-comment-panel input:focus,
+.sermon-comment-panel textarea:focus{
+    border-color:#c49a4c;
+    outline:none;
+    box-shadow:0 0 0 4px rgba(168,116,30,.10);
+}
+
+.sermon-comment-panel textarea{
+    min-height:105px;
+    resize:vertical;
+}
+
+.sermon-comment-panel .comment-help{
+    margin:6px 0 0;
+    color:#78716c;
+    font-size:11px;
+    line-height:1.5;
+}
+
+.sermon-comment-panel .comment-submit-row{
+    margin-top:12px;
+}
+
+.sermon-comment-panel [data-role="comment-submit"]{
+    min-height:42px;
+    border:0;
+    border-radius:999px;
+    padding:9px 18px;
+    background:linear-gradient(135deg,#a8741e,#82530f);
+    color:#fff;
+    font-size:13px;
+    font-weight:850;
+    box-shadow:0 6px 16px rgba(130,83,15,.18);
+}
+
+.sermon-comment-panel .engagement-status{
+    margin:0 0 12px;
+    padding:10px 12px;
+    border-radius:10px;
+    font-size:12px;
+    font-weight:700;
+}
+
+.sermon-comment-panel .engagement-status[data-state="success"]{
+    background:#ecfdf5;
+    color:#166534;
+    border:1px solid #bbf7d0;
+}
+
+.sermon-comment-panel .engagement-status[data-state="error"]{
+    background:#fff1f2;
+    color:#be123c;
+    border:1px solid #fecdd3;
+}
+
+.sermon-comment-panel .engagement-comments-wrap{
+    margin-top:20px;
+}
+
+.sermon-comment-panel .engagement-comments-title h3{
+    margin:0 0 10px;
+    font-size:15px;
+    color:#44403c;
+}
+
+.sermon-comment-panel .engagement-comments-list{
+    display:grid;
+    gap:10px;
+}
+
+.sermon-comment-panel .engagement-empty{
+    margin:0;
+    padding:12px;
+    border:1px dashed #ddd6ce;
+    border-radius:10px;
+    background:#fafaf9;
+    color:#78716c;
+    font-size:12px;
+}
+
+.sermon-comment-panel .public-comment{
+    display:flex;
+    align-items:flex-start;
+    gap:10px;
+    padding:12px;
+    border:1px solid #ebe7e0;
+    border-radius:12px;
+    background:#fff;
+}
+
+.public-comment-avatar{
+    width:34px;
+    height:34px;
+    flex:0 0 34px;
+    display:grid;
+    place-items:center;
+    border-radius:50%;
+    background:linear-gradient(135deg,#a8741e,#d2aa61);
+    color:#fff;
+    font-size:13px;
+    font-weight:900;
+}
+
+.public-comment-body{
+    min-width:0;
+    flex:1;
+}
+
+.public-comment-head{
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    gap:12px;
+}
+
+.public-comment-name{
+    color:#292524;
+    font-size:13px;
+    font-weight:850;
+}
+
+.public-comment-date{
+    color:#a8a29e;
+    font-size:10.5px;
+    white-space:nowrap;
+}
+
+.public-comment-text{
+    margin:5px 0 0;
+    color:#57534e;
+    font-size:12.5px;
+    line-height:1.58;
+    overflow-wrap:anywhere;
+}
+
+/* Full sermon detail engagement can use the same colored language */
+.sermon-detail-engagement .engagement-actions{
+    display:grid;
+    grid-template-columns:repeat(4,minmax(0,1fr));
+    gap:10px;
+}
+
+.sermon-detail-engagement .engagement-action{
+    min-height:50px;
+    border-radius:14px;
+}
+
+.sermon-detail-engagement .engagement-action--views{
+    color:var(--eng-blue);
+    background:var(--eng-blue-soft);
+    border-color:var(--eng-blue-line);
+}
+
+.sermon-detail-engagement .engagement-action--like{
+    color:var(--eng-red);
+    background:var(--eng-red-soft);
+    border-color:var(--eng-red-line);
+}
+
+.sermon-detail-engagement .engagement-action--like.is-liked{
+    color:#fff;
+    background:linear-gradient(135deg,#f43f5e,#be123c);
+    border-color:#be123c;
+}
+
+.sermon-detail-engagement .engagement-action--comments{
+    color:var(--eng-green);
+    background:var(--eng-green-soft);
+    border-color:var(--eng-green-line);
+}
+
+.sermon-detail-engagement .engagement-action--share{
+    color:var(--eng-purple);
+    background:var(--eng-purple-soft);
+    border-color:var(--eng-purple-line);
+}
+
+/* Sermon cards need enough room for the inserted engagement UI */
+.library .card{
+    overflow:visible;
+}
+
+.library .card > .sermon-engagement{
+    margin-top:auto;
+}
+
+.featured{
+    overflow:visible;
+}
+
+/* Responsive */
+@media(max-width:820px){
+    .sermon-engagement .engagement-actions,
+    .sermon-detail-engagement .engagement-actions{
+        grid-template-columns:repeat(2,minmax(0,1fr));
+    }
+
+    .sermon-comment-panel .comment-form-grid{
+        grid-template-columns:1fr;
+    }
+
+    .sermon-comment-panel .comment-field.full{
+        grid-column:1;
+    }
+}
+
+@media(max-width:520px){
+    .sermon-engagement{
+        margin-top:15px;
+        padding-top:14px;
+    }
+
+    .sermon-engagement .engagement-actions,
+    .sermon-detail-engagement .engagement-actions{
+        gap:8px;
+    }
+
+    .sermon-engagement .engagement-action{
+        min-height:46px;
+        padding:9px 8px;
+        border-radius:12px;
+        font-size:12px;
+    }
+
+    .sermon-engagement .engagement-action-label{
+        max-width:70px;
+    }
+
+    .sermon-engagement .engagement-icon,
+    .sermon-engagement .engagement-icon svg{
+        width:18px;
+        height:18px;
+    }
+
+    .sermon-engagement .engagement-count{
+        min-width:21px;
+        height:21px;
+        padding:0 6px;
+        font-size:10px;
+    }
+
+    .sermon-comment-panel{
+        padding:15px;
+        border-radius:14px;
+    }
+
+    .public-comment-head{
+        display:block;
+    }
+
+    .public-comment-date{
+        display:block;
+        margin-top:2px;
+    }
+}
+
+@media(prefers-reduced-motion:reduce){
+    .sermon-comment-panel.is-open{
+        animation:none;
+    }
+}
