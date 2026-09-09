@@ -657,3 +657,432 @@ a.brand-mini:focus,
         margin-bottom: 30px;
     }
 }
+
+/* =========================================================
+   MODERN WEBSITE ENGAGEMENT — Views, Like, Comment, Share
+   ========================================================= */
+[data-engagement-root] {
+    --eng-ink: #24211d;
+    --eng-muted: #6d675f;
+    --eng-line: #e7e1d7;
+    --eng-soft: #faf8f3;
+    --eng-soft-2: #f4efe5;
+    --eng-gold: #a8741e;
+    --eng-gold-dark: #80540f;
+    --eng-red: #c7424f;
+    --eng-green: #23724a;
+    position: relative;
+    margin-top: 46px;
+    padding: 28px;
+    overflow: hidden;
+    border: 1px solid var(--eng-line);
+    border-radius: 20px;
+    background:
+        radial-gradient(circle at 92% 0%, rgba(198,149,54,.11), transparent 30%),
+        linear-gradient(145deg, #ffffff 0%, #fdfbf7 100%);
+    box-shadow: 0 14px 38px rgba(31,27,20,.075);
+}
+
+[data-engagement-root]::before {
+    content: "";
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 4px;
+    background: linear-gradient(180deg, var(--gold2), var(--gold));
+}
+
+[data-engagement-root] h2,
+[data-engagement-root] h3 {
+    color: var(--eng-ink);
+    text-wrap: balance;
+}
+
+[data-engagement-root] h2 {
+    margin-top: 0;
+    margin-bottom: 8px;
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: clamp(26px, 3vw, 34px);
+    line-height: 1.18;
+    letter-spacing: -.018em;
+}
+
+[data-engagement-root] > p,
+[data-engagement-root] .engagement-intro,
+[data-engagement-root] .engagement-subtitle {
+    color: var(--eng-muted);
+}
+
+/* Modern action and counter area */
+[data-engagement-root] .engagement-summary,
+[data-engagement-root] .engagement-stats,
+[data-engagement-root] .engagement-actions,
+[data-engagement-root] .engagement-bar,
+[data-engagement-root] .engagement-toolbar {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+[data-engagement-root] .engagement-summary,
+[data-engagement-root] .engagement-stats,
+[data-engagement-root] .engagement-bar {
+    margin: 20px 0 0;
+}
+
+#engagement-like-btn,
+#engagement-comments-btn,
+#engagement-share-btn {
+    min-height: 46px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    border: 1px solid #dfd8cb;
+    border-radius: 999px;
+    padding: 9px 16px;
+    background: rgba(255,255,255,.96);
+    color: #39352f;
+    box-shadow: 0 4px 12px rgba(34,29,20,.045);
+    font-size: 14px;
+    font-weight: 750;
+    line-height: 1;
+    cursor: pointer;
+    transition:
+        transform .18s ease,
+        box-shadow .18s ease,
+        border-color .18s ease,
+        background .18s ease,
+        color .18s ease;
+}
+
+#engagement-like-btn:hover,
+#engagement-comments-btn:hover,
+#engagement-share-btn:hover {
+    transform: translateY(-2px);
+    border-color: #d4bb89;
+    background: #fffdf8;
+    color: var(--eng-gold-dark);
+    box-shadow: 0 8px 20px rgba(72,52,18,.10);
+}
+
+#engagement-like-btn:active,
+#engagement-comments-btn:active,
+#engagement-share-btn:active {
+    transform: translateY(0) scale(.98);
+}
+
+#engagement-like-btn:focus-visible,
+#engagement-comments-btn:focus-visible,
+#engagement-share-btn:focus-visible,
+#engagement-comment-form input:focus-visible,
+#engagement-comment-form textarea:focus-visible,
+#comment-submit:focus-visible {
+    outline: 3px solid rgba(198,149,54,.34);
+    outline-offset: 2px;
+}
+
+/* Liked state — supports the common state patterns used by JS */
+#engagement-like-btn.active,
+#engagement-like-btn.liked,
+#engagement-like-btn[aria-pressed="true"],
+[data-engagement-root].liked #engagement-like-btn {
+    border-color: rgba(199,66,79,.28);
+    background: #fff2f3;
+    color: var(--eng-red);
+    box-shadow: 0 6px 18px rgba(199,66,79,.10);
+}
+
+#engagement-like-btn.active #engagement-like-label,
+#engagement-like-btn.liked #engagement-like-label,
+#engagement-like-btn[aria-pressed="true"] #engagement-like-label {
+    color: var(--eng-red);
+}
+
+/* Counter badges */
+#engagement-views,
+#engagement-likes,
+#engagement-comments,
+#engagement-shares {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 28px;
+    min-height: 28px;
+    padding: 4px 8px;
+    border: 1px solid #e4ded3;
+    border-radius: 999px;
+    background: #f8f5ef;
+    color: #3a352e;
+    font-size: 13px;
+    font-weight: 800;
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+}
+
+/* When a count is already inside a button, make it cleaner */
+#engagement-like-btn #engagement-likes,
+#engagement-comments-btn #engagement-comments,
+#engagement-share-btn #engagement-shares {
+    min-width: auto;
+    min-height: 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: inherit;
+}
+
+/* General view/stat pill support for the existing markup */
+[data-engagement-root] .engagement-stat,
+[data-engagement-root] .engagement-view-stat,
+[data-engagement-root] .engagement-count {
+    min-height: 46px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    border: 1px solid #e4ded3;
+    border-radius: 999px;
+    padding: 9px 15px;
+    background: var(--eng-soft);
+    color: #4b453d;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+/* Comment area */
+#engagement-comment-form {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0,1fr));
+    gap: 14px;
+    margin-top: 26px;
+    padding: 22px;
+    border: 1px solid var(--eng-line);
+    border-radius: 16px;
+    background: rgba(255,255,255,.82);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.85);
+}
+
+#engagement-comment-form label {
+    display: block;
+    margin-bottom: 6px;
+    color: #4d463d;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: .02em;
+}
+
+#engagement-comment-form input,
+#engagement-comment-form textarea {
+    width: 100%;
+    border: 1px solid #dcd5c9;
+    border-radius: 11px;
+    padding: 11px 13px;
+    background: #fff;
+    color: var(--eng-ink);
+    font: inherit;
+    box-shadow: inset 0 1px 2px rgba(0,0,0,.025);
+    transition: border-color .18s ease, box-shadow .18s ease, background .18s ease;
+}
+
+#engagement-comment-form input:hover,
+#engagement-comment-form textarea:hover {
+    border-color: #cfc6b7;
+}
+
+#engagement-comment-form input:focus,
+#engagement-comment-form textarea:focus {
+    border-color: #c39a4a;
+    background: #fffefb;
+    box-shadow: 0 0 0 4px rgba(198,149,54,.09);
+    outline: none;
+}
+
+#engagement-comment-form textarea,
+#comment-text {
+    min-height: 116px;
+    resize: vertical;
+}
+
+#engagement-comment-form .full,
+#engagement-comment-form .full-width,
+#engagement-comment-form .comment-message,
+#engagement-comment-form textarea,
+#engagement-status,
+#comment-submit {
+    grid-column: 1 / -1;
+}
+
+#comment-submit {
+    min-height: 46px;
+    justify-self: start;
+    border: 1px solid var(--eng-gold);
+    border-radius: 999px;
+    padding: 10px 20px;
+    background: linear-gradient(135deg, #af7a21, #8e5c12);
+    color: #fff;
+    font-size: 14px;
+    font-weight: 800;
+    box-shadow: 0 7px 18px rgba(118,78,15,.18);
+    cursor: pointer;
+    transition: transform .18s ease, box-shadow .18s ease, filter .18s ease;
+}
+
+#comment-submit:hover {
+    transform: translateY(-1px);
+    filter: brightness(1.04);
+    box-shadow: 0 10px 24px rgba(118,78,15,.23);
+}
+
+#comment-submit:disabled {
+    cursor: not-allowed;
+    opacity: .58;
+    transform: none;
+    box-shadow: none;
+}
+
+#engagement-status {
+    min-height: 20px;
+    margin: 2px 0 0;
+    color: var(--eng-muted);
+    font-size: 13px;
+    font-weight: 650;
+}
+
+#engagement-status:empty {
+    display: none;
+}
+
+/* Public comment list */
+#engagement-comments-list {
+    display: grid;
+    gap: 12px;
+    margin-top: 22px;
+}
+
+#engagement-comments-list:empty {
+    display: none;
+}
+
+#engagement-comments-list > * {
+    margin: 0;
+    padding: 15px 17px;
+    border: 1px solid #e5ded2;
+    border-radius: 14px;
+    background: #fff;
+    box-shadow: 0 4px 14px rgba(34,29,20,.035);
+}
+
+[data-engagement-root] .engagement-comment,
+[data-engagement-root] .comment-item,
+#engagement-comments-list article,
+#engagement-comments-list li {
+    list-style: none;
+}
+
+[data-engagement-root] .engagement-comment-name,
+[data-engagement-root] .comment-name,
+#engagement-comments-list strong {
+    color: #302b25;
+    font-size: 14px;
+    font-weight: 850;
+}
+
+[data-engagement-root] .engagement-comment-date,
+[data-engagement-root] .comment-date,
+#engagement-comments-list time,
+#engagement-comments-list small {
+    color: #8a8278;
+    font-size: 11px;
+}
+
+[data-engagement-root] .engagement-comment-text,
+[data-engagement-root] .comment-text,
+#engagement-comments-list p {
+    margin: 7px 0 0;
+    color: #4c463f;
+    line-height: 1.65;
+    overflow-wrap: anywhere;
+}
+
+/* Modern micro-interactions */
+@media (hover: hover) {
+    #engagement-comments-list > * {
+        transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease;
+    }
+
+    #engagement-comments-list > *:hover {
+        transform: translateY(-2px);
+        border-color: #dcc89f;
+        box-shadow: 0 9px 22px rgba(34,29,20,.07);
+    }
+}
+
+/* Engagement responsive layout */
+@media (max-width: 760px) {
+    [data-engagement-root] {
+        margin-top: 36px;
+        padding: 22px 18px;
+        border-radius: 16px;
+    }
+
+    [data-engagement-root] .engagement-summary,
+    [data-engagement-root] .engagement-stats,
+    [data-engagement-root] .engagement-actions,
+    [data-engagement-root] .engagement-bar,
+    [data-engagement-root] .engagement-toolbar {
+        gap: 8px;
+    }
+
+    #engagement-like-btn,
+    #engagement-comments-btn,
+    #engagement-share-btn,
+    [data-engagement-root] .engagement-stat,
+    [data-engagement-root] .engagement-view-stat,
+    [data-engagement-root] .engagement-count {
+        min-height: 44px;
+        padding: 9px 13px;
+        font-size: 13px;
+    }
+
+    #engagement-comment-form {
+        grid-template-columns: 1fr;
+        padding: 18px;
+    }
+
+    #engagement-comment-form > *,
+    #engagement-comment-form textarea,
+    #engagement-status,
+    #comment-submit {
+        grid-column: 1;
+    }
+}
+
+@media (max-width: 480px) {
+    [data-engagement-root] {
+        padding: 20px 14px;
+    }
+
+    [data-engagement-root] .engagement-actions,
+    [data-engagement-root] .engagement-summary,
+    [data-engagement-root] .engagement-stats,
+    [data-engagement-root] .engagement-bar,
+    [data-engagement-root] .engagement-toolbar {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0,1fr));
+        width: 100%;
+    }
+
+    #engagement-like-btn,
+    #engagement-comments-btn,
+    #engagement-share-btn,
+    [data-engagement-root] .engagement-stat,
+    [data-engagement-root] .engagement-view-stat,
+    [data-engagement-root] .engagement-count {
+        width: 100%;
+    }
+
+    #comment-submit {
+        width: 100%;
+        justify-self: stretch;
+    }
+}
