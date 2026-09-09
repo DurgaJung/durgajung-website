@@ -711,83 +711,107 @@
       }
 
       const wasLiked = this.currentLiked;
+      const nextLiked = !wasLiked;
+
       const previousCount = Number(
         String(this.likesCount ? this.likesCount.textContent : "0")
           .replace(/[^0-9.-]/g, "") || 0
       );
 
+      const optimisticCount = Math.max(
+        0,
+        previousCount + (nextLiked ? 1 : -1)
+      );
+
       this.likeButton.disabled = true;
       this.setStatus("");
 
-      /* Immediate feedback so the Like button never appears unresponsive. */
-      this.currentLiked = !wasLiked;
-      this.likeButton.classList.toggle("is-liked", this.currentLiked);
+      /* Show the requested state immediately. */
+      this.currentLiked = nextLiked;
+
+      this.likeButton.classList.toggle(
+        "is-liked",
+        nextLiked
+      );
+
       this.likeButton.setAttribute(
         "aria-pressed",
-        String(this.currentLiked)
+        String(nextLiked)
       );
 
       if (this.likeLabel) {
         this.likeLabel.textContent =
-          this.currentLiked ? "Liked" : "Like";
+          nextLiked ? "Liked" : "Like";
       }
 
       this.setCount(
         this.likesCount,
-        Math.max(
-          0,
-          previousCount + (this.currentLiked ? 1 : -1)
-        )
+        optimisticCount
       );
 
       try {
         let result;
 
         if (wasLiked) {
-          result = await apiRequest("/api/engagement/like", {
-            method: "DELETE",
-            body: {
-              content_key: this.contentKey,
-              visitor_key: visitorKey
+          result = await apiRequest(
+            "/api/engagement/like",
+            {
+              method: "DELETE",
+              body: {
+                content_key: this.contentKey,
+                visitor_key: visitorKey
+              }
             }
-          });
+          );
         } else {
-          result = await apiRequest("/api/engagement/like", {
-            method: "POST",
-            body: this.payload()
-          });
+          result = await apiRequest(
+            "/api/engagement/like",
+            {
+              method: "POST",
+              body: this.payload()
+            }
+          );
         }
 
-        this.currentLiked = Boolean(result.liked);
+        /*
+         * Do not depend on a particular server response field for
+         * liked/unliked state. A successful request means the requested
+         * action succeeded. Use the server count only when it is valid.
+         */
+        this.currentLiked = nextLiked;
 
         this.likeButton.classList.toggle(
           "is-liked",
-          this.currentLiked
+          nextLiked
         );
+
         this.likeButton.setAttribute(
           "aria-pressed",
-          String(this.currentLiked)
+          String(nextLiked)
         );
 
         if (this.likeLabel) {
           this.likeLabel.textContent =
-            this.currentLiked ? "Liked" : "Like";
+            nextLiked ? "Liked" : "Like";
         }
 
-        this.setCount(this.likesCount, result.likes);
+        const serverLikes = Number(result.likes);
 
-        try {
-          await this.load();
-        } catch (refreshError) {
-          console.warn(
-            `Like saved but refresh failed for ${this.contentKey}:`,
-            refreshError
-          );
-        }
+        this.setCount(
+          this.likesCount,
+          Number.isFinite(serverLikes)
+            ? serverLikes
+            : optimisticCount
+        );
       } catch (error) {
-        /* Restore the old state if the server rejects the request. */
+        /* Restore the old state only when the API request actually fails. */
         this.currentLiked = wasLiked;
-        this.likeButton.classList.toggle("is-liked", wasLiked);
+
+        this.likeButton.classList.toggle(
+          "is-liked",
+          wasLiked
+        );
+
         this.likeButton.setAttribute(
           "aria-pressed",
           String(wasLiked)
@@ -798,10 +822,14 @@
             wasLiked ? "Liked" : "Like";
         }
 
-        this.setCount(this.likesCount, previousCount);
+        this.setCount(
+          this.likesCount,
+          previousCount
+        );
 
         this.setStatus(
-          error.message || "Unable to update your like.",
+          error.message ||
+            "Unable to update your like.",
           "error"
         );
 
