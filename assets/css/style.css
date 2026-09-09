@@ -1635,3 +1635,89 @@ a.brand-mini:focus,
         animation:none;
     }
 }
+
+
+/* =========================================================
+   COMPACT SERMON ENGAGEMENT SIZE OVERRIDE
+   Smaller, cleaner icons and controls
+   ========================================================= */
+
+.sermon-engagement .engagement-action{
+    min-height:41px;
+    gap:6px;
+    padding:8px 10px;
+    border-radius:11px;
+    font-size:12px;
+}
+
+.sermon-engagement .engagement-icon{
+    width:16px;
+    height:16px;
+    flex:0 0 16px;
+    font-size:16px;
+    line-height:1;
+}
+
+.sermon-engagement .engagement-icon svg{
+    width:16px;
+    height:16px;
+}
+
+.sermon-engagement .engagement-action-label{
+    font-size:12px;
+    font-weight:750;
+}
+
+.sermon-engagement .engagement-count{
+    min-width:19px;
+    height:19px;
+    padding:0 5px;
+    font-size:9.5px;
+}
+
+.sermon-detail-engagement .engagement-action{
+    min-height:42px;
+    padding:8px 10px;
+    border-radius:11px;
+    font-size:12px;
+}
+
+.sermon-detail-engagement .engagement-icon,
+.sermon-detail-engagement .engagement-icon svg{
+    width:16px;
+    height:16px;
+}
+
+.sermon-detail-engagement .engagement-count{
+    min-width:19px;
+    height:19px;
+    padding:0 5px;
+    font-size:9.5px;
+}
+
+@media(max-width:520px){
+    .sermon-engagement .engagement-action{
+        min-height:39px;
+        padding:7px 8px;
+        border-radius:10px;
+        font-size:11.5px;
+        gap:5px;
+    }
+
+    .sermon-engagement .engagement-icon,
+    .sermon-engagement .engagement-icon svg{
+        width:15px;
+        height:15px;
+    }
+
+    .sermon-engagement .engagement-count{
+        min-width:18px;
+        height:18px;
+        padding:0 5px;
+        font-size:9px;
+    }
+
+    .sermon-engagement .engagement-action-label{
+        font-size:11.5px;
+    }
+}
