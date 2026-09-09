@@ -1721,3 +1721,49 @@ a.brand-mini:focus,
         font-size:11.5px;
     }
 }
+
+
+/* =========================================================
+   BLUE THUMBS-UP LIKE — FINAL OVERRIDE
+   ========================================================= */
+
+.engagement-action--like,
+.sermon-engagement .engagement-action--like,
+.sermon-detail-engagement .engagement-action--like{
+    color:#2563eb !important;
+    background:#eff6ff !important;
+    border-color:#bfdbfe !important;
+}
+
+.engagement-action--like .engagement-icon,
+.engagement-action--like .engagement-icon svg{
+    color:#2563eb !important;
+}
+
+.engagement-action--like.is-liked,
+.sermon-engagement .engagement-action--like.is-liked,
+.sermon-detail-engagement .engagement-action--like.is-liked{
+    color:#ffffff !important;
+    background:linear-gradient(135deg,#3b82f6,#1d4ed8) !important;
+    border-color:#1d4ed8 !important;
+    box-shadow:0 8px 20px rgba(37,99,235,.22) !important;
+}
+
+.engagement-action--like.is-liked .engagement-icon,
+.engagement-action--like.is-liked .engagement-icon svg{
+    color:#ffffff !important;
+}
+
+.engagement-action--like.is-liked .engagement-count{
+    color:#ffffff !important;
+    background:rgba(255,255,255,.18) !important;
+    box-shadow:inset 0 0 0 1px rgba(255,255,255,.24) !important;
+}
+
+@media (hover:hover){
+    .engagement-action--like:not(.is-liked):hover{
+        color:#1d4ed8 !important;
+        background:#dbeafe !important;
+        border-color:#93c5fd !important;
+    }
+}
