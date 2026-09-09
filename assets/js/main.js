@@ -413,6 +413,13 @@
 
       root.innerHTML = `
         ${engagementActionsMarkup("compact")}
+        <p
+          class="sermon-engagement-inline-status"
+          data-role="inline-status"
+          role="status"
+          aria-live="polite"
+          hidden
+        ></p>
         ${engagementCommentPanelMarkup("compact")}
       `;
 
@@ -516,6 +523,10 @@
         "#engagement-status"
       );
 
+      this.inlineStatusMessage = this.find(
+        '[data-role="inline-status"]'
+      );
+
       this.enhanceLegacyVisuals();
     }
 
@@ -546,13 +557,20 @@
     }
 
     setStatus(message = "", type = "") {
-      if (!this.statusMessage) {
+      const targets = [
+        this.statusMessage,
+        this.inlineStatusMessage
+      ].filter(Boolean);
+
+      if (targets.length === 0) {
         return;
       }
 
-      this.statusMessage.textContent = message;
-      this.statusMessage.dataset.state = type;
-      this.statusMessage.hidden = !message;
+      targets.forEach((target) => {
+        target.textContent = message;
+        target.dataset.state = type;
+        target.hidden = !message;
+      });
     }
 
     setCount(element, value) {
