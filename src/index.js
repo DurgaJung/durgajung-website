@@ -4930,12 +4930,76 @@ export default {
           request.url
         );
 
-      const path =
+      const originalPath =
         url.pathname;
 
       const method =
         request.method
           .toUpperCase();
+
+      /*
+       * Permanent admin API routing:
+       *
+       * The Admin Control Center is protected by Cloudflare Access under
+       * /admin/*, while older frontend code calls /api/admin/*.
+       *
+       * If an old /api/admin/* request arrives without the Access identity
+       * header, redirect it with HTTP 307 to the equivalent /admin/api/*
+       * path. 307 preserves POST/PATCH/DELETE methods and request bodies.
+       *
+       * Requests under /admin/api/* are then normalized back to the
+       * existing internal /api/admin/* route names, so all current admin
+       * handlers stay unchanged.
+       */
+      if (
+        originalPath.startsWith(
+          "/api/admin/"
+        ) &&
+        !getAdminEmail(
+          request
+        )
+      ) {
+        const protectedUrl =
+          new URL(
+            request.url
+          );
+
+        protectedUrl.pathname =
+          "/admin/api/" +
+          originalPath.slice(
+            "/api/admin/".length
+          );
+
+        return new Response(
+          null,
+          {
+            status: 307,
+            headers: {
+              Location:
+                protectedUrl.toString(),
+              "cache-control":
+                "no-store"
+            }
+          }
+        );
+      }
+
+      let path =
+        originalPath;
+
+      if (
+        originalPath ===
+          "/admin/api" ||
+        originalPath.startsWith(
+          "/admin/api/"
+        )
+      ) {
+        path =
+          "/api/admin" +
+          originalPath.slice(
+            "/admin/api".length
+          );
+      }
 
       if (
         path ===
