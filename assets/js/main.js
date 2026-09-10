@@ -130,7 +130,7 @@
       .replace(/[\u0300-\u036f]/g, "")
       .replace(/[^a-z0-9]+/g, "-")
       .replace(/^-+|-+$/g, "")
-      .slice(0, 90);
+      .slice(0, 72);
   }
 
   function sermonKeyFromPath(pathname) {
@@ -1058,12 +1058,6 @@
     }
 
     bindEvents() {
-      if (this.likeButton) {
-        this.likeButton.addEventListener("click", () =>
-          this.toggleLike()
-        );
-      }
-
       if (this.commentsButton) {
         this.commentsButton.addEventListener("click", () =>
           this.openComments()
@@ -1125,8 +1119,56 @@
     ...document.querySelectorAll("[data-engagement-root]")
   ];
 
+  const engagementControllerMap = new WeakMap();
+
   engagementRoots.forEach((root) => {
     const controller = new EngagementController(root);
+    engagementControllerMap.set(root, controller);
     controller.initialize();
   });
+
+  /*
+   * Robust Like handling.
+   * Use one document-level capture listener so the Like action still works
+   * even if a sermon card or another page element has its own click handler.
+   */
+  document.addEventListener(
+    "click",
+    (event) => {
+      const target =
+        event.target instanceof Element
+          ? event.target
+          : event.target && event.target.parentElement;
+
+      if (!target) {
+        return;
+      }
+
+      const likeButton = target.closest(
+        '[data-role="like-button"], #engagement-like-btn'
+      );
+
+      if (!likeButton) {
+        return;
+      }
+
+      const root = likeButton.closest("[data-engagement-root]");
+
+      if (!root) {
+        return;
+      }
+
+      const controller = engagementControllerMap.get(root);
+
+      if (!controller) {
+        return;
+      }
+
+      event.preventDefault();
+      event.stopPropagation();
+
+      controller.toggleLike();
+    },
+    true
+  );
 })();
