@@ -2643,6 +2643,445 @@ async function publicProducts(
 }
 
 
+function validContentKey(value) {
+  const key = clean(value);
+  if (!key || !/^[a-zA-Z0-9][a-zA-Z0-9_-]{0,79}$/.test(key)) {
+    return null;
+  }
+  return key.toLowerCase();
+}
+function validVisitorKey(value) {
+  const visitorKey = clean(value);
+  if (!visitorKey || visitorKey.length > 120) {
+    return null;
+  }
+  return visitorKey;
+}
+async function ensureWebsiteContent(env, body) {
+  const contentKey = validContentKey(body.content_key);
+  const pagePath = clean(body.page_path);
+  const title = clean(body.title) || contentKey;
+  const contentType = clean(body.content_type) || "page";
+  if (!contentKey) {
+    throw new Error("Invalid content key.");
+  }
+  if (!pagePath || !pagePath.startsWith("/") || pagePath.length > 300) {
+    throw new Error("Invalid page path.");
+  }
+  if (!title || title.length > 200) {
+    throw new Error("Invalid title.");
+  }
+  if (contentType.length > 50) {
+    throw new Error("Invalid content type.");
+  }
+  // Insert only when the content is first seen. This avoids a D1 write on every page view.
+  await env.ADMIN_DB.prepare(`
+      INSERT OR IGNORE INTO website_content (
+        content_key,
+        page_path,
+        title,
+        content_type
+      )
+      VALUES (?, ?, ?, ?)
+    `).bind(
+    contentKey,
+    pagePath,
+    title,
+    contentType
+  ).run();
+  return contentKey;
+}
+async function publicEngagementStats(request, env) {
+  const url = new URL(request.url);
+  const contentKey = validContentKey(url.searchParams.get("content_key"));
+  const visitorKey = validVisitorKey(url.searchParams.get("visitor_key"));
+  if (!contentKey) {
+    return json(
+      {
+        success: false,
+        error: "content_key is required."
+      },
+      400
+    );
+  }
+  const totals = await env.ADMIN_DB.prepare(`
+      SELECT
+        (SELECT COUNT(*) FROM website_views WHERE content_key = ?) AS views,
+        (SELECT COUNT(*) FROM website_likes WHERE content_key = ?) AS likes,
+        (
+          SELECT COUNT(*)
+          FROM website_comments
+          WHERE content_key = ? AND status = 'approved'
+        ) AS comments,
+        (SELECT COUNT(*) FROM website_shares WHERE content_key = ?) AS shares
+    `).bind(
+    contentKey,
+    contentKey,
+    contentKey,
+    contentKey
+  ).first();
+  let liked = false;
+  if (visitorKey) {
+    const existingLike = await env.ADMIN_DB.prepare(`
+        SELECT id
+        FROM website_likes
+        WHERE content_key = ? AND visitor_key = ?
+        LIMIT 1
+      `).bind(
+      contentKey,
+      visitorKey
+    ).first();
+    liked = Boolean(existingLike);
+  }
+  const comments = await env.ADMIN_DB.prepare(`
+      SELECT
+        id,
+        commenter_name,
+        comment_text,
+        created_at
+      FROM website_comments
+      WHERE content_key = ? AND status = 'approved'
+      ORDER BY id DESC
+      LIMIT 100
+    `).bind(contentKey).all();
+  return json({
+    success: true,
+    engagement: {
+      content_key: contentKey,
+      views: Number(totals?.views || 0),
+      likes: Number(totals?.likes || 0),
+      comments: Number(totals?.comments || 0),
+      shares: Number(totals?.shares || 0),
+      liked
+    },
+    comments: comments.results || []
+  });
+}
+async function publicRecordView(request, env) {
+  const body = await readJson(request);
+  const visitorKey = validVisitorKey(body.visitor_key);
+  if (!visitorKey) {
+    return json(
+      {
+        success: false,
+        error: "Valid visitor_key is required."
+      },
+      400
+    );
+  }
+  let contentKey;
+  try {
+    contentKey = await ensureWebsiteContent(env, body);
+  } catch (error) {
+    return json(
+      {
+        success: false,
+        error: error.message
+      },
+      400
+    );
+  }
+  // One counted view per visitor/content in a rolling 24-hour window.
+  const existing = await env.ADMIN_DB.prepare(`
+      SELECT id
+      FROM website_views
+      WHERE
+        content_key = ?
+        AND visitor_key = ?
+        AND viewed_at >= datetime('now', '-24 hours')
+      LIMIT 1
+    `).bind(
+    contentKey,
+    visitorKey
+  ).first();
+  let counted = false;
+  if (!existing) {
+    await env.ADMIN_DB.prepare(`
+        INSERT INTO website_views (
+          content_key,
+          visitor_key,
+          page_path
+        )
+        VALUES (?, ?, ?)
+      `).bind(
+      contentKey,
+      visitorKey,
+      clean(body.page_path)
+    ).run();
+    counted = true;
+  }
+  const total = await env.ADMIN_DB.prepare(`
+      SELECT COUNT(*) AS count
+      FROM website_views
+      WHERE content_key = ?
+    `).bind(contentKey).first();
+  return json({
+    success: true,
+    counted,
+    views: Number(total?.count || 0)
+  });
+}
+async function publicAddLike(request, env) {
+  const body = await readJson(request);
+  const visitorKey = validVisitorKey(body.visitor_key);
+  if (!visitorKey) {
+    return json(
+      {
+        success: false,
+        error: "Valid visitor_key is required."
+      },
+      400
+    );
+  }
+  let contentKey;
+  try {
+    contentKey = await ensureWebsiteContent(env, body);
+  } catch (error) {
+    return json(
+      {
+        success: false,
+        error: error.message
+      },
+      400
+    );
+  }
+  await env.ADMIN_DB.prepare(`
+      INSERT OR IGNORE INTO website_likes (
+        content_key,
+        visitor_key
+      )
+      VALUES (?, ?)
+    `).bind(
+    contentKey,
+    visitorKey
+  ).run();
+  const total = await env.ADMIN_DB.prepare(`
+      SELECT COUNT(*) AS count
+      FROM website_likes
+      WHERE content_key = ?
+    `).bind(contentKey).first();
+  return json({
+    success: true,
+    liked: true,
+    likes: Number(total?.count || 0)
+  });
+}
+async function publicRemoveLike(request, env) {
+  const body = await readJson(request);
+  const contentKey = validContentKey(body.content_key);
+  const visitorKey = validVisitorKey(body.visitor_key);
+  if (!contentKey || !visitorKey) {
+    return json(
+      {
+        success: false,
+        error: "Valid content_key and visitor_key are required."
+      },
+      400
+    );
+  }
+  await env.ADMIN_DB.prepare(`
+      DELETE FROM website_likes
+      WHERE content_key = ? AND visitor_key = ?
+    `).bind(
+    contentKey,
+    visitorKey
+  ).run();
+  const total = await env.ADMIN_DB.prepare(`
+      SELECT COUNT(*) AS count
+      FROM website_likes
+      WHERE content_key = ?
+    `).bind(contentKey).first();
+  return json({
+    success: true,
+    liked: false,
+    likes: Number(total?.count || 0)
+  });
+}
+async function publicAddComment(request, env) {
+  const body = await readJson(request);
+  const commenterName = clean(body.commenter_name);
+  const commenterEmail = clean(body.commenter_email);
+  const commentText = clean(body.comment_text);
+  const visitorKey = validVisitorKey(body.visitor_key);
+  if (!visitorKey) {
+    return json(
+      {
+        success: false,
+        error: "Valid visitor_key is required."
+      },
+      400
+    );
+  }
+  if (!commenterName || commenterName.length > 80) {
+    return json(
+      {
+        success: false,
+        error: "Commenter name is required and must be 80 characters or fewer."
+      },
+      400
+    );
+  }
+  if (commenterEmail && commenterEmail.length > 254) {
+    return json(
+      {
+        success: false,
+        error: "Email is too long."
+      },
+      400
+    );
+  }
+  if (!commentText || commentText.length > 2e3) {
+    return json(
+      {
+        success: false,
+        error: "Comment must be between 1 and 2000 characters."
+      },
+      400
+    );
+  }
+  let contentKey;
+  try {
+    contentKey = await ensureWebsiteContent(env, body);
+  } catch (error) {
+    return json(
+      {
+        success: false,
+        error: error.message
+      },
+      400
+    );
+  }
+  // Basic spam guard: one comment per visitor/content every 15 seconds.
+  const tooSoon = await env.ADMIN_DB.prepare(`
+      SELECT id
+      FROM website_comments
+      WHERE
+        content_key = ?
+        AND visitor_key = ?
+        AND created_at >= datetime('now', '-15 seconds')
+      LIMIT 1
+    `).bind(
+    contentKey,
+    visitorKey
+  ).first();
+  if (tooSoon) {
+    return json(
+      {
+        success: false,
+        error: "Please wait a few seconds before posting another comment."
+      },
+      429
+    );
+  }
+  const result = await env.ADMIN_DB.prepare(`
+      INSERT INTO website_comments (
+        content_key,
+        visitor_key,
+        commenter_name,
+        commenter_email,
+        comment_text,
+        status
+      )
+      VALUES (?, ?, ?, ?, ?, 'approved')
+    `).bind(
+    contentKey,
+    visitorKey,
+    commenterName,
+    commenterEmail,
+    commentText
+  ).run();
+  return json(
+    {
+      success: true,
+      message: "Comment added.",
+      comment_id: Number(result.meta.last_row_id)
+    },
+    201
+  );
+}
+async function publicRecordShare(request, env) {
+  const body = await readJson(request);
+  const allowedShareTypes = [
+    "facebook",
+    "whatsapp",
+    "copy_link",
+    "native_share"
+  ];
+  const shareType = clean(body.share_type);
+  const visitorKey = validVisitorKey(body.visitor_key);
+  if (!visitorKey) {
+    return json(
+      {
+        success: false,
+        error: "Valid visitor_key is required."
+      },
+      400
+    );
+  }
+  if (!shareType || !allowedShareTypes.includes(shareType)) {
+    return json(
+      {
+        success: false,
+        error: "Invalid share_type."
+      },
+      400
+    );
+  }
+  let contentKey;
+  try {
+    contentKey = await ensureWebsiteContent(env, body);
+  } catch (error) {
+    return json(
+      {
+        success: false,
+        error: error.message
+      },
+      400
+    );
+  }
+  // Prevent rapid repeated share-button clicks from inflating the counter.
+  const recent = await env.ADMIN_DB.prepare(`
+      SELECT id
+      FROM website_shares
+      WHERE
+        content_key = ?
+        AND visitor_key = ?
+        AND share_type = ?
+        AND shared_at >= datetime('now', '-10 minutes')
+      LIMIT 1
+    `).bind(
+    contentKey,
+    visitorKey,
+    shareType
+  ).first();
+  let counted = false;
+  if (!recent) {
+    await env.ADMIN_DB.prepare(`
+        INSERT INTO website_shares (
+          content_key,
+          visitor_key,
+          share_type
+        )
+        VALUES (?, ?, ?)
+      `).bind(
+      contentKey,
+      visitorKey,
+      shareType
+    ).run();
+    counted = true;
+  }
+  const total = await env.ADMIN_DB.prepare(`
+      SELECT COUNT(*) AS count
+      FROM website_shares
+      WHERE content_key = ?
+    `).bind(contentKey).first();
+  return json({
+    success: true,
+    counted,
+    shares: Number(total?.count || 0)
+  });
+}
+
 async function createOrder(
   request,
   env
@@ -2996,6 +3435,26 @@ async function adminDashboard(
       `)
       .first();
 
+  const engagement =
+    await env.ADMIN_DB
+      .prepare(`
+        SELECT
+          (SELECT COUNT(*) FROM website_views) AS views,
+          (SELECT COUNT(*) FROM website_likes) AS likes,
+          (
+            SELECT COUNT(*)
+            FROM website_comments
+            WHERE status = 'approved'
+          ) AS comments,
+          (SELECT COUNT(*) FROM website_shares) AS shares,
+          (
+            SELECT COUNT(*)
+            FROM website_comments
+            WHERE status = 'hidden'
+          ) AS hidden_comments
+      `)
+      .first();
+
   return json({
     success: true,
 
@@ -3038,6 +3497,31 @@ async function adminDashboard(
         Number(
           bookProducts?.count ||
           0
+        ),
+
+      total_views:
+        Number(
+          engagement?.views || 0
+        ),
+
+      total_likes:
+        Number(
+          engagement?.likes || 0
+        ),
+
+      total_comments:
+        Number(
+          engagement?.comments || 0
+        ),
+
+      total_shares:
+        Number(
+          engagement?.shares || 0
+        ),
+
+      hidden_comments:
+        Number(
+          engagement?.hidden_comments || 0
         )
     }
   });
@@ -4152,6 +4636,166 @@ function csvValue(
 }
 
 
+async function adminEngagement(env) {
+  const totals = await env.ADMIN_DB.prepare(`
+      SELECT
+        (SELECT COUNT(*) FROM website_views) AS views,
+        (SELECT COUNT(*) FROM website_likes) AS likes,
+        (
+          SELECT COUNT(*)
+          FROM website_comments
+          WHERE status = 'approved'
+        ) AS comments,
+        (SELECT COUNT(*) FROM website_shares) AS shares,
+        (
+          SELECT COUNT(*)
+          FROM website_comments
+          WHERE status = 'hidden'
+        ) AS hidden_comments
+    `).first();
+  const pages = await env.ADMIN_DB.prepare(`
+      SELECT
+        c.content_key,
+        c.page_path,
+        c.title,
+        c.content_type,
+        (SELECT COUNT(*) FROM website_views v WHERE v.content_key = c.content_key) AS views,
+        (SELECT COUNT(*) FROM website_likes l WHERE l.content_key = c.content_key) AS likes,
+        (
+          SELECT COUNT(*)
+          FROM website_comments m
+          WHERE m.content_key = c.content_key AND m.status = 'approved'
+        ) AS comments,
+        (SELECT COUNT(*) FROM website_shares s WHERE s.content_key = c.content_key) AS shares
+      FROM website_content c
+      ORDER BY views DESC, c.title ASC
+    `).all();
+  return json({
+    success: true,
+    totals: {
+      views: Number(totals?.views || 0),
+      likes: Number(totals?.likes || 0),
+      comments: Number(totals?.comments || 0),
+      shares: Number(totals?.shares || 0),
+      hidden_comments: Number(totals?.hidden_comments || 0)
+    },
+    pages: (pages.results || []).map((row) => ({
+      ...row,
+      views: Number(row.views || 0),
+      likes: Number(row.likes || 0),
+      comments: Number(row.comments || 0),
+      shares: Number(row.shares || 0)
+    }))
+  });
+}
+async function adminComments(env) {
+  const result = await env.ADMIN_DB.prepare(`
+      SELECT
+        m.id,
+        m.content_key,
+        c.title AS content_title,
+        c.page_path,
+        m.commenter_name,
+        m.commenter_email,
+        m.comment_text,
+        m.status,
+        m.created_at,
+        m.updated_at
+      FROM website_comments m
+      LEFT JOIN website_content c
+        ON c.content_key = m.content_key
+      ORDER BY m.id DESC
+      LIMIT 500
+    `).all();
+  return json({
+    success: true,
+    comments: result.results || []
+  });
+}
+async function adminSetCommentStatus(request, env, commentId) {
+  const body = await readJson(request);
+  const status = clean(body.status);
+  if (!status || !["approved", "hidden"].includes(status)) {
+    return json(
+      {
+        success: false,
+        error: "Comment status must be approved or hidden."
+      },
+      400
+    );
+  }
+  const existing = await env.ADMIN_DB.prepare(`
+      SELECT id, content_key, commenter_name
+      FROM website_comments
+      WHERE id = ?
+      LIMIT 1
+    `).bind(commentId).first();
+  if (!existing) {
+    return json(
+      {
+        success: false,
+        error: "Comment not found."
+      },
+      404
+    );
+  }
+  await env.ADMIN_DB.prepare(`
+      UPDATE website_comments
+      SET
+        status = ?,
+        updated_at = CURRENT_TIMESTAMP
+      WHERE id = ?
+    `).bind(
+    status,
+    commentId
+  ).run();
+  await recordAdminActivity(
+    env,
+    request,
+    "WEBSITE_COMMENT_STATUS_CHANGED",
+    "website_comment",
+    commentId,
+    `${existing.content_key}: comment by ${existing.commenter_name} changed to ${status}.`
+  );
+  return json({
+    success: true,
+    message: `Comment marked ${status}.`
+  });
+}
+async function adminDeleteComment(request, env, commentId) {
+  const existing = await env.ADMIN_DB.prepare(`
+      SELECT id, content_key, commenter_name
+      FROM website_comments
+      WHERE id = ?
+      LIMIT 1
+    `).bind(commentId).first();
+  if (!existing) {
+    return json(
+      {
+        success: false,
+        error: "Comment not found."
+      },
+      404
+    );
+  }
+  await env.ADMIN_DB.prepare(`
+      DELETE FROM website_comments
+      WHERE id = ?
+    `).bind(commentId).run();
+  await recordAdminActivity(
+    env,
+    request,
+    "WEBSITE_COMMENT_DELETED",
+    "website_comment",
+    commentId,
+    `${existing.content_key}: comment by ${existing.commenter_name} permanently deleted.`
+  );
+  return json({
+    success: true,
+    message: "Comment permanently deleted."
+  });
+}
+
 async function exportSales(
   env
 ) {
@@ -4312,6 +4956,72 @@ export default {
 
       if (
         path ===
+          "/api/engagement" &&
+        method === "GET"
+      ) {
+        return publicEngagementStats(
+          request,
+          env
+        );
+      }
+
+      if (
+        path ===
+          "/api/engagement/view" &&
+        method === "POST"
+      ) {
+        return publicRecordView(
+          request,
+          env
+        );
+      }
+
+      if (
+        path ===
+          "/api/engagement/like" &&
+        method === "POST"
+      ) {
+        return publicAddLike(
+          request,
+          env
+        );
+      }
+
+      if (
+        path ===
+          "/api/engagement/like" &&
+        method === "DELETE"
+      ) {
+        return publicRemoveLike(
+          request,
+          env
+        );
+      }
+
+      if (
+        path ===
+          "/api/engagement/comment" &&
+        method === "POST"
+      ) {
+        return publicAddComment(
+          request,
+          env
+        );
+      }
+
+      if (
+        path ===
+          "/api/engagement/share" &&
+        method === "POST"
+      ) {
+        return publicRecordShare(
+          request,
+          env
+        );
+      }
+
+      if (
+        path ===
           "/api/orders" &&
         method === "POST"
       ) {
@@ -4343,6 +5053,63 @@ export default {
       ) {
         return adminDashboard(
           env
+        );
+      }
+
+
+      if (
+        path ===
+          "/api/admin/engagement" &&
+        method === "GET"
+      ) {
+        return adminEngagement(
+          env
+        );
+      }
+
+      if (
+        path ===
+          "/api/admin/comments" &&
+        method === "GET"
+      ) {
+        return adminComments(
+          env
+        );
+      }
+
+      const commentStatusMatch =
+        path.match(
+          /^\/api\/admin\/comments\/(\d+)\/status$/
+        );
+
+      if (
+        commentStatusMatch &&
+        method === "PATCH"
+      ) {
+        return adminSetCommentStatus(
+          request,
+          env,
+          Number(
+            commentStatusMatch[1]
+          )
+        );
+      }
+
+      const commentDeleteMatch =
+        path.match(
+          /^\/api\/admin\/comments\/(\d+)$/
+        );
+
+      if (
+        commentDeleteMatch &&
+        method === "DELETE"
+      ) {
+        return adminDeleteComment(
+          request,
+          env,
+          Number(
+            commentDeleteMatch[1]
+          )
         );
       }
 
