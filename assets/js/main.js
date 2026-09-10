@@ -201,6 +201,188 @@
     }
   }
 
+  function ensureShareChooserStyles() {
+    if (document.getElementById("dj-share-chooser-styles")) {
+      return;
+    }
+
+    const style = document.createElement("style");
+    style.id = "dj-share-chooser-styles";
+    style.textContent = `
+      .dj-share-backdrop{
+        position:fixed;
+        inset:0;
+        z-index:99999;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        padding:20px;
+        background:rgba(15,23,42,.48);
+        backdrop-filter:blur(4px);
+      }
+
+      .dj-share-dialog{
+        width:min(520px,100%);
+        max-height:min(88vh,720px);
+        overflow:auto;
+        border:1px solid rgba(148,163,184,.28);
+        border-radius:22px;
+        background:#ffffff;
+        box-shadow:0 28px 80px rgba(15,23,42,.24);
+        padding:22px;
+      }
+
+      .dj-share-head{
+        display:flex;
+        align-items:flex-start;
+        justify-content:space-between;
+        gap:16px;
+        margin-bottom:18px;
+      }
+
+      .dj-share-title{
+        margin:0;
+        color:#111827;
+        font-size:22px;
+        line-height:1.2;
+        font-weight:800;
+      }
+
+      .dj-share-subtitle{
+        margin:5px 0 0;
+        color:#6b7280;
+        font-size:13px;
+        line-height:1.45;
+      }
+
+      .dj-share-close{
+        width:36px;
+        height:36px;
+        flex:0 0 36px;
+        display:grid;
+        place-items:center;
+        border:1px solid #e5e7eb;
+        border-radius:999px;
+        background:#ffffff;
+        color:#374151;
+        font-size:22px;
+        line-height:1;
+        cursor:pointer;
+      }
+
+      .dj-share-grid{
+        display:grid;
+        grid-template-columns:repeat(4,minmax(0,1fr));
+        gap:12px;
+      }
+
+      .dj-share-option{
+        appearance:none;
+        min-width:0;
+        min-height:96px;
+        display:flex;
+        flex-direction:column;
+        align-items:center;
+        justify-content:center;
+        gap:9px;
+        border:1px solid #e5e7eb;
+        border-radius:16px;
+        background:#ffffff;
+        color:#1f2937;
+        padding:12px 8px;
+        font:inherit;
+        font-size:12px;
+        font-weight:750;
+        cursor:pointer;
+        transition:transform .16s ease,box-shadow .16s ease,border-color .16s ease;
+      }
+
+      .dj-share-option:hover{
+        transform:translateY(-2px);
+        border-color:#cbd5e1;
+        box-shadow:0 10px 24px rgba(15,23,42,.08);
+      }
+
+      .dj-share-option:focus-visible,
+      .dj-share-close:focus-visible{
+        outline:3px solid rgba(37,99,235,.28);
+        outline-offset:2px;
+      }
+
+      .dj-share-icon{
+        width:44px;
+        height:44px;
+        display:grid;
+        place-items:center;
+        border-radius:14px;
+        font-size:20px;
+        font-weight:900;
+        color:#ffffff;
+      }
+
+      .dj-share-facebook{background:#1877f2;}
+      .dj-share-whatsapp{background:#22c55e;}
+      .dj-share-messenger{background:linear-gradient(135deg,#00b2ff,#7c3aed);}
+      .dj-share-telegram{background:#229ed9;}
+      .dj-share-email{background:#64748b;}
+      .dj-share-copy{background:#334155;}
+      .dj-share-more{background:#111827;}
+
+      .dj-share-note{
+        margin:16px 0 0;
+        color:#6b7280;
+        font-size:11.5px;
+        line-height:1.5;
+        text-align:center;
+      }
+
+      @media(max-width:560px){
+        .dj-share-dialog{
+          padding:18px;
+          border-radius:18px;
+        }
+
+        .dj-share-grid{
+          grid-template-columns:repeat(3,minmax(0,1fr));
+          gap:9px;
+        }
+
+        .dj-share-option{
+          min-height:88px;
+          border-radius:14px;
+          font-size:11px;
+        }
+
+        .dj-share-icon{
+          width:40px;
+          height:40px;
+          border-radius:12px;
+          font-size:18px;
+        }
+      }
+    `;
+
+    document.head.appendChild(style);
+  }
+
+  function openShareWindow(url) {
+    const popup = window.open(
+      url,
+      "_blank",
+      "noopener,noreferrer,width=760,height=680"
+    );
+
+    if (popup) {
+      try {
+        popup.opener = null;
+      } catch (error) {
+        // Ignore browsers that prevent access to opener.
+      }
+    }
+
+    return popup;
+  }
+
   /* =========================================================
      SERMON PAGE PREPARATION
      ========================================================= */
@@ -1009,52 +1191,284 @@
       }
     }
 
-    async share() {
-      if (!this.shareButton || this.shareButton.disabled) {
+    async completeShareAction(shareType, successMessage = "") {
+      try {
+        await this.recordShare(shareType);
+        await this.load();
+
+        if (successMessage) {
+          this.setStatus(successMessage, "success");
+        }
+      } catch (error) {
+        this.setStatus(
+          error.message || "Unable to record this share.",
+          "error"
+        );
+      }
+    }
+
+    openShareChooser() {
+      if (!this.shareButton) {
         return;
       }
 
-      this.shareButton.disabled = true;
+      ensureShareChooserStyles();
       this.setStatus("");
 
-      try {
-        if (
-          navigator.share &&
-          typeof navigator.share === "function"
-        ) {
-          try {
-            await navigator.share({
-              title: this.contentTitle,
-              url: this.shareUrl
-            });
+      document
+        .querySelectorAll(".dj-share-backdrop")
+        .forEach((item) => item.remove());
 
-            await this.recordShare("native_share");
-            this.setStatus("Thank you for sharing.", "success");
-          } catch (error) {
-            if (error && error.name === "AbortError") {
+      const backdrop = document.createElement("div");
+      backdrop.className = "dj-share-backdrop";
+
+      const dialog = document.createElement("div");
+      dialog.className = "dj-share-dialog";
+      dialog.setAttribute("role", "dialog");
+      dialog.setAttribute("aria-modal", "true");
+      dialog.setAttribute("aria-label", "Share options");
+
+      const head = document.createElement("div");
+      head.className = "dj-share-head";
+
+      const headingWrap = document.createElement("div");
+      const title = document.createElement("h2");
+      title.className = "dj-share-title";
+      title.textContent = "Share";
+
+      const subtitle = document.createElement("p");
+      subtitle.className = "dj-share-subtitle";
+      subtitle.textContent = this.contentTitle || "Choose where you want to share.";
+
+      headingWrap.appendChild(title);
+      headingWrap.appendChild(subtitle);
+
+      const closeButton = document.createElement("button");
+      closeButton.className = "dj-share-close";
+      closeButton.type = "button";
+      closeButton.setAttribute("aria-label", "Close share options");
+      closeButton.textContent = "×";
+
+      head.appendChild(headingWrap);
+      head.appendChild(closeButton);
+
+      const grid = document.createElement("div");
+      grid.className = "dj-share-grid";
+
+      const options = [
+        ["facebook", "f", "Facebook", "dj-share-facebook"],
+        ["whatsapp", "W", "WhatsApp", "dj-share-whatsapp"],
+        ["messenger", "M", "Messenger", "dj-share-messenger"],
+        ["telegram", "T", "Telegram", "dj-share-telegram"],
+        ["email", "@", "Email", "dj-share-email"],
+        ["copy_link", "⧉", "Copy link", "dj-share-copy"],
+        ["native_share", "⋯", "More apps", "dj-share-more"]
+      ];
+
+      const closeChooser = () => {
+        document.removeEventListener("keydown", onKeyDown);
+        backdrop.remove();
+        this.shareButton.focus();
+      };
+
+      const onKeyDown = (event) => {
+        if (event.key === "Escape") {
+          closeChooser();
+        }
+      };
+
+      options.forEach(([platform, symbol, label, iconClass]) => {
+        if (
+          platform === "native_share" &&
+          !(navigator.share && typeof navigator.share === "function")
+        ) {
+          return;
+        }
+
+        const button = document.createElement("button");
+        button.className = "dj-share-option";
+        button.type = "button";
+        button.dataset.sharePlatform = platform;
+
+        const icon = document.createElement("span");
+        icon.className = `dj-share-icon ${iconClass}`;
+        icon.setAttribute("aria-hidden", "true");
+        icon.textContent = symbol;
+
+        const text = document.createElement("span");
+        text.textContent = label;
+
+        button.appendChild(icon);
+        button.appendChild(text);
+
+        button.addEventListener("click", async () => {
+          button.disabled = true;
+
+          const encodedUrl = encodeURIComponent(this.shareUrl);
+          const encodedTitle = encodeURIComponent(this.contentTitle || "");
+          const combinedText = encodeURIComponent(
+            `${this.contentTitle || ""} ${this.shareUrl}`.trim()
+          );
+
+          try {
+            if (platform === "facebook") {
+              openShareWindow(
+                `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`
+              );
+              closeChooser();
+              await this.completeShareAction(
+                "facebook",
+                "Facebook sharing opened."
+              );
               return;
             }
 
-            throw error;
-          }
-        } else {
-          await this.copyShareLink();
-          await this.recordShare("copy_link");
-          this.setStatus(
-            "Link copied. You can now share it.",
-            "success"
-          );
-        }
+            if (platform === "whatsapp") {
+              openShareWindow(
+                `https://wa.me/?text=${combinedText}`
+              );
+              closeChooser();
+              await this.completeShareAction(
+                "whatsapp",
+                "WhatsApp sharing opened."
+              );
+              return;
+            }
 
-        await this.load();
-      } catch (error) {
-        this.setStatus(
-          error.message || "Unable to share this content.",
-          "error"
-        );
-      } finally {
-        this.shareButton.disabled = false;
+            if (platform === "telegram") {
+              openShareWindow(
+                `https://t.me/share/url?url=${encodedUrl}&text=${encodedTitle}`
+              );
+              closeChooser();
+              await this.completeShareAction(
+                "telegram",
+                "Telegram sharing opened."
+              );
+              return;
+            }
+
+            if (platform === "email") {
+              window.location.href =
+                `mailto:?subject=${encodedTitle}&body=${combinedText}`;
+              closeChooser();
+              await this.completeShareAction(
+                "email",
+                "Email sharing opened."
+              );
+              return;
+            }
+
+            if (platform === "copy_link") {
+              await this.copyShareLink();
+              closeChooser();
+              await this.completeShareAction(
+                "copy_link",
+                "Link copied."
+              );
+              return;
+            }
+
+            if (platform === "messenger") {
+              if (
+                navigator.share &&
+                typeof navigator.share === "function"
+              ) {
+                try {
+                  await navigator.share({
+                    title: this.contentTitle,
+                    text: this.contentTitle,
+                    url: this.shareUrl
+                  });
+                } catch (error) {
+                  if (error && error.name === "AbortError") {
+                    button.disabled = false;
+                    return;
+                  }
+
+                  throw error;
+                }
+
+                closeChooser();
+                await this.completeShareAction(
+                  "messenger",
+                  "Sharing completed."
+                );
+                return;
+              }
+
+              await this.copyShareLink();
+              openShareWindow("https://www.messenger.com/");
+              closeChooser();
+              await this.completeShareAction(
+                "messenger",
+                "Messenger opened."
+              );
+              return;
+            }
+
+            if (platform === "native_share") {
+              try {
+                await navigator.share({
+                  title: this.contentTitle,
+                  text: this.contentTitle,
+                  url: this.shareUrl
+                });
+              } catch (error) {
+                if (error && error.name === "AbortError") {
+                  button.disabled = false;
+                  return;
+                }
+
+                throw error;
+              }
+
+              closeChooser();
+              await this.completeShareAction(
+                "native_share",
+                "Sharing completed."
+              );
+            }
+          } catch (error) {
+            button.disabled = false;
+            this.setStatus(
+              error.message || "Unable to share this content.",
+              "error"
+            );
+          }
+        });
+
+        grid.appendChild(button);
+      });
+
+      const note = document.createElement("p");
+      note.className = "dj-share-note";
+      note.textContent =
+        "Choose a platform. On supported phones and computers, More apps opens your system sharing menu.";
+
+      dialog.appendChild(head);
+      dialog.appendChild(grid);
+      dialog.appendChild(note);
+      backdrop.appendChild(dialog);
+      document.body.appendChild(backdrop);
+
+      closeButton.addEventListener("click", closeChooser);
+
+      backdrop.addEventListener("click", (event) => {
+        if (event.target === backdrop) {
+          closeChooser();
+        }
+      });
+
+      document.addEventListener("keydown", onKeyDown);
+
+      const firstOption = grid.querySelector(".dj-share-option");
+      if (firstOption) {
+        firstOption.focus();
       }
+    }
+
+    share() {
+      this.openShareChooser();
     }
 
     bindEvents() {
