@@ -1,1588 +1,5315 @@
-(() => {
-  "use strict";
+import {
+  PDFDocument,
+  StandardFonts,
+  rgb
+} from "pdf-lib";
 
-  /* =========================================================
-     MOBILE NAVIGATION
-     ========================================================= */
+const ADMIN_EMAIL = "durgajung.nits@gmail.com";
+const DEFAULT_PRODUCT_CODE = "MERO-MANDALI";
 
-  const menuButton = document.querySelector(".menu-btn");
-  const navLinks = document.querySelector(".nav-links");
+const LICENCE_API_URL =
+  "https://mero-mandali-license-api.durgajung-nits.workers.dev/v1/admin/licenses";
 
-  if (menuButton && navLinks) {
-    menuButton.addEventListener("click", () => {
-      navLinks.classList.toggle("open");
-      menuButton.setAttribute(
-        "aria-expanded",
-        String(navLinks.classList.contains("open"))
-      );
-    });
+const RESEND_API_URL =
+  "https://api.resend.com/emails";
 
-    document.querySelectorAll(".nav-links a").forEach((link) => {
-      link.addEventListener("click", () => {
-        navLinks.classList.remove("open");
-        menuButton.setAttribute("aria-expanded", "false");
-      });
-    });
+const EMAIL_FROM =
+  "Mero Mandali <sales@durgajung.com.np>";
+
+const INSTALLER_URL =
+  "https://drive.google.com/file/d/15jbX7BILyFLin1GgkijR1UcxRM1AwRLF/view?usp=drive_link";
+
+const GUIDE_URL =
+  "https://durgajung.com.np/assets/mero-mandali/documents/Mero_Mandali_Programme_Operating_Guide_EN_NP.pdf";
+
+const SOFTWARE_VERSION = "1.0.2";
+
+const SIGNATURE_ASSET_PATH =
+  "/assets/images/Durga_Jung_Kunwar_Signature_Transparent.png";
+
+
+function json(data, status = 200) {
+  return new Response(
+    JSON.stringify(data),
+    {
+      status,
+      headers: {
+        "content-type": "application/json; charset=utf-8",
+        "cache-control": "no-store"
+      }
+    }
+  );
+}
+
+
+async function readJson(request) {
+  try {
+    return await request.json();
+  } catch {
+    return {};
+  }
+}
+
+
+function clean(value) {
+  if (
+    value === undefined ||
+    value === null
+  ) {
+    return null;
   }
 
-  /* =========================================================
-     SHARED HELPERS
-     ========================================================= */
+  const text =
+    String(value).trim();
 
-  function createVisitorKey() {
-    if (
-      window.crypto &&
-      typeof window.crypto.randomUUID === "function"
-    ) {
-      return window.crypto.randomUUID();
-    }
+  return text === ""
+    ? null
+    : text;
+}
 
-    return (
-      "dj-" +
-      Date.now() +
-      "-" +
-      Math.random().toString(36).slice(2) +
-      "-" +
-      Math.random().toString(36).slice(2)
+
+function safeInt(
+  value,
+  fallback = 1
+) {
+  const number =
+    Number.parseInt(
+      value,
+      10
+    );
+
+  return (
+    Number.isFinite(number) &&
+    number >= 1
+  )
+    ? number
+    : fallback;
+}
+
+
+function currentYear() {
+  return new Date()
+    .getUTCFullYear();
+}
+
+
+function makeNumber(
+  prefix,
+  id
+) {
+  return (
+    `${prefix}-${currentYear()}-` +
+    String(id).padStart(
+      5,
+      "0"
+    )
+  );
+}
+
+
+function makeTemporaryNumber(
+  prefix
+) {
+  return (
+    `${prefix}-TMP-` +
+    crypto.randomUUID()
+  );
+}
+
+
+function getAdminEmail(
+  request
+) {
+  return (
+    request.headers.get(
+      "Cf-Access-Authenticated-User-Email"
+    ) ||
+    request.headers.get(
+      "CF-Access-Authenticated-User-Email"
+    ) ||
+    ""
+  )
+    .trim()
+    .toLowerCase();
+}
+
+
+function isAdmin(request) {
+  return (
+    getAdminEmail(request) ===
+    ADMIN_EMAIL.toLowerCase()
+  );
+}
+
+
+function requireAdmin(
+  request
+) {
+  if (!isAdmin(request)) {
+    return json(
+      {
+        success: false,
+        error: "Unauthorized."
+      },
+      401
     );
   }
 
-  function getVisitorKey() {
-    const storageKey = "dj_visitor_key";
+  return null;
+}
 
-    try {
-      let visitorKey = localStorage.getItem(storageKey);
 
-      if (!visitorKey) {
-        visitorKey = createVisitorKey();
-        localStorage.setItem(storageKey, visitorKey);
+function clientIp(request) {
+  return (
+    request.headers.get(
+      "CF-Connecting-IP"
+    ) ||
+    request.headers.get(
+      "X-Forwarded-For"
+    ) ||
+    ""
+  );
+}
+
+
+function escapeHtml(
+  value
+) {
+  return String(
+    value ?? ""
+  )
+    .replaceAll(
+      "&",
+      "&amp;"
+    )
+    .replaceAll(
+      "<",
+      "&lt;"
+    )
+    .replaceAll(
+      ">",
+      "&gt;"
+    )
+    .replaceAll(
+      '"',
+      "&quot;"
+    )
+    .replaceAll(
+      "'",
+      "&#039;"
+    );
+}
+
+
+function pdfText(
+  value
+) {
+  if (
+    value === undefined ||
+    value === null ||
+    String(value).trim() === ""
+  ) {
+    return "-";
+  }
+
+  return String(value)
+    .normalize("NFKD")
+    .replace(
+      /[\u0300-\u036f]/g,
+      ""
+    )
+    .replace(
+      /[^\x20-\x7E]/g,
+      "?"
+    );
+}
+
+
+function npr(
+  value
+) {
+  const number =
+    Number(value || 0);
+
+  return (
+    "NPR " +
+    number.toLocaleString(
+      "en-US",
+      {
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 2
+      }
+    )
+  );
+}
+
+
+function normalDate(
+  value
+) {
+  if (!clean(value)) {
+    return "-";
+  }
+
+  const source =
+    String(value);
+
+  const date =
+    new Date(
+      source.includes("T")
+        ? source
+        : source.replace(
+            " ",
+            "T"
+          ) + "Z"
+    );
+
+  if (
+    Number.isNaN(
+      date.getTime()
+    )
+  ) {
+    return source;
+  }
+
+  return date
+    .toISOString()
+    .slice(
+      0,
+      10
+    );
+}
+
+
+function stablePdfDate(
+  value
+) {
+  if (!clean(value)) {
+    return new Date(
+      "2026-01-01T00:00:00Z"
+    );
+  }
+
+  const source =
+    String(value);
+
+  const date =
+    new Date(
+      source.includes("T")
+        ? source
+        : source.replace(
+            " ",
+            "T"
+          ) + "Z"
+    );
+
+  if (
+    Number.isNaN(
+      date.getTime()
+    )
+  ) {
+    return new Date(
+      "2026-01-01T00:00:00Z"
+    );
+  }
+
+  return date;
+}
+
+
+function bytesToBase64(
+  bytes
+) {
+  let binary = "";
+
+  const chunkSize =
+    0x8000;
+
+  for (
+    let i = 0;
+    i < bytes.length;
+    i += chunkSize
+  ) {
+    const chunk =
+      bytes.subarray(
+        i,
+        Math.min(
+          i + chunkSize,
+          bytes.length
+        )
+      );
+
+    binary +=
+      String.fromCharCode(
+        ...chunk
+      );
+  }
+
+  return btoa(binary);
+}
+
+
+function licenceCertificateNumber(
+  sale
+) {
+  const match =
+    String(
+      sale.sale_number || ""
+    ).match(
+      /^MM-SALE-(\d{4})-(\d{5})$/
+    );
+
+  if (match) {
+    return (
+      `MM-LIC-${match[1]}-${match[2]}`
+    );
+  }
+
+  return (
+    `MM-LIC-${String(
+      sale.id
+    ).padStart(5, "0")}`
+  );
+}
+
+
+async function loadSignatureBytes(
+  request,
+  env
+) {
+  const assetUrl =
+    new URL(
+      SIGNATURE_ASSET_PATH,
+      request.url
+    );
+
+  const response =
+    await env.ASSETS.fetch(
+      new Request(
+        assetUrl.toString(),
+        {
+          method: "GET"
+        }
+      )
+    );
+
+  if (!response.ok) {
+    throw new Error(
+      `Signature asset could not be loaded. HTTP ${response.status}`
+    );
+  }
+
+  return new Uint8Array(
+    await response.arrayBuffer()
+  );
+}
+
+
+function drawText(
+  page,
+  text,
+  x,
+  y,
+  options = {}
+) {
+  page.drawText(
+    pdfText(text),
+    {
+      x,
+      y,
+      size:
+        options.size || 10,
+      font:
+        options.font,
+      color:
+        options.color ||
+        rgb(
+          0.12,
+          0.12,
+          0.12
+        )
+    }
+  );
+}
+
+
+function drawCenteredText(
+  page,
+  text,
+  centerX,
+  y,
+  options = {}
+) {
+  const value =
+    pdfText(text);
+
+  const font =
+    options.font;
+
+  const size =
+    options.size || 10;
+
+  const width =
+    font.widthOfTextAtSize(
+      value,
+      size
+    );
+
+  drawText(
+    page,
+    value,
+    centerX - width / 2,
+    y,
+    {
+      font,
+      size,
+      color:
+        options.color
+    }
+  );
+}
+
+
+function wrapPdfText(
+  text,
+  font,
+  fontSize,
+  maxWidth
+) {
+  const source =
+    pdfText(text);
+
+  const words =
+    source.split(/\s+/);
+
+  const lines = [];
+
+  let line = "";
+
+  for (
+    const word of words
+  ) {
+    const candidate =
+      line
+        ? `${line} ${word}`
+        : word;
+
+    const width =
+      font.widthOfTextAtSize(
+        candidate,
+        fontSize
+      );
+
+    if (
+      width <= maxWidth
+    ) {
+      line =
+        candidate;
+    } else {
+      if (line) {
+        lines.push(line);
       }
 
-      return visitorKey;
-    } catch (error) {
-      return createVisitorKey();
+      line = word;
     }
   }
 
-  const visitorKey = getVisitorKey();
+  if (line) {
+    lines.push(line);
+  }
 
-  async function apiRequest(url, options = {}) {
-    const requestOptions = {
-      method: options.method || "GET",
-      headers: {
-        Accept: "application/json",
-        ...(options.headers || {})
+  return lines;
+}
+
+
+function drawWrappedText(
+  page,
+  text,
+  x,
+  y,
+  maxWidth,
+  options = {}
+) {
+  const font =
+    options.font;
+
+  const size =
+    options.size || 10;
+
+  const lineHeight =
+    options.lineHeight ||
+    size + 4;
+
+  const lines =
+    wrapPdfText(
+      text,
+      font,
+      size,
+      maxWidth
+    );
+
+  let currentY = y;
+
+  for (
+    const line of lines
+  ) {
+    drawText(
+      page,
+      line,
+      x,
+      currentY,
+      {
+        font,
+        size,
+        color:
+          options.color
       }
-    };
+    );
 
-    if (options.body !== undefined) {
-      requestOptions.headers["Content-Type"] = "application/json";
-      requestOptions.body = JSON.stringify(options.body);
+    currentY -=
+      lineHeight;
+  }
+
+  return currentY;
+}
+
+
+function addPdfMetadata(
+  pdfDoc,
+  title,
+  subject,
+  date
+) {
+  pdfDoc.setTitle(
+    title
+  );
+
+  pdfDoc.setAuthor(
+    "Durga Jung Kunwar"
+  );
+
+  pdfDoc.setSubject(
+    subject
+  );
+
+  pdfDoc.setCreator(
+    "Mero Mandali Software"
+  );
+
+  pdfDoc.setProducer(
+    "Mero Mandali Software"
+  );
+
+  pdfDoc.setCreationDate(
+    date
+  );
+
+  pdfDoc.setModificationDate(
+    date
+  );
+}
+
+
+async function createInvoicePdf(
+  sale,
+  order,
+  signatureBytes
+) {
+  const pdfDoc =
+    await PDFDocument.create();
+
+  const font =
+    await pdfDoc.embedFont(
+      StandardFonts.Helvetica
+    );
+
+  const bold =
+    await pdfDoc.embedFont(
+      StandardFonts.HelveticaBold
+    );
+
+  const signatureImage =
+    await pdfDoc.embedPng(
+      signatureBytes
+    );
+
+  addPdfMetadata(
+    pdfDoc,
+    `Invoice ${sale.invoice_number}`,
+    "Official Mero Mandali Software Invoice",
+    stablePdfDate(
+      sale.approved_at ||
+      sale.created_at
+    )
+  );
+
+  const page =
+    pdfDoc.addPage([
+      595.28,
+      841.89
+    ]);
+
+  const width =
+    page.getWidth();
+
+  const height =
+    page.getHeight();
+
+  page.drawRectangle({
+    x: 0,
+    y: height - 110,
+    width,
+    height: 110,
+    color:
+      rgb(
+        0.06,
+        0.16,
+        0.29
+      )
+  });
+
+  drawText(
+    page,
+    "MERO MANDALI",
+    48,
+    height - 55,
+    {
+      font: bold,
+      size: 24,
+      color:
+        rgb(
+          1,
+          1,
+          1
+        )
     }
+  );
 
-    const response = await fetch(url, requestOptions);
+  drawText(
+    page,
+    "OFFICIAL SOFTWARE INVOICE",
+    48,
+    height - 82,
+    {
+      font,
+      size: 11,
+      color:
+        rgb(
+          1,
+          1,
+          1
+        )
+    }
+  );
 
-    let data;
+  drawText(
+    page,
+    sale.invoice_number,
+    390,
+    height - 58,
+    {
+      font: bold,
+      size: 12,
+      color:
+        rgb(
+          1,
+          1,
+          1
+        )
+    }
+  );
+
+  let y =
+    height - 150;
+
+  drawText(
+    page,
+    "CUSTOMER",
+    48,
+    y,
+    {
+      font: bold,
+      size: 11
+    }
+  );
+
+  y -= 24;
+
+  drawText(
+    page,
+    "Name:",
+    48,
+    y,
+    {
+      font: bold
+    }
+  );
+
+  drawText(
+    page,
+    sale.customer_name,
+    150,
+    y,
+    {
+      font
+    }
+  );
+
+  y -= 20;
+
+  drawText(
+    page,
+    "Email:",
+    48,
+    y,
+    {
+      font: bold
+    }
+  );
+
+  drawText(
+    page,
+    sale.customer_email,
+    150,
+    y,
+    {
+      font
+    }
+  );
+
+  y -= 20;
+
+  drawText(
+    page,
+    "Phone:",
+    48,
+    y,
+    {
+      font: bold
+    }
+  );
+
+  drawText(
+    page,
+    sale.customer_phone,
+    150,
+    y,
+    {
+      font
+    }
+  );
+
+  y -= 20;
+
+  drawText(
+    page,
+    "Church / Organization:",
+    48,
+    y,
+    {
+      font: bold
+    }
+  );
+
+  drawText(
+    page,
+    sale.church_organization,
+    190,
+    y,
+    {
+      font
+    }
+  );
+
+  y -= 45;
+
+  drawText(
+    page,
+    "TRANSACTION DETAILS",
+    48,
+    y,
+    {
+      font: bold,
+      size: 11
+    }
+  );
+
+  y -= 24;
+
+  const transactionRows = [
+    [
+      "Sale Number",
+      sale.sale_number
+    ],
+    [
+      "Order Number",
+      order?.order_number ||
+      sale.order_id
+    ],
+    [
+      "Payment Method",
+      sale.payment_method
+    ],
+    [
+      "Transaction Reference",
+      sale.transaction_reference
+    ],
+    [
+      "Payment Date",
+      normalDate(
+        sale.payment_date
+      )
+    ]
+  ];
+
+  for (
+    const row of transactionRows
+  ) {
+    drawText(
+      page,
+      `${row[0]}:`,
+      48,
+      y,
+      {
+        font: bold
+      }
+    );
+
+    drawText(
+      page,
+      row[1],
+      190,
+      y,
+      {
+        font
+      }
+    );
+
+    y -= 20;
+  }
+
+  y -= 25;
+
+  page.drawRectangle({
+    x: 48,
+    y: y - 66,
+    width:
+      width - 96,
+    height: 78,
+    borderWidth: 1,
+    borderColor:
+      rgb(
+        0.75,
+        0.75,
+        0.75
+      )
+  });
+
+  drawText(
+    page,
+    "PRODUCT",
+    60,
+    y,
+    {
+      font: bold
+    }
+  );
+
+  drawText(
+    page,
+    "QTY",
+    360,
+    y,
+    {
+      font: bold
+    }
+  );
+
+  drawText(
+    page,
+    "TOTAL",
+    435,
+    y,
+    {
+      font: bold
+    }
+  );
+
+  y -= 28;
+
+  drawText(
+    page,
+    `${sale.product_name} ${SOFTWARE_VERSION}`,
+    60,
+    y,
+    {
+      font
+    }
+  );
+
+  drawText(
+    page,
+    sale.quantity || 1,
+    365,
+    y,
+    {
+      font
+    }
+  );
+
+  drawText(
+    page,
+    npr(
+      sale.total_paid_npr
+    ),
+    435,
+    y,
+    {
+      font: bold
+    }
+  );
+
+  y -= 80;
+
+  drawText(
+    page,
+    "FINAL TOTAL PAID",
+    325,
+    y,
+    {
+      font: bold,
+      size: 12
+    }
+  );
+
+  drawText(
+    page,
+    npr(
+      sale.total_paid_npr
+    ),
+    445,
+    y,
+    {
+      font: bold,
+      size: 12
+    }
+  );
+
+  y -= 45;
+
+  drawWrappedText(
+    page,
+    "This invoice confirms payment for Mero Mandali Software. The amount shown above is the final purchase price. No VAT breakdown is applied.",
+    48,
+    y,
+    width - 96,
+    {
+      font,
+      size: 9,
+      lineHeight: 13
+    }
+  );
+
+  drawText(
+    page,
+    "AUTHORIZED BY",
+    48,
+    170,
+    {
+      font: bold,
+      size: 9
+    }
+  );
+
+  const invoiceSignatureWidth =
+    165;
+
+  const invoiceSignatureHeight =
+    invoiceSignatureWidth *
+    signatureImage.height /
+    signatureImage.width;
+
+  page.drawImage(
+    signatureImage,
+    {
+      x: 48,
+      y: 92,
+      width:
+        invoiceSignatureWidth,
+      height:
+        invoiceSignatureHeight
+    }
+  );
+
+  drawText(
+    page,
+    "Durga Jung Kunwar",
+    48,
+    82,
+    {
+      font: bold,
+      size: 13
+    }
+  );
+
+  drawText(
+    page,
+    "Developer / Owner - Mero Mandali Software",
+    48,
+    66,
+    {
+      font,
+      size: 8.5
+    }
+  );
+
+  drawText(
+    page,
+    "developer@durgajung.com.np | durgajung.com.np",
+    48,
+    51,
+    {
+      font,
+      size: 8
+    }
+  );
+
+  drawText(
+    page,
+    "Official electronically generated and authorized invoice.",
+    320,
+    51,
+    {
+      font,
+      size: 8
+    }
+  );
+
+  return await pdfDoc.save();
+}
+
+
+async function createLicenceCertificatePdf(
+  sale,
+  order,
+  signatureBytes
+) {
+  const pdfDoc =
+    await PDFDocument.create();
+
+  const font =
+    await pdfDoc.embedFont(
+      StandardFonts.Helvetica
+    );
+
+  const bold =
+    await pdfDoc.embedFont(
+      StandardFonts.HelveticaBold
+    );
+
+  const signatureImage =
+    await pdfDoc.embedPng(
+      signatureBytes
+    );
+
+  const certificateNumber =
+    licenceCertificateNumber(
+      sale
+    );
+
+  addPdfMetadata(
+    pdfDoc,
+    `Mero Mandali Licence Certificate ${certificateNumber}`,
+    "Official Mero Mandali Customer Software Licence Certificate",
+    stablePdfDate(
+      sale.approved_at ||
+      sale.created_at
+    )
+  );
+
+  const page =
+    pdfDoc.addPage([
+      595.28,
+      841.89
+    ]);
+
+  const width =
+    page.getWidth();
+
+  const height =
+    page.getHeight();
+
+  page.drawRectangle({
+    x: 28,
+    y: 28,
+    width:
+      width - 56,
+    height:
+      height - 56,
+    borderWidth: 2,
+    borderColor:
+      rgb(
+        0.12,
+        0.27,
+        0.43
+      )
+  });
+
+  drawText(
+    page,
+    "MERO MANDALI SOFTWARE",
+    48,
+    height - 75,
+    {
+      font: bold,
+      size: 24,
+      color:
+        rgb(
+          0.08,
+          0.20,
+          0.36
+        )
+    }
+  );
+
+  drawText(
+    page,
+    "CUSTOMER LICENCE CERTIFICATE",
+    48,
+    height - 108,
+    {
+      font: bold,
+      size: 15
+    }
+  );
+
+  drawText(
+    page,
+    certificateNumber,
+    390,
+    height - 108,
+    {
+      font,
+      size: 9
+    }
+  );
+
+  let y =
+    height - 155;
+
+  const rows = [
+    [
+      "Customer Name",
+      sale.customer_name
+    ],
+    [
+      "Customer Email",
+      sale.customer_email
+    ],
+    [
+      "Customer Phone",
+      sale.customer_phone
+    ],
+    [
+      "Church / Organization",
+      sale.church_organization
+    ],
+    [
+      "Software",
+      "Mero Mandali"
+    ],
+    [
+      "Version",
+      SOFTWARE_VERSION
+    ],
+    [
+      "Licence Type",
+      "Customer Licence"
+    ],
+    [
+      "Authorized Computers",
+      "One Windows PC"
+    ],
+    [
+      "Sale Number",
+      sale.sale_number
+    ],
+    [
+      "Order Number",
+      order?.order_number ||
+      sale.order_id
+    ],
+    [
+      "Invoice Number",
+      sale.invoice_number
+    ]
+  ];
+
+  for (
+    const row of rows
+  ) {
+    drawText(
+      page,
+      `${row[0]}:`,
+      55,
+      y,
+      {
+        font: bold,
+        size: 9
+      }
+    );
+
+    drawText(
+      page,
+      row[1],
+      205,
+      y,
+      {
+        font,
+        size: 9
+      }
+    );
+
+    y -= 21;
+  }
+
+  y -= 12;
+
+  drawText(
+    page,
+    "LICENCE KEY",
+    55,
+    y,
+    {
+      font: bold,
+      size: 11
+    }
+  );
+
+  y -= 34;
+
+  page.drawRectangle({
+    x: 55,
+    y: y - 12,
+    width:
+      width - 110,
+    height: 44,
+    color:
+      rgb(
+        0.94,
+        0.96,
+        0.98
+      ),
+    borderWidth: 1,
+    borderColor:
+      rgb(
+        0.25,
+        0.40,
+        0.55
+      )
+  });
+
+  drawText(
+    page,
+    sale.licence_key,
+    75,
+    y + 4,
+    {
+      font: bold,
+      size: 16,
+      color:
+        rgb(
+          0.06,
+          0.16,
+          0.29
+        )
+    }
+  );
+
+  y -= 70;
+
+  drawText(
+    page,
+    "LICENCE TERMS",
+    55,
+    y,
+    {
+      font: bold,
+      size: 11
+    }
+  );
+
+  y -= 22;
+
+  const terms = [
+    "1. This Customer Licence authorizes activation on one Windows PC only.",
+    "2. The licence key must not be shared, sold, copied, or used on another computer.",
+    "3. If the authorized computer is permanently replaced, contact Mero Mandali support for a licence reset.",
+    "4. The licence remains subject to Mero Mandali Software licence conditions and valid activation status."
+  ];
+
+  for (
+    const term of terms
+  ) {
+    y =
+      drawWrappedText(
+        page,
+        term,
+        55,
+        y,
+        width - 110,
+        {
+          font,
+          size: 8.5,
+          lineHeight: 11.5
+        }
+      ) - 5;
+  }
+
+  const bottomTop =
+    y - 5;
+
+  drawText(
+    page,
+    "PURCHASE INCLUDES",
+    55,
+    bottomTop,
+    {
+      font: bold,
+      size: 10
+    }
+  );
+
+  let purchaseY =
+    bottomTop - 20;
+
+  const includes = [
+    "Mero Mandali Software version 1.0.2",
+    "Unique customer licence key",
+    "Official purchase invoice",
+    "Customer licence certificate",
+    "English + Nepali Installation, Setup & Programme Operating Guide",
+    "Windows installer download access"
+  ];
+
+  for (
+    const item of includes
+  ) {
+    purchaseY =
+      drawWrappedText(
+        page,
+        `- ${item}`,
+        62,
+        purchaseY,
+        260,
+        {
+          font,
+          size: 7.8,
+          lineHeight: 10
+        }
+      ) - 3;
+  }
+
+  const authCenterX =
+    440;
+
+  drawCenteredText(
+    page,
+    "AUTHORIZED BY",
+    authCenterX,
+    bottomTop,
+    {
+      font: bold,
+      size: 9
+    }
+  );
+
+  const certificateSignatureWidth =
+    145;
+
+  const certificateSignatureHeight =
+    certificateSignatureWidth *
+    signatureImage.height /
+    signatureImage.width;
+
+  page.drawImage(
+    signatureImage,
+    {
+      x:
+        authCenterX -
+        certificateSignatureWidth / 2,
+      y:
+        bottomTop -
+        78,
+      width:
+        certificateSignatureWidth,
+      height:
+        certificateSignatureHeight
+    }
+  );
+
+  drawCenteredText(
+    page,
+    "Durga Jung Kunwar",
+    authCenterX,
+    bottomTop - 94,
+    {
+      font: bold,
+      size: 11
+    }
+  );
+
+  drawCenteredText(
+    page,
+    "Developer / Owner",
+    authCenterX,
+    bottomTop - 109,
+    {
+      font,
+      size: 7.8
+    }
+  );
+
+  drawCenteredText(
+    page,
+    "Mero Mandali Software",
+    authCenterX,
+    bottomTop - 121,
+    {
+      font,
+      size: 7.8
+    }
+  );
+
+  drawCenteredText(
+    page,
+    "developer@durgajung.com.np",
+    authCenterX,
+    bottomTop - 137,
+    {
+      font,
+      size: 7.1
+    }
+  );
+
+  drawCenteredText(
+    page,
+    "durgajung.com.np",
+    authCenterX,
+    bottomTop - 149,
+    {
+      font,
+      size: 7.1
+    }
+  );
+
+  return {
+    bytes:
+      await pdfDoc.save(),
+
+    certificateNumber
+  };
+}
+
+
+async function recordAdminActivity(
+  env,
+  request,
+  action,
+  entityType = null,
+  entityId = null,
+  description = null
+) {
+  try {
+    await env.ADMIN_DB
+      .prepare(`
+        INSERT INTO admin_activity (
+          admin_email,
+          action,
+          entity_type,
+          entity_id,
+          description,
+          ip_address,
+          user_agent
+        )
+        VALUES (?, ?, ?, ?, ?, ?, ?)
+      `)
+      .bind(
+        getAdminEmail(request) ||
+          ADMIN_EMAIL,
+        action,
+        entityType,
+        entityId,
+        description,
+        clientIp(request),
+        request.headers.get(
+          "User-Agent"
+        ) || ""
+      )
+      .run();
+  } catch (error) {
+    console.error(
+      "Admin activity logging failed:",
+      error
+    );
+  }
+}
+
+
+async function getProductByCode(
+  env,
+  productCode
+) {
+  return await env.ADMIN_DB
+    .prepare(`
+      SELECT
+        id,
+        product_code,
+        product_type,
+        product_name,
+        description,
+        price_npr,
+        status,
+        cover_image_url
+      FROM products
+      WHERE product_code = ?
+      LIMIT 1
+    `)
+    .bind(
+      productCode
+    )
+    .first();
+}
+
+
+async function getSaleById(
+  env,
+  saleId
+) {
+  return await env.ADMIN_DB
+    .prepare(`
+      SELECT *
+      FROM sales
+      WHERE id = ?
+      LIMIT 1
+    `)
+    .bind(
+      saleId
+    )
+    .first();
+}
+
+
+async function getOrderById(
+  env,
+  orderId
+) {
+  return await env.ADMIN_DB
+    .prepare(`
+      SELECT *
+      FROM orders
+      WHERE id = ?
+      LIMIT 1
+    `)
+    .bind(
+      orderId
+    )
+    .first();
+}
+
+
+async function ensureCustomerLicence(
+  env,
+  sale
+) {
+  if (
+    !sale ||
+    sale.product_type !==
+      "software"
+  ) {
+    return {
+      success: true,
+      sale
+    };
+  }
+
+  if (
+    !clean(
+      env.LICENSE_API_ADMIN_KEY
+    )
+  ) {
+    return {
+      success: false,
+      status: 500,
+      error:
+        "LICENSE_API_ADMIN_KEY is not configured."
+    };
+  }
+
+  if (
+    clean(
+      sale.licence_key
+    ) &&
+    sale.licence_status ===
+      "issued"
+  ) {
+    return {
+      success: true,
+      sale
+    };
+  }
+
+  const marker =
+    `Website sale ${sale.sale_number}`;
+
+  const headers = {
+    "content-type":
+      "application/json; charset=utf-8",
+    "X-Admin-Key":
+      env.LICENSE_API_ADMIN_KEY
+  };
+
+  try {
+    const lookupResponse =
+      await fetch(
+        LICENCE_API_URL,
+        {
+          method: "GET",
+          headers
+        }
+      );
+
+    if (
+      lookupResponse.ok
+    ) {
+      const payload =
+        await lookupResponse.json();
+
+      const licences =
+        Array.isArray(
+          payload?.licenses
+        )
+          ? payload.licenses
+          : Array.isArray(
+              payload?.results
+            )
+            ? payload.results
+            : [];
+
+      const existing =
+        licences.find(
+          (item) => {
+            const notes =
+              clean(
+                item?.notes
+              ) || "";
+
+            return notes.includes(
+              marker
+            );
+          }
+        );
+
+      const existingKey =
+        clean(
+          existing?.license_key
+        );
+
+      if (existingKey) {
+        await env.ADMIN_DB
+          .prepare(`
+            UPDATE sales
+            SET
+              licence_key = ?,
+              licence_status = 'issued',
+              reset_count =
+                COALESCE(
+                  reset_count,
+                  0
+                ),
+              updated_at =
+                CURRENT_TIMESTAMP
+            WHERE id = ?
+          `)
+          .bind(
+            existingKey,
+            sale.id
+          )
+          .run();
+
+        return {
+          success: true,
+          sale:
+            await getSaleById(
+              env,
+              sale.id
+            )
+        };
+      }
+    }
+  } catch (error) {
+    console.error(
+      "Licence lookup failed before issue:",
+      error
+    );
+  }
+
+  await env.ADMIN_DB
+    .prepare(`
+      UPDATE sales
+      SET
+        licence_status =
+          'issuing',
+        updated_at =
+          CURRENT_TIMESTAMP
+      WHERE id = ?
+    `)
+    .bind(
+      sale.id
+    )
+    .run();
+
+  let response;
+  let payload = {};
+
+  try {
+    response =
+      await fetch(
+        LICENCE_API_URL,
+        {
+          method: "POST",
+          headers,
+          body:
+            JSON.stringify({
+              customer_name:
+                sale.customer_name,
+              customer_email:
+                sale.customer_email,
+              status:
+                "active",
+              notes:
+                `${marker}; invoice ${sale.invoice_number || ""}; order ${sale.order_id}.`
+            })
+        }
+      );
 
     try {
-      data = await response.json();
-    } catch (error) {
-      throw new Error("The server returned an invalid response.");
+      payload =
+        await response.json();
+    } catch {
+      payload = {};
     }
+  } catch (error) {
+    await env.ADMIN_DB
+      .prepare(`
+        UPDATE sales
+        SET
+          licence_status =
+            'issue_failed',
+          updated_at =
+            CURRENT_TIMESTAMP
+        WHERE id = ?
+      `)
+      .bind(
+        sale.id
+      )
+      .run();
 
-    if (!response.ok || !data.success) {
-      throw new Error(
-        data.error ||
-          data.message ||
-          "The request could not be completed."
+    return {
+      success: false,
+      status: 502,
+      error:
+        `Licence API request failed: ${error.message}`
+    };
+  }
+
+  const licenceKey =
+    clean(
+      payload?.license
+        ?.license_key
+    );
+
+  if (
+    !response.ok ||
+    payload?.success !== true ||
+    !licenceKey
+  ) {
+    await env.ADMIN_DB
+      .prepare(`
+        UPDATE sales
+        SET
+          licence_status =
+            'issue_failed',
+          updated_at =
+            CURRENT_TIMESTAMP
+        WHERE id = ?
+      `)
+      .bind(
+        sale.id
+      )
+      .run();
+
+    return {
+      success: false,
+      status:
+        response.status || 502,
+      error:
+        payload?.error ||
+        "Licence API did not create the customer licence."
+    };
+  }
+
+  await env.ADMIN_DB
+    .prepare(`
+      UPDATE sales
+      SET
+        licence_key = ?,
+        licence_status =
+          'issued',
+        reset_count =
+          COALESCE(
+            reset_count,
+            0
+          ),
+        updated_at =
+          CURRENT_TIMESTAMP
+      WHERE id = ?
+    `)
+    .bind(
+      licenceKey,
+      sale.id
+    )
+    .run();
+
+  return {
+    success: true,
+    sale:
+      await getSaleById(
+        env,
+        sale.id
+      )
+  };
+}
+
+
+function deliveryAlreadySent(
+  sale
+) {
+  return (
+    Number(
+      sale.invoice_sent || 0
+    ) === 1 &&
+    Number(
+      sale.licence_email_sent || 0
+    ) === 1 &&
+    Number(
+      sale.installer_sent || 0
+    ) === 1 &&
+    Number(
+      sale.installation_guide_sent ||
+      0
+    ) === 1 &&
+    Number(
+      sale.user_manual_sent || 0
+    ) === 1
+  );
+}
+
+
+function makeCustomerEmailHtml(
+  sale,
+  order,
+  certificateNumber
+) {
+  const name =
+    escapeHtml(
+      sale.customer_name ||
+      "Customer"
+    );
+
+  const licenceKey =
+    escapeHtml(
+      sale.licence_key
+    );
+
+  const invoiceNumber =
+    escapeHtml(
+      sale.invoice_number
+    );
+
+  const saleNumber =
+    escapeHtml(
+      sale.sale_number
+    );
+
+  const orderNumber =
+    escapeHtml(
+      order?.order_number ||
+      sale.order_id
+    );
+
+  const amount =
+    escapeHtml(
+      npr(
+        sale.total_paid_npr
+      )
+    );
+
+  return `
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+</head>
+
+<body style="
+  margin:0;
+  padding:0;
+  background:#f4f6f8;
+  font-family:Arial,Helvetica,sans-serif;
+  color:#1f2937;
+">
+
+  <div style="
+    max-width:680px;
+    margin:0 auto;
+    padding:28px 16px;
+  ">
+
+    <div style="
+      background:#102a47;
+      color:#ffffff;
+      padding:28px;
+      border-radius:12px 12px 0 0;
+    ">
+
+      <div style="
+        font-size:25px;
+        font-weight:700;
+      ">
+        Mero Mandali
+      </div>
+
+      <div style="
+        margin-top:6px;
+        font-size:14px;
+        opacity:.9;
+      ">
+        Church Presentation Software
+      </div>
+
+    </div>
+
+    <div style="
+      background:#ffffff;
+      padding:30px;
+      border-radius:0 0 12px 12px;
+    ">
+
+      <p>
+        Dear <strong>${name}</strong>,
+      </p>
+
+      <p>
+        Thank you for purchasing
+        <strong>Mero Mandali Software</strong>.
+        Your payment has been verified and
+        your customer licence has been issued.
+      </p>
+
+      <div style="
+        margin:25px 0;
+        padding:20px;
+        background:#f2f6fa;
+        border:1px solid #d9e2ec;
+        border-radius:8px;
+      ">
+
+        <div style="
+          font-size:12px;
+          font-weight:700;
+          color:#52606d;
+        ">
+          YOUR MERO MANDALI LICENCE KEY
+        </div>
+
+        <div style="
+          margin-top:10px;
+          font-size:22px;
+          font-weight:700;
+          letter-spacing:1px;
+          color:#102a47;
+          word-break:break-all;
+        ">
+          ${licenceKey}
+        </div>
+
+      </div>
+
+      <table style="
+        width:100%;
+        border-collapse:collapse;
+        font-size:14px;
+        margin:20px 0;
+      ">
+
+        <tr>
+          <td style="
+            padding:6px 0;
+            font-weight:700;
+          ">
+            Invoice
+          </td>
+
+          <td style="
+            padding:6px 0;
+          ">
+            ${invoiceNumber}
+          </td>
+        </tr>
+
+        <tr>
+          <td style="
+            padding:6px 0;
+            font-weight:700;
+          ">
+            Licence Certificate
+          </td>
+
+          <td style="
+            padding:6px 0;
+          ">
+            ${escapeHtml(
+              certificateNumber
+            )}
+          </td>
+        </tr>
+
+        <tr>
+          <td style="
+            padding:6px 0;
+            font-weight:700;
+          ">
+            Sale
+          </td>
+
+          <td style="
+            padding:6px 0;
+          ">
+            ${saleNumber}
+          </td>
+        </tr>
+
+        <tr>
+          <td style="
+            padding:6px 0;
+            font-weight:700;
+          ">
+            Order
+          </td>
+
+          <td style="
+            padding:6px 0;
+          ">
+            ${orderNumber}
+          </td>
+        </tr>
+
+        <tr>
+          <td style="
+            padding:6px 0;
+            font-weight:700;
+          ">
+            Total Paid
+          </td>
+
+          <td style="
+            padding:6px 0;
+          ">
+            ${amount}
+          </td>
+        </tr>
+
+      </table>
+
+      <div style="
+        margin:25px 0;
+        text-align:center;
+      ">
+
+        <a
+          href="${INSTALLER_URL}"
+          style="
+            display:inline-block;
+            background:#102a47;
+            color:#ffffff;
+            text-decoration:none;
+            padding:14px 24px;
+            border-radius:7px;
+            font-weight:700;
+          "
+        >
+          Download Mero Mandali ${SOFTWARE_VERSION}
+        </a>
+
+      </div>
+
+      <p>
+        <strong>Important:</strong>
+        one Customer Licence is authorized
+        for one Windows PC.
+        If you permanently replace your computer,
+        please contact us so the existing device
+        binding can be reviewed and reset.
+      </p>
+
+      <p>
+        The following documents are included
+        with this email:
+      </p>
+
+      <ul>
+        <li>
+          Official Invoice PDF
+        </li>
+
+        <li>
+          Customer Licence Certificate PDF
+        </li>
+
+        <li>
+          English + Nepali Installation,
+          Setup & Programme Operating Guide
+        </li>
+      </ul>
+
+      <p>
+        Keep your licence key and certificate
+        in a safe place.
+      </p>
+
+      <hr style="
+        border:0;
+        border-top:1px solid #e5e7eb;
+        margin:28px 0;
+      ">
+
+      <p style="
+        margin-bottom:4px;
+      ">
+        <strong>
+          Durga Jung Kunwar
+        </strong>
+      </p>
+
+      <p style="
+        margin-top:0;
+        color:#52606d;
+        font-size:13px;
+        line-height:1.6;
+      ">
+        Developer / Owner - Mero Mandali Software<br>
+        developer@durgajung.com.np<br>
+        durgajung.com.np
+      </p>
+
+    </div>
+
+  </div>
+
+</body>
+</html>
+  `;
+}
+
+
+function makeCustomerEmailText(
+  sale,
+  order,
+  certificateNumber
+) {
+  return `
+MERO MANDALI SOFTWARE
+
+Dear ${sale.customer_name || "Customer"},
+
+Thank you for purchasing Mero Mandali Software.
+
+Your payment has been verified and your customer licence has been issued.
+
+LICENCE KEY:
+${sale.licence_key}
+
+Invoice:
+${sale.invoice_number}
+
+Licence Certificate:
+${certificateNumber}
+
+Sale:
+${sale.sale_number}
+
+Order:
+${order?.order_number || sale.order_id}
+
+Total Paid:
+${npr(sale.total_paid_npr)}
+
+Download Mero Mandali ${SOFTWARE_VERSION}:
+${INSTALLER_URL}
+
+IMPORTANT:
+One Customer Licence is authorized for one Windows PC.
+
+If you permanently replace your computer, please contact us so the existing device binding can be reviewed and reset.
+
+Attachments:
+- Official Invoice PDF
+- Customer Licence Certificate PDF
+- English + Nepali Installation, Setup & Programme Operating Guide
+
+Durga Jung Kunwar
+Developer / Owner - Mero Mandali Software
+developer@durgajung.com.np
+durgajung.com.np
+  `.trim();
+}
+
+
+async function sendCustomerDelivery(
+  request,
+  env,
+  sale
+) {
+  if (
+    !sale ||
+    sale.product_type !==
+      "software"
+  ) {
+    return {
+      success: true,
+      sale
+    };
+  }
+
+  if (
+    sale.licence_status !==
+      "issued" ||
+    !clean(
+      sale.licence_key
+    )
+  ) {
+    return {
+      success: false,
+      status: 400,
+      error:
+        "Customer licence must be issued before email delivery."
+    };
+  }
+
+  if (
+    deliveryAlreadySent(
+      sale
+    )
+  ) {
+    return {
+      success: true,
+      already_sent: true,
+      sale
+    };
+  }
+
+  if (
+    !clean(
+      env.RESEND_API_KEY
+    )
+  ) {
+    return {
+      success: false,
+      status: 500,
+      error:
+        "RESEND_API_KEY is not configured."
+    };
+  }
+
+  if (
+    !clean(
+      sale.customer_email
+    )
+  ) {
+    return {
+      success: false,
+      status: 400,
+      error:
+        "Customer email is missing."
+    };
+  }
+
+  const order =
+    await getOrderById(
+      env,
+      sale.order_id
+    );
+
+  let invoiceBytes;
+  let licenceDocument;
+
+  try {
+    const signatureBytes =
+      await loadSignatureBytes(
+        request,
+        env
+      );
+
+    invoiceBytes =
+      await createInvoicePdf(
+        sale,
+        order,
+        signatureBytes
+      );
+
+    licenceDocument =
+      await createLicenceCertificatePdf(
+        sale,
+        order,
+        signatureBytes
+      );
+  } catch (error) {
+    await recordAdminActivity(
+      env,
+      request,
+      "CUSTOMER_DOCUMENT_GENERATION_FAILED",
+      "sale",
+      sale.id,
+      `${sale.sale_number}: ${error.message}`
+    );
+
+    return {
+      success: false,
+      status: 500,
+      error:
+        `Customer PDF generation failed: ${error.message}`
+    };
+  }
+
+  const emailPayload = {
+    from:
+      EMAIL_FROM,
+
+    to: [
+      sale.customer_email
+    ],
+
+    subject:
+      `Mero Mandali Purchase Complete - ${sale.invoice_number}`,
+
+    html:
+      makeCustomerEmailHtml(
+        sale,
+        order,
+        licenceDocument
+          .certificateNumber
+      ),
+
+    text:
+      makeCustomerEmailText(
+        sale,
+        order,
+        licenceDocument
+          .certificateNumber
+      ),
+
+    attachments: [
+      {
+        content:
+          bytesToBase64(
+            invoiceBytes
+          ),
+
+        filename:
+          `${sale.invoice_number}.pdf`
+      },
+
+      {
+        content:
+          bytesToBase64(
+            licenceDocument.bytes
+          ),
+
+        filename:
+          `${licenceDocument.certificateNumber}.pdf`
+      },
+
+      {
+        path:
+          GUIDE_URL,
+
+        filename:
+          "Mero_Mandali_Programme_Operating_Guide_EN_NP.pdf"
+      }
+    ]
+  };
+
+  const idempotencyKey =
+    `mero-mandali-delivery-${sale.id}-${sale.invoice_number}`;
+
+  let response;
+  let payload = {};
+
+  try {
+    response =
+      await fetch(
+        RESEND_API_URL,
+        {
+          method: "POST",
+
+          headers: {
+            Authorization:
+              `Bearer ${env.RESEND_API_KEY}`,
+
+            "Content-Type":
+              "application/json",
+
+            "Idempotency-Key":
+              idempotencyKey
+          },
+
+          body:
+            JSON.stringify(
+              emailPayload
+            )
+        }
+      );
+
+    try {
+      payload =
+        await response.json();
+    } catch {
+      payload = {};
+    }
+  } catch (error) {
+    await recordAdminActivity(
+      env,
+      request,
+      "CUSTOMER_EMAIL_FAILED",
+      "sale",
+      sale.id,
+      `${sale.sale_number}: Resend request failed - ${error.message}`
+    );
+
+    return {
+      success: false,
+      status: 502,
+      error:
+        `Resend request failed: ${error.message}`
+    };
+  }
+
+  if (
+    !response.ok ||
+    !clean(
+      payload?.id
+    )
+  ) {
+    const errorMessage =
+      payload?.message ||
+      payload?.error ||
+      `Resend returned HTTP ${response.status}.`;
+
+    await recordAdminActivity(
+      env,
+      request,
+      "CUSTOMER_EMAIL_FAILED",
+      "sale",
+      sale.id,
+      `${sale.sale_number}: ${errorMessage}`
+    );
+
+    return {
+      success: false,
+      status:
+        response.status || 502,
+      error:
+        `Customer email was not sent: ${errorMessage}`
+    };
+  }
+
+  await env.ADMIN_DB
+    .prepare(`
+      UPDATE sales
+      SET
+        invoice_sent = 1,
+        licence_email_sent = 1,
+        installer_sent = 1,
+        installation_guide_sent = 1,
+        user_manual_sent = 1,
+        delivery_status = 'delivered',
+        updated_at = CURRENT_TIMESTAMP
+      WHERE id = ?
+    `)
+    .bind(
+      sale.id
+    )
+    .run();
+
+  const updatedSale =
+    await getSaleById(
+      env,
+      sale.id
+    );
+
+  await recordAdminActivity(
+    env,
+    request,
+    "CUSTOMER_EMAIL_SENT",
+    "sale",
+    sale.id,
+    `${sale.sale_number}: purchase email sent to ${sale.customer_email}; Resend email ${payload.id}.`
+  );
+
+  return {
+    success: true,
+    email_id:
+      payload.id,
+    sale:
+      updatedSale
+  };
+}
+
+
+async function health(
+  env
+) {
+  try {
+    await env.ADMIN_DB
+      .prepare(
+        "SELECT 1 AS ok"
+      )
+      .first();
+
+    return json({
+      success: true,
+      service:
+        "Durga Jung Admin API",
+      database:
+        "online",
+      platform:
+        "Software and Books"
+    });
+  } catch (error) {
+    return json(
+      {
+        success: false,
+        service:
+          "Durga Jung Admin API",
+        database:
+          "offline",
+        error:
+          error.message
+      },
+      500
+    );
+  }
+}
+
+
+async function publicProducts(
+  env
+) {
+  const result =
+    await env.ADMIN_DB
+      .prepare(`
+        SELECT
+          product_code,
+          product_type,
+          product_name,
+          description,
+          price_npr,
+          status,
+          cover_image_url
+        FROM products
+        WHERE status = 'active'
+        ORDER BY
+          product_type,
+          product_name
+      `)
+      .all();
+
+  return json({
+    success: true,
+    products:
+      result.results || []
+  });
+}
+
+
+function validContentKey(value) {
+  const key = clean(value);
+  if (!key || !/^[a-zA-Z0-9][a-zA-Z0-9_-]{0,79}$/.test(key)) {
+    return null;
+  }
+  return key.toLowerCase();
+}
+function validVisitorKey(value) {
+  const visitorKey = clean(value);
+  if (!visitorKey || visitorKey.length > 120) {
+    return null;
+  }
+  return visitorKey;
+}
+async function ensureWebsiteContent(env, body) {
+  const contentKey = validContentKey(body.content_key);
+  const pagePath = clean(body.page_path);
+  const title = clean(body.title) || contentKey;
+  const contentType = clean(body.content_type) || "page";
+  if (!contentKey) {
+    throw new Error("Invalid content key.");
+  }
+  if (!pagePath || !pagePath.startsWith("/") || pagePath.length > 300) {
+    throw new Error("Invalid page path.");
+  }
+  if (!title || title.length > 200) {
+    throw new Error("Invalid title.");
+  }
+  if (contentType.length > 50) {
+    throw new Error("Invalid content type.");
+  }
+  // Insert only when the content is first seen. This avoids a D1 write on every page view.
+  await env.ADMIN_DB.prepare(`
+      INSERT OR IGNORE INTO website_content (
+        content_key,
+        page_path,
+        title,
+        content_type
+      )
+      VALUES (?, ?, ?, ?)
+    `).bind(
+    contentKey,
+    pagePath,
+    title,
+    contentType
+  ).run();
+  return contentKey;
+}
+async function publicEngagementStats(request, env) {
+  const url = new URL(request.url);
+  const contentKey = validContentKey(url.searchParams.get("content_key"));
+  const visitorKey = validVisitorKey(url.searchParams.get("visitor_key"));
+  if (!contentKey) {
+    return json(
+      {
+        success: false,
+        error: "content_key is required."
+      },
+      400
+    );
+  }
+  const totals = await env.ADMIN_DB.prepare(`
+      SELECT
+        (SELECT COUNT(*) FROM website_views WHERE content_key = ?) AS views,
+        (SELECT COUNT(*) FROM website_likes WHERE content_key = ?) AS likes,
+        (
+          SELECT COUNT(*)
+          FROM website_comments
+          WHERE content_key = ? AND status = 'approved'
+        ) AS comments,
+        (SELECT COUNT(*) FROM website_shares WHERE content_key = ?) AS shares
+    `).bind(
+    contentKey,
+    contentKey,
+    contentKey,
+    contentKey
+  ).first();
+  let liked = false;
+  if (visitorKey) {
+    const existingLike = await env.ADMIN_DB.prepare(`
+        SELECT id
+        FROM website_likes
+        WHERE content_key = ? AND visitor_key = ?
+        LIMIT 1
+      `).bind(
+      contentKey,
+      visitorKey
+    ).first();
+    liked = Boolean(existingLike);
+  }
+  const comments = await env.ADMIN_DB.prepare(`
+      SELECT
+        id,
+        commenter_name,
+        comment_text,
+        created_at
+      FROM website_comments
+      WHERE content_key = ? AND status = 'approved'
+      ORDER BY id DESC
+      LIMIT 100
+    `).bind(contentKey).all();
+  return json({
+    success: true,
+    engagement: {
+      content_key: contentKey,
+      views: Number(totals?.views || 0),
+      likes: Number(totals?.likes || 0),
+      comments: Number(totals?.comments || 0),
+      shares: Number(totals?.shares || 0),
+      liked
+    },
+    comments: comments.results || []
+  });
+}
+async function publicRecordView(request, env) {
+  const body = await readJson(request);
+  const visitorKey = validVisitorKey(body.visitor_key);
+  if (!visitorKey) {
+    return json(
+      {
+        success: false,
+        error: "Valid visitor_key is required."
+      },
+      400
+    );
+  }
+  let contentKey;
+  try {
+    contentKey = await ensureWebsiteContent(env, body);
+  } catch (error) {
+    return json(
+      {
+        success: false,
+        error: error.message
+      },
+      400
+    );
+  }
+  // One counted view per visitor/content in a rolling 24-hour window.
+  const existing = await env.ADMIN_DB.prepare(`
+      SELECT id
+      FROM website_views
+      WHERE
+        content_key = ?
+        AND visitor_key = ?
+        AND viewed_at >= datetime('now', '-24 hours')
+      LIMIT 1
+    `).bind(
+    contentKey,
+    visitorKey
+  ).first();
+  let counted = false;
+  if (!existing) {
+    await env.ADMIN_DB.prepare(`
+        INSERT INTO website_views (
+          content_key,
+          visitor_key,
+          page_path
+        )
+        VALUES (?, ?, ?)
+      `).bind(
+      contentKey,
+      visitorKey,
+      clean(body.page_path)
+    ).run();
+    counted = true;
+  }
+  const total = await env.ADMIN_DB.prepare(`
+      SELECT COUNT(*) AS count
+      FROM website_views
+      WHERE content_key = ?
+    `).bind(contentKey).first();
+  return json({
+    success: true,
+    counted,
+    views: Number(total?.count || 0)
+  });
+}
+async function publicAddLike(request, env) {
+  const body = await readJson(request);
+  const visitorKey = validVisitorKey(body.visitor_key);
+  if (!visitorKey) {
+    return json(
+      {
+        success: false,
+        error: "Valid visitor_key is required."
+      },
+      400
+    );
+  }
+  let contentKey;
+  try {
+    contentKey = await ensureWebsiteContent(env, body);
+  } catch (error) {
+    return json(
+      {
+        success: false,
+        error: error.message
+      },
+      400
+    );
+  }
+  await env.ADMIN_DB.prepare(`
+      INSERT OR IGNORE INTO website_likes (
+        content_key,
+        visitor_key
+      )
+      VALUES (?, ?)
+    `).bind(
+    contentKey,
+    visitorKey
+  ).run();
+  const total = await env.ADMIN_DB.prepare(`
+      SELECT COUNT(*) AS count
+      FROM website_likes
+      WHERE content_key = ?
+    `).bind(contentKey).first();
+  return json({
+    success: true,
+    liked: true,
+    likes: Number(total?.count || 0)
+  });
+}
+async function publicRemoveLike(request, env) {
+  const body = await readJson(request);
+  const contentKey = validContentKey(body.content_key);
+  const visitorKey = validVisitorKey(body.visitor_key);
+  if (!contentKey || !visitorKey) {
+    return json(
+      {
+        success: false,
+        error: "Valid content_key and visitor_key are required."
+      },
+      400
+    );
+  }
+  await env.ADMIN_DB.prepare(`
+      DELETE FROM website_likes
+      WHERE content_key = ? AND visitor_key = ?
+    `).bind(
+    contentKey,
+    visitorKey
+  ).run();
+  const total = await env.ADMIN_DB.prepare(`
+      SELECT COUNT(*) AS count
+      FROM website_likes
+      WHERE content_key = ?
+    `).bind(contentKey).first();
+  return json({
+    success: true,
+    liked: false,
+    likes: Number(total?.count || 0)
+  });
+}
+async function publicAddComment(request, env) {
+  const body = await readJson(request);
+  const commenterName = clean(body.commenter_name);
+  const commenterEmail = clean(body.commenter_email);
+  const commentText = clean(body.comment_text);
+  const visitorKey = validVisitorKey(body.visitor_key);
+  if (!visitorKey) {
+    return json(
+      {
+        success: false,
+        error: "Valid visitor_key is required."
+      },
+      400
+    );
+  }
+  if (!commenterName || commenterName.length > 80) {
+    return json(
+      {
+        success: false,
+        error: "Commenter name is required and must be 80 characters or fewer."
+      },
+      400
+    );
+  }
+  if (commenterEmail && commenterEmail.length > 254) {
+    return json(
+      {
+        success: false,
+        error: "Email is too long."
+      },
+      400
+    );
+  }
+  if (!commentText || commentText.length > 2e3) {
+    return json(
+      {
+        success: false,
+        error: "Comment must be between 1 and 2000 characters."
+      },
+      400
+    );
+  }
+  let contentKey;
+  try {
+    contentKey = await ensureWebsiteContent(env, body);
+  } catch (error) {
+    return json(
+      {
+        success: false,
+        error: error.message
+      },
+      400
+    );
+  }
+  // Basic spam guard: one comment per visitor/content every 15 seconds.
+  const tooSoon = await env.ADMIN_DB.prepare(`
+      SELECT id
+      FROM website_comments
+      WHERE
+        content_key = ?
+        AND visitor_key = ?
+        AND created_at >= datetime('now', '-15 seconds')
+      LIMIT 1
+    `).bind(
+    contentKey,
+    visitorKey
+  ).first();
+  if (tooSoon) {
+    return json(
+      {
+        success: false,
+        error: "Please wait a few seconds before posting another comment."
+      },
+      429
+    );
+  }
+  const result = await env.ADMIN_DB.prepare(`
+      INSERT INTO website_comments (
+        content_key,
+        visitor_key,
+        commenter_name,
+        commenter_email,
+        comment_text,
+        status
+      )
+      VALUES (?, ?, ?, ?, ?, 'approved')
+    `).bind(
+    contentKey,
+    visitorKey,
+    commenterName,
+    commenterEmail,
+    commentText
+  ).run();
+  return json(
+    {
+      success: true,
+      message: "Comment added.",
+      comment_id: Number(result.meta.last_row_id)
+    },
+    201
+  );
+}
+async function publicRecordShare(request, env) {
+  const body = await readJson(request);
+  const allowedShareTypes = [
+    "facebook",
+    "whatsapp",
+    "messenger",
+    "telegram",
+    "email",
+    "copy_link",
+    "native_share"
+  ];
+  const shareType = clean(body.share_type);
+  const visitorKey = validVisitorKey(body.visitor_key);
+  if (!visitorKey) {
+    return json(
+      {
+        success: false,
+        error: "Valid visitor_key is required."
+      },
+      400
+    );
+  }
+  if (!shareType || !allowedShareTypes.includes(shareType)) {
+    return json(
+      {
+        success: false,
+        error: "Invalid share_type."
+      },
+      400
+    );
+  }
+  let contentKey;
+  try {
+    contentKey = await ensureWebsiteContent(env, body);
+  } catch (error) {
+    return json(
+      {
+        success: false,
+        error: error.message
+      },
+      400
+    );
+  }
+  // Prevent rapid repeated share-button clicks from inflating the counter.
+  const recent = await env.ADMIN_DB.prepare(`
+      SELECT id
+      FROM website_shares
+      WHERE
+        content_key = ?
+        AND visitor_key = ?
+        AND share_type = ?
+        AND shared_at >= datetime('now', '-10 minutes')
+      LIMIT 1
+    `).bind(
+    contentKey,
+    visitorKey,
+    shareType
+  ).first();
+  let counted = false;
+  if (!recent) {
+    await env.ADMIN_DB.prepare(`
+        INSERT INTO website_shares (
+          content_key,
+          visitor_key,
+          share_type
+        )
+        VALUES (?, ?, ?)
+      `).bind(
+      contentKey,
+      visitorKey,
+      shareType
+    ).run();
+    counted = true;
+  }
+  const total = await env.ADMIN_DB.prepare(`
+      SELECT COUNT(*) AS count
+      FROM website_shares
+      WHERE content_key = ?
+    `).bind(contentKey).first();
+  return json({
+    success: true,
+    counted,
+    shares: Number(total?.count || 0)
+  });
+}
+
+async function createOrder(
+  request,
+  env
+) {
+  const body =
+    await readJson(
+      request
+    );
+
+  const customerName =
+    clean(
+      body.customer_name
+    );
+
+  const customerEmail =
+    clean(
+      body.customer_email
+    );
+
+  const paymentMethod =
+    clean(
+      body.payment_method
+    );
+
+  if (!customerName) {
+    return json(
+      {
+        success: false,
+        error:
+          "Customer name is required."
+      },
+      400
+    );
+  }
+
+  if (!customerEmail) {
+    return json(
+      {
+        success: false,
+        error:
+          "Customer email is required."
+      },
+      400
+    );
+  }
+
+  if (!paymentMethod) {
+    return json(
+      {
+        success: false,
+        error:
+          "Payment method is required."
+      },
+      400
+    );
+  }
+
+  const productCode =
+    clean(
+      body.product_code
+    ) ||
+    DEFAULT_PRODUCT_CODE;
+
+  const product =
+    await getProductByCode(
+      env,
+      productCode
+    );
+
+  if (!product) {
+    return json(
+      {
+        success: false,
+        error:
+          "Product not found."
+      },
+      404
+    );
+  }
+
+  if (
+    product.status !==
+      "active"
+  ) {
+    return json(
+      {
+        success: false,
+        error:
+          "This product is not currently available."
+      },
+      400
+    );
+  }
+
+  const quantity =
+    safeInt(
+      body.quantity,
+      1
+    );
+
+  const unitPrice =
+    Number(
+      product.price_npr || 0
+    );
+
+  const totalAmount =
+    unitPrice * quantity;
+
+  const temporaryOrderNumber =
+    makeTemporaryNumber(
+      "ORDER"
+    );
+
+  const orderInsert =
+    await env.ADMIN_DB
+      .prepare(`
+        INSERT INTO orders (
+          order_number,
+          product_code,
+          product_name,
+          product_type,
+          customer_name,
+          customer_email,
+          customer_phone,
+          customer_address,
+          church_organization,
+          amount_npr,
+          quantity,
+          unit_price_npr,
+          delivery_format,
+          delivery_method,
+          delivery_status,
+          tracking_reference,
+          customer_notes,
+          status
+        )
+        VALUES (
+          ?, ?, ?, ?, ?, ?, ?, ?, ?,
+          ?, ?, ?, ?, ?,
+          'pending',
+          ?, ?,
+          'pending'
+        )
+      `)
+      .bind(
+        temporaryOrderNumber,
+        product.product_code,
+        product.product_name,
+        product.product_type,
+        customerName,
+        customerEmail,
+        clean(
+          body.customer_phone
+        ),
+        clean(
+          body.customer_address
+        ),
+        clean(
+          body.church_organization
+        ),
+        totalAmount,
+        quantity,
+        unitPrice,
+        clean(
+          body.delivery_format
+        ),
+        clean(
+          body.delivery_method
+        ),
+        clean(
+          body.tracking_reference
+        ),
+        clean(
+          body.customer_notes
+        )
+      )
+      .run();
+
+  const orderId =
+    Number(
+      orderInsert.meta
+        .last_row_id
+    );
+
+  const orderNumber =
+    makeNumber(
+      "MM-ORD",
+      orderId
+    );
+
+  await env.ADMIN_DB
+    .prepare(`
+      UPDATE orders
+      SET
+        order_number = ?,
+        updated_at =
+          CURRENT_TIMESTAMP
+      WHERE id = ?
+    `)
+    .bind(
+      orderNumber,
+      orderId
+    )
+    .run();
+
+  const paymentInsert =
+    await env.ADMIN_DB
+      .prepare(`
+        INSERT INTO payments (
+          order_id,
+          payment_method,
+          transaction_reference,
+          amount_npr,
+          payment_date,
+          receipt_file_url,
+          receipt_file_name,
+          status
+        )
+        VALUES (
+          ?, ?, ?, ?, ?, ?, ?,
+          'submitted'
+        )
+      `)
+      .bind(
+        orderId,
+        paymentMethod,
+        clean(
+          body.transaction_reference
+        ),
+        totalAmount,
+        clean(
+          body.payment_date
+        ),
+        clean(
+          body.receipt_file_url
+        ),
+        clean(
+          body.receipt_file_name
+        )
+      )
+      .run();
+
+  return json(
+    {
+      success: true,
+      message:
+        "Payment submission received for verification.",
+
+      order: {
+        id:
+          orderId,
+        order_number:
+          orderNumber,
+        product_code:
+          product.product_code,
+        product_name:
+          product.product_name,
+        product_type:
+          product.product_type,
+        amount_npr:
+          totalAmount,
+        quantity
+      },
+
+      payment_id:
+        Number(
+          paymentInsert.meta
+            .last_row_id
+        )
+    },
+    201
+  );
+}
+
+
+async function adminDashboard(
+  env
+) {
+  const pendingOrders =
+    await env.ADMIN_DB
+      .prepare(`
+        SELECT COUNT(*) AS count
+        FROM orders
+        WHERE status IN (
+          'pending',
+          'under_review'
+        )
+      `)
+      .first();
+
+  const confirmedPayments =
+    await env.ADMIN_DB
+      .prepare(`
+        SELECT COUNT(*) AS count
+        FROM payments
+        WHERE status = 'confirmed'
+      `)
+      .first();
+
+  const sales =
+    await env.ADMIN_DB
+      .prepare(`
+        SELECT
+          COUNT(*) AS count,
+          COALESCE(
+            SUM(total_paid_npr),
+            0
+          ) AS total
+        FROM sales
+      `)
+      .first();
+
+  const pendingLicences =
+    await env.ADMIN_DB
+      .prepare(`
+        SELECT COUNT(*) AS count
+        FROM sales
+        WHERE
+          product_type = 'software'
+          AND (
+            licence_status IS NULL
+            OR licence_status IN (
+              'pending',
+              'not_issued',
+              'issuing',
+              'issue_failed'
+            )
+          )
+      `)
+      .first();
+
+  const softwareProducts =
+    await env.ADMIN_DB
+      .prepare(`
+        SELECT COUNT(*) AS count
+        FROM products
+        WHERE
+          product_type = 'software'
+          AND status = 'active'
+      `)
+      .first();
+
+  const bookProducts =
+    await env.ADMIN_DB
+      .prepare(`
+        SELECT COUNT(*) AS count
+        FROM products
+        WHERE
+          product_type = 'book'
+          AND status = 'active'
+      `)
+      .first();
+
+  const engagement =
+    await env.ADMIN_DB
+      .prepare(`
+        SELECT
+          (SELECT COUNT(*) FROM website_views) AS views,
+          (SELECT COUNT(*) FROM website_likes) AS likes,
+          (
+            SELECT COUNT(*)
+            FROM website_comments
+            WHERE status = 'approved'
+          ) AS comments,
+          (SELECT COUNT(*) FROM website_shares) AS shares,
+          (
+            SELECT COUNT(*)
+            FROM website_comments
+            WHERE status = 'hidden'
+          ) AS hidden_comments
+      `)
+      .first();
+
+  return json({
+    success: true,
+
+    dashboard: {
+      pending_orders:
+        Number(
+          pendingOrders?.count ||
+          0
+        ),
+
+      confirmed_payments:
+        Number(
+          confirmedPayments
+            ?.count || 0
+        ),
+
+      total_sales:
+        Number(
+          sales?.count || 0
+        ),
+
+      total_sales_npr:
+        Number(
+          sales?.total || 0
+        ),
+
+      pending_licences:
+        Number(
+          pendingLicences
+            ?.count || 0
+        ),
+
+      active_software:
+        Number(
+          softwareProducts
+            ?.count || 0
+        ),
+
+      active_books:
+        Number(
+          bookProducts?.count ||
+          0
+        ),
+
+      total_views:
+        Number(
+          engagement?.views || 0
+        ),
+
+      total_likes:
+        Number(
+          engagement?.likes || 0
+        ),
+
+      total_comments:
+        Number(
+          engagement?.comments || 0
+        ),
+
+      total_shares:
+        Number(
+          engagement?.shares || 0
+        ),
+
+      hidden_comments:
+        Number(
+          engagement?.hidden_comments || 0
+        )
+    }
+  });
+}
+
+
+async function adminProducts(
+  env
+) {
+  const result =
+    await env.ADMIN_DB
+      .prepare(`
+        SELECT
+          id,
+          product_code,
+          product_type,
+          product_name,
+          description,
+          price_npr,
+          status,
+          cover_image_url,
+          created_at,
+          updated_at
+        FROM products
+        ORDER BY
+          product_type,
+          product_name
+      `)
+      .all();
+
+  return json({
+    success: true,
+    products:
+      result.results || []
+  });
+}
+
+
+async function adminSoftware(
+  env
+) {
+  const result =
+    await env.ADMIN_DB
+      .prepare(`
+        SELECT
+          p.id,
+          p.product_code,
+          p.product_type,
+          p.product_name,
+          p.description,
+          p.price_npr,
+          p.status,
+          p.cover_image_url,
+
+          s.version,
+          s.installer_file_url,
+          s.installation_guide_url,
+          s.user_manual_url,
+          s.licence_required,
+          s.licence_type_default
+
+        FROM products p
+
+        LEFT JOIN software_products s
+          ON s.product_id = p.id
+
+        WHERE
+          p.product_type =
+            'software'
+
+        ORDER BY
+          p.product_name
+      `)
+      .all();
+
+  return json({
+    success: true,
+    software:
+      result.results || []
+  });
+}
+
+
+async function adminBooks(
+  env
+) {
+  const result =
+    await env.ADMIN_DB
+      .prepare(`
+        SELECT
+          p.id,
+          p.product_code,
+          p.product_type,
+          p.product_name,
+          p.description,
+          p.price_npr,
+          p.status,
+          p.cover_image_url,
+
+          b.author_name,
+          b.isbn,
+          b.language,
+          b.print_available,
+          b.pdf_available,
+          b.epub_available,
+          b.stock_quantity,
+          b.pdf_file_url,
+          b.epub_file_url
+
+        FROM products p
+
+        LEFT JOIN book_products b
+          ON b.product_id = p.id
+
+        WHERE
+          p.product_type =
+            'book'
+
+        ORDER BY
+          p.product_name
+      `)
+      .all();
+
+  return json({
+    success: true,
+    books:
+      result.results || []
+  });
+}
+
+
+async function adminOrders(
+  env
+) {
+  const result =
+    await env.ADMIN_DB
+      .prepare(`
+        SELECT
+          o.*,
+
+          p.id AS payment_id,
+          p.payment_method,
+          p.transaction_reference,
+          p.payment_date,
+          p.receipt_file_url,
+          p.receipt_file_name,
+          p.status AS payment_status,
+          p.admin_notes
+            AS payment_admin_notes
+
+        FROM orders o
+
+        LEFT JOIN payments p
+          ON p.id = (
+            SELECT p2.id
+            FROM payments p2
+            WHERE
+              p2.order_id = o.id
+            ORDER BY
+              p2.id DESC
+            LIMIT 1
+          )
+
+        ORDER BY
+          o.id DESC
+      `)
+      .all();
+
+  return json({
+    success: true,
+    orders:
+      result.results || []
+  });
+}
+
+
+async function adminGetOrder(
+  env,
+  orderId
+) {
+  const order =
+    await env.ADMIN_DB
+      .prepare(`
+        SELECT
+          o.*,
+
+          p.id AS payment_id,
+          p.payment_method,
+          p.transaction_reference,
+          p.payment_date,
+          p.receipt_file_url,
+          p.receipt_file_name,
+          p.status AS payment_status,
+          p.admin_notes
+            AS payment_admin_notes,
+          p.confirmed_at
+            AS payment_confirmed_at
+
+        FROM orders o
+
+        LEFT JOIN payments p
+          ON p.id = (
+            SELECT p2.id
+            FROM payments p2
+            WHERE
+              p2.order_id = o.id
+            ORDER BY
+              p2.id DESC
+            LIMIT 1
+          )
+
+        WHERE
+          o.id = ?
+
+        LIMIT 1
+      `)
+      .bind(
+        orderId
+      )
+      .first();
+
+  if (!order) {
+    return json(
+      {
+        success: false,
+        error:
+          "Order not found."
+      },
+      404
+    );
+  }
+
+  return json({
+    success: true,
+    order
+  });
+}
+
+
+async function adminSetOrderStatus(
+  request,
+  env,
+  orderId
+) {
+  const body =
+    await readJson(
+      request
+    );
+
+  const status =
+    clean(
+      body.status
+    );
+
+  const allowedStatuses = [
+    "pending",
+    "under_review",
+    "approved",
+    "rejected",
+    "completed",
+    "cancelled"
+  ];
+
+  if (
+    !status ||
+    !allowedStatuses.includes(
+      status
+    )
+  ) {
+    return json(
+      {
+        success: false,
+        error:
+          "Invalid order status."
+      },
+      400
+    );
+  }
+
+  const existing =
+    await env.ADMIN_DB
+      .prepare(`
+        SELECT
+          id,
+          order_number
+        FROM orders
+        WHERE id = ?
+      `)
+      .bind(
+        orderId
+      )
+      .first();
+
+  if (!existing) {
+    return json(
+      {
+        success: false,
+        error:
+          "Order not found."
+      },
+      404
+    );
+  }
+
+  await env.ADMIN_DB
+    .prepare(`
+      UPDATE orders
+      SET
+        status = ?,
+        admin_notes = ?,
+
+        reviewed_at =
+          CASE
+            WHEN ? =
+              'under_review'
+            THEN
+              CURRENT_TIMESTAMP
+            ELSE
+              reviewed_at
+          END,
+
+        approved_at =
+          CASE
+            WHEN ? =
+              'approved'
+            THEN
+              CURRENT_TIMESTAMP
+            ELSE
+              approved_at
+          END,
+
+        rejected_at =
+          CASE
+            WHEN ? =
+              'rejected'
+            THEN
+              CURRENT_TIMESTAMP
+            ELSE
+              rejected_at
+          END,
+
+        completed_at =
+          CASE
+            WHEN ? =
+              'completed'
+            THEN
+              CURRENT_TIMESTAMP
+            ELSE
+              completed_at
+          END,
+
+        updated_at =
+          CURRENT_TIMESTAMP
+
+      WHERE id = ?
+    `)
+    .bind(
+      status,
+      clean(
+        body.admin_notes
+      ),
+      status,
+      status,
+      status,
+      status,
+      orderId
+    )
+    .run();
+
+  await recordAdminActivity(
+    env,
+    request,
+    "ORDER_STATUS_CHANGED",
+    "order",
+    orderId,
+    `${existing.order_number} changed to ${status}.`
+  );
+
+  return json({
+    success: true,
+    message:
+      `Order marked ${status}.`
+  });
+}
+
+
+async function adminConfirmPayment(
+  request,
+  env,
+  orderId
+) {
+  const body =
+    await readJson(
+      request
+    );
+
+  const order =
+    await env.ADMIN_DB
+      .prepare(`
+        SELECT *
+        FROM orders
+        WHERE id = ?
+        LIMIT 1
+      `)
+      .bind(
+        orderId
+      )
+      .first();
+
+  if (!order) {
+    return json(
+      {
+        success: false,
+        error:
+          "Order not found."
+      },
+      404
+    );
+  }
+
+  let existingSale =
+    await env.ADMIN_DB
+      .prepare(`
+        SELECT *
+        FROM sales
+        WHERE order_id = ?
+        LIMIT 1
+      `)
+      .bind(
+        orderId
+      )
+      .first();
+
+  if (existingSale) {
+    if (
+      existingSale.product_type ===
+        "software" &&
+      existingSale.licence_status !==
+        "issued"
+    ) {
+      const licenceResult =
+        await ensureCustomerLicence(
+          env,
+          existingSale
+        );
+
+      if (
+        !licenceResult.success
+      ) {
+        await recordAdminActivity(
+          env,
+          request,
+          "LICENCE_ISSUE_FAILED",
+          "sale",
+          existingSale.id,
+          `${existingSale.sale_number}: ${licenceResult.error}`
+        );
+
+        return json(
+          {
+            success: false,
+            payment_confirmed:
+              true,
+            sale_created:
+              true,
+            error:
+              licenceResult.error,
+            sale:
+              await getSaleById(
+                env,
+                existingSale.id
+              )
+          },
+          licenceResult.status ||
+          502
+        );
+      }
+
+      existingSale =
+        licenceResult.sale;
+
+      await recordAdminActivity(
+        env,
+        request,
+        "LICENCE_ISSUED",
+        "sale",
+        existingSale.id,
+        `${existingSale.sale_number}: customer licence issued.`
       );
     }
 
-    return data;
-  }
+    if (
+      existingSale.product_type ===
+        "software"
+    ) {
+      const deliveryResult =
+        await sendCustomerDelivery(
+          request,
+          env,
+          existingSale
+        );
 
-  function formatCommentDate(value) {
-    if (!value) {
-      return "";
-    }
-
-    try {
-      const normalized = value.includes("T")
-        ? value
-        : value.replace(" ", "T") + "Z";
-
-      const date = new Date(normalized);
-
-      if (Number.isNaN(date.getTime())) {
-        return value;
+      if (
+        !deliveryResult.success
+      ) {
+        return json(
+          {
+            success: false,
+            payment_confirmed:
+              true,
+            sale_created:
+              true,
+            licence_issued:
+              existingSale
+                .licence_status ===
+              "issued",
+            email_sent:
+              false,
+            error:
+              deliveryResult.error,
+            sale:
+              await getSaleById(
+                env,
+                existingSale.id
+              )
+          },
+          deliveryResult.status ||
+          502
+        );
       }
 
-      return date.toLocaleString();
-    } catch (error) {
-      return value;
-    }
-  }
+      return json({
+        success: true,
 
-  function slugify(value) {
-    return String(value || "")
-      .toLowerCase()
-      .normalize("NFKD")
-      .replace(/[\u0300-\u036f]/g, "")
-      .replace(/[^a-z0-9]+/g, "-")
-      .replace(/^-+|-+$/g, "")
-      .slice(0, 72);
-  }
+        message:
+          deliveryResult.already_sent
+            ? "Payment was already confirmed. Licence and customer delivery were already completed."
+            : "Payment was already confirmed. Licence and customer email delivery are now completed.",
 
-  function sermonKeyFromPath(pathname) {
-    const cleanPath = String(pathname || "")
-      .split("?")[0]
-      .split("#")[0];
+        email_sent:
+          true,
 
-    const fileName = cleanPath.split("/").pop() || "";
-    const stem = fileName.replace(/\.html?$/i, "");
-
-    if (/^sermon-[a-z0-9-]+$/i.test(stem)) {
-      return stem.toLowerCase();
+        sale:
+          deliveryResult.sale
+      });
     }
 
+    return json({
+      success: true,
+      message:
+        "Payment was already confirmed.",
+      sale:
+        existingSale
+    });
+  }
+
+  const payment =
+    await env.ADMIN_DB
+      .prepare(`
+        SELECT *
+        FROM payments
+        WHERE order_id = ?
+        ORDER BY id DESC
+        LIMIT 1
+      `)
+      .bind(
+        orderId
+      )
+      .first();
+
+  if (!payment) {
+    return json(
+      {
+        success: false,
+        error:
+          "No payment submission exists for this order."
+      },
+      400
+    );
+  }
+
+  const adminEmail =
+    getAdminEmail(
+      request
+    );
+
+  await env.ADMIN_DB
+    .prepare(`
+      UPDATE payments
+      SET
+        status = 'confirmed',
+        confirmed_by = ?,
+        confirmed_at =
+          CURRENT_TIMESTAMP,
+        admin_notes = ?,
+        updated_at =
+          CURRENT_TIMESTAMP
+      WHERE id = ?
+    `)
+    .bind(
+      adminEmail,
+      clean(
+        body.admin_notes
+      ),
+      payment.id
+    )
+    .run();
+
+  await env.ADMIN_DB
+    .prepare(`
+      UPDATE orders
+      SET
+        status = 'completed',
+        admin_notes = ?,
+
+        reviewed_at =
+          COALESCE(
+            reviewed_at,
+            CURRENT_TIMESTAMP
+          ),
+
+        approved_at =
+          COALESCE(
+            approved_at,
+            CURRENT_TIMESTAMP
+          ),
+
+        completed_at =
+          CURRENT_TIMESTAMP,
+
+        updated_at =
+          CURRENT_TIMESTAMP
+
+      WHERE id = ?
+    `)
+    .bind(
+      clean(
+        body.admin_notes
+      ),
+      orderId
+    )
+    .run();
+
+  const temporarySaleNumber =
+    makeTemporaryNumber(
+      "SALE"
+    );
+
+  const isSoftware =
+    order.product_type ===
+      "software";
+
+  const saleInsert =
+    await env.ADMIN_DB
+      .prepare(`
+        INSERT INTO sales (
+          sale_number,
+          order_id,
+          payment_id,
+
+          customer_name,
+          customer_email,
+          customer_phone,
+          customer_address,
+          church_organization,
+
+          product_code,
+          product_name,
+          product_type,
+
+          quantity,
+          unit_price_npr,
+          total_paid_npr,
+
+          payment_method,
+          transaction_reference,
+          payment_date,
+
+          delivery_format,
+          delivery_method,
+          delivery_status,
+          tracking_reference,
+
+          licence_type,
+          licence_status,
+
+          approved_by,
+          approved_at,
+          notes
+        )
+
+        VALUES (
+          ?, ?, ?,
+          ?, ?, ?, ?, ?,
+          ?, ?, ?,
+          ?, ?, ?,
+          ?, ?, ?,
+          ?, ?, ?, ?,
+          ?, ?,
+          ?, CURRENT_TIMESTAMP, ?
+        )
+      `)
+      .bind(
+        temporarySaleNumber,
+        orderId,
+        payment.id,
+
+        order.customer_name,
+        order.customer_email,
+        order.customer_phone,
+        order.customer_address,
+        order.church_organization,
+
+        order.product_code,
+        order.product_name,
+        order.product_type,
+
+        order.quantity || 1,
+        order.unit_price_npr ||
+          order.amount_npr,
+        order.amount_npr,
+
+        payment.payment_method,
+        payment.transaction_reference,
+        payment.payment_date,
+
+        order.delivery_format,
+        order.delivery_method,
+        order.delivery_status ||
+          "pending",
+        order.tracking_reference,
+
+        isSoftware
+          ? "customer"
+          : null,
+
+        isSoftware
+          ? "not_issued"
+          : null,
+
+        adminEmail,
+        clean(
+          body.admin_notes
+        )
+      )
+      .run();
+
+  const saleId =
+    Number(
+      saleInsert.meta
+        .last_row_id
+    );
+
+  const saleNumber =
+    makeNumber(
+      "MM-SALE",
+      saleId
+    );
+
+  const invoiceNumber =
+    makeNumber(
+      "MM-INV",
+      saleId
+    );
+
+  await env.ADMIN_DB
+    .prepare(`
+      UPDATE sales
+      SET
+        sale_number = ?,
+        invoice_number = ?,
+        updated_at =
+          CURRENT_TIMESTAMP
+      WHERE id = ?
+    `)
+    .bind(
+      saleNumber,
+      invoiceNumber,
+      saleId
+    )
+    .run();
+
+  await env.ADMIN_DB
+    .prepare(`
+      INSERT INTO invoices (
+        invoice_number,
+        sale_id,
+        order_id,
+        customer_name,
+        customer_email,
+        product_name,
+        amount_npr,
+        signed_by
+      )
+      VALUES (
+        ?, ?, ?, ?, ?, ?, ?, ?
+      )
+    `)
+    .bind(
+      invoiceNumber,
+      saleId,
+      orderId,
+      order.customer_name,
+      order.customer_email,
+      order.product_name,
+      order.amount_npr,
+      "Durga Jung Kunwar"
+    )
+    .run();
+
+  await recordAdminActivity(
+    env,
+    request,
+    "PAYMENT_CONFIRMED",
+    "sale",
+    saleId,
+    `${order.order_number} confirmed as ${saleNumber}; invoice ${invoiceNumber}.`
+  );
+
+  let sale =
+    await getSaleById(
+      env,
+      saleId
+    );
+
+  if (isSoftware) {
+    const licenceResult =
+      await ensureCustomerLicence(
+        env,
+        sale
+      );
+
+    if (
+      !licenceResult.success
+    ) {
+      await recordAdminActivity(
+        env,
+        request,
+        "LICENCE_ISSUE_FAILED",
+        "sale",
+        saleId,
+        `${saleNumber}: ${licenceResult.error}`
+      );
+
+      return json(
+        {
+          success: false,
+          payment_confirmed:
+            true,
+          sale_created:
+            true,
+          invoice_created:
+            true,
+          licence_issued:
+            false,
+          email_sent:
+            false,
+          error:
+            licenceResult.error,
+
+          sale:
+            await getSaleById(
+              env,
+              saleId
+            )
+        },
+        licenceResult.status ||
+        502
+      );
+    }
+
+    sale =
+      licenceResult.sale;
+
+    await recordAdminActivity(
+      env,
+      request,
+      "LICENCE_ISSUED",
+      "sale",
+      saleId,
+      `${saleNumber}: customer licence issued.`
+    );
+
+    const deliveryResult =
+      await sendCustomerDelivery(
+        request,
+        env,
+        sale
+      );
+
+    if (
+      !deliveryResult.success
+    ) {
+      return json(
+        {
+          success: false,
+          payment_confirmed:
+            true,
+          sale_created:
+            true,
+          invoice_created:
+            true,
+          licence_issued:
+            true,
+          email_sent:
+            false,
+          error:
+            deliveryResult.error,
+
+          sale:
+            await getSaleById(
+              env,
+              saleId
+            )
+        },
+        deliveryResult.status ||
+        502
+      );
+    }
+
+    sale =
+      deliveryResult.sale;
+  }
+
+  return json({
+    success: true,
+
+    message:
+      isSoftware
+        ? "Payment confirmed, Sales record and invoice created, customer licence issued, and customer email sent."
+        : "Payment confirmed and permanent Sales record created.",
+
+    email_sent:
+      isSoftware
+        ? true
+        : null,
+
+    sale
+  });
+}
+
+
+async function adminSales(
+  env
+) {
+  const result =
+    await env.ADMIN_DB
+      .prepare(`
+        SELECT *
+        FROM sales
+        ORDER BY id DESC
+      `)
+      .all();
+
+  return json({
+    success: true,
+    sales:
+      result.results || []
+  });
+}
+
+
+async function adminGetSale(
+  env,
+  saleId
+) {
+  const sale =
+    await env.ADMIN_DB
+      .prepare(`
+        SELECT *
+        FROM sales
+        WHERE id = ?
+        LIMIT 1
+      `)
+      .bind(
+        saleId
+      )
+      .first();
+
+  if (!sale) {
+    return json(
+      {
+        success: false,
+        error:
+          "Sale not found."
+      },
+      404
+    );
+  }
+
+  return json({
+    success: true,
+    sale
+  });
+}
+
+
+async function adminInvoices(
+  env
+) {
+  const result =
+    await env.ADMIN_DB
+      .prepare(`
+        SELECT
+          i.*,
+          s.sale_number,
+          s.product_code,
+          s.product_type
+
+        FROM invoices i
+
+        LEFT JOIN sales s
+          ON s.id =
+            i.sale_id
+
+        ORDER BY
+          i.id DESC
+      `)
+      .all();
+
+  return json({
+    success: true,
+    invoices:
+      result.results || []
+  });
+}
+
+
+async function adminCustomers(
+  env
+) {
+  const result =
+    await env.ADMIN_DB
+      .prepare(`
+        SELECT
+          customer_email,
+
+          MAX(customer_name)
+            AS customer_name,
+
+          MAX(customer_phone)
+            AS customer_phone,
+
+          COUNT(*)
+            AS total_sales,
+
+          SUM(total_paid_npr)
+            AS total_spent_npr,
+
+          MIN(created_at)
+            AS first_purchase,
+
+          MAX(created_at)
+            AS latest_purchase
+
+        FROM sales
+
+        GROUP BY
+          customer_email
+
+        ORDER BY
+          latest_purchase DESC
+      `)
+      .all();
+
+  return json({
+    success: true,
+    customers:
+      result.results || []
+  });
+}
+
+
+async function adminActivity(
+  env
+) {
+  const result =
+    await env.ADMIN_DB
+      .prepare(`
+        SELECT *
+        FROM admin_activity
+        ORDER BY id DESC
+        LIMIT 200
+      `)
+      .all();
+
+  return json({
+    success: true,
+    activity:
+      result.results || []
+  });
+}
+
+
+function csvValue(
+  value
+) {
+  if (
+    value === null ||
+    value === undefined
+  ) {
     return "";
   }
 
-  function currentSermonKey() {
-    return sermonKeyFromPath(window.location.pathname);
-  }
+  return (
+    `"${String(value)
+      .replaceAll(
+        '"',
+        '""'
+      )}"`
+  );
+}
 
-  function getBestPageTitle() {
-    const heading =
-      document.querySelector("main h1") ||
-      document.querySelector("main h2") ||
-      document.querySelector("h1") ||
-      document.querySelector("h2");
 
-    return (
-      (heading && heading.textContent && heading.textContent.trim()) ||
-      document.title ||
-      "Sermon"
+async function adminEngagement(env) {
+  const totals = await env.ADMIN_DB.prepare(`
+      SELECT
+        (SELECT COUNT(*) FROM website_views) AS views,
+        (SELECT COUNT(*) FROM website_likes) AS likes,
+        (
+          SELECT COUNT(*)
+          FROM website_comments
+          WHERE status = 'approved'
+        ) AS comments,
+        (SELECT COUNT(*) FROM website_shares) AS shares,
+        (
+          SELECT COUNT(*)
+          FROM website_comments
+          WHERE status = 'hidden'
+        ) AS hidden_comments
+    `).first();
+  const pages = await env.ADMIN_DB.prepare(`
+      SELECT
+        c.content_key,
+        c.page_path,
+        c.title,
+        c.content_type,
+        (SELECT COUNT(*) FROM website_views v WHERE v.content_key = c.content_key) AS views,
+        (SELECT COUNT(*) FROM website_likes l WHERE l.content_key = c.content_key) AS likes,
+        (
+          SELECT COUNT(*)
+          FROM website_comments m
+          WHERE m.content_key = c.content_key AND m.status = 'approved'
+        ) AS comments,
+        (SELECT COUNT(*) FROM website_shares s WHERE s.content_key = c.content_key) AS shares
+      FROM website_content c
+      ORDER BY views DESC, c.title ASC
+    `).all();
+  return json({
+    success: true,
+    totals: {
+      views: Number(totals?.views || 0),
+      likes: Number(totals?.likes || 0),
+      comments: Number(totals?.comments || 0),
+      shares: Number(totals?.shares || 0),
+      hidden_comments: Number(totals?.hidden_comments || 0)
+    },
+    pages: (pages.results || []).map((row) => ({
+      ...row,
+      views: Number(row.views || 0),
+      likes: Number(row.likes || 0),
+      comments: Number(row.comments || 0),
+      shares: Number(row.shares || 0)
+    }))
+  });
+}
+async function adminComments(env) {
+  const result = await env.ADMIN_DB.prepare(`
+      SELECT
+        m.id,
+        m.content_key,
+        c.title AS content_title,
+        c.page_path,
+        m.commenter_name,
+        m.commenter_email,
+        m.comment_text,
+        m.status,
+        m.created_at,
+        m.updated_at
+      FROM website_comments m
+      LEFT JOIN website_content c
+        ON c.content_key = m.content_key
+      ORDER BY m.id DESC
+      LIMIT 500
+    `).all();
+  return json({
+    success: true,
+    comments: result.results || []
+  });
+}
+async function adminSetCommentStatus(request, env, commentId) {
+  const body = await readJson(request);
+  const status = clean(body.status);
+  if (!status || !["approved", "hidden"].includes(status)) {
+    return json(
+      {
+        success: false,
+        error: "Comment status must be approved or hidden."
+      },
+      400
     );
   }
-
-  function iconSvg(type) {
-    const common =
-      'viewBox="0 0 24 24" aria-hidden="true" focusable="false"';
-
-    if (type === "views") {
-      return (
-        `<svg ${common}><path d="M2.4 12s3.5-6 9.6-6 9.6 6 9.6 6-3.5 6-9.6 6S2.4 12 2.4 12Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="2.7" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>`
-      );
-    }
-
-    if (type === "like") {
-      return (
-        `<svg ${common}><path d="M7 10v10H4a2 2 0 0 1-2-2v-6a2 2 0 0 1 2-2h3Z" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><path d="M7 10 11 3a2.1 2.1 0 0 1 3.9 1.3L14.2 8H20a2 2 0 0 1 2 2.4l-1.5 7A3.2 3.2 0 0 1 17.4 20H7V10Z" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>`
-      );
-    }
-
-    if (type === "comments") {
-      return (
-        `<svg ${common}><path d="M21 11.5a8.3 8.3 0 0 1-9 8.2 9.3 9.3 0 0 1-3.6-.9L3 20l1.4-4.5A8.2 8.2 0 1 1 21 11.5Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>`
-      );
-    }
-
-    return (
-      `<svg ${common}><path d="M14 4h6v6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M10 14 20 4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M20 13v5a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>`
+  const existing = await env.ADMIN_DB.prepare(`
+      SELECT id, content_key, commenter_name
+      FROM website_comments
+      WHERE id = ?
+      LIMIT 1
+    `).bind(commentId).first();
+  if (!existing) {
+    return json(
+      {
+        success: false,
+        error: "Comment not found."
+      },
+      404
     );
   }
-
-  function normalizeAbsoluteUrl(value) {
-    try {
-      return new URL(value, window.location.origin).href;
-    } catch (error) {
-      return window.location.href;
-    }
-  }
-
-  function ensureShareChooserStyles() {
-    if (document.getElementById("dj-share-chooser-styles")) {
-      return;
-    }
-
-    const style = document.createElement("style");
-    style.id = "dj-share-chooser-styles";
-    style.textContent = `
-      .dj-share-backdrop{
-        position:fixed;
-        inset:0;
-        z-index:99999;
-        display:flex;
-        align-items:center;
-        justify-content:center;
-        padding:20px;
-        background:rgba(15,23,42,.48);
-        backdrop-filter:blur(4px);
-      }
-
-      .dj-share-dialog{
-        width:min(520px,100%);
-        max-height:min(88vh,720px);
-        overflow:auto;
-        border:1px solid rgba(148,163,184,.28);
-        border-radius:22px;
-        background:#ffffff;
-        box-shadow:0 28px 80px rgba(15,23,42,.24);
-        padding:22px;
-      }
-
-      .dj-share-head{
-        display:flex;
-        align-items:flex-start;
-        justify-content:space-between;
-        gap:16px;
-        margin-bottom:18px;
-      }
-
-      .dj-share-title{
-        margin:0;
-        color:#111827;
-        font-size:22px;
-        line-height:1.2;
-        font-weight:800;
-      }
-
-      .dj-share-subtitle{
-        margin:5px 0 0;
-        color:#6b7280;
-        font-size:13px;
-        line-height:1.45;
-      }
-
-      .dj-share-close{
-        width:36px;
-        height:36px;
-        flex:0 0 36px;
-        display:grid;
-        place-items:center;
-        border:1px solid #e5e7eb;
-        border-radius:999px;
-        background:#ffffff;
-        color:#374151;
-        font-size:22px;
-        line-height:1;
-        cursor:pointer;
-      }
-
-      .dj-share-grid{
-        display:grid;
-        grid-template-columns:repeat(4,minmax(0,1fr));
-        gap:12px;
-      }
-
-      .dj-share-option{
-        appearance:none;
-        min-width:0;
-        min-height:96px;
-        display:flex;
-        flex-direction:column;
-        align-items:center;
-        justify-content:center;
-        gap:9px;
-        border:1px solid #e5e7eb;
-        border-radius:16px;
-        background:#ffffff;
-        color:#1f2937;
-        padding:12px 8px;
-        font:inherit;
-        font-size:12px;
-        font-weight:750;
-        cursor:pointer;
-        transition:transform .16s ease,box-shadow .16s ease,border-color .16s ease;
-      }
-
-      .dj-share-option:hover{
-        transform:translateY(-2px);
-        border-color:#cbd5e1;
-        box-shadow:0 10px 24px rgba(15,23,42,.08);
-      }
-
-      .dj-share-option:focus-visible,
-      .dj-share-close:focus-visible{
-        outline:3px solid rgba(37,99,235,.28);
-        outline-offset:2px;
-      }
-
-      .dj-share-icon{
-        width:44px;
-        height:44px;
-        display:grid;
-        place-items:center;
-        border-radius:14px;
-        font-size:20px;
-        font-weight:900;
-        color:#ffffff;
-      }
-
-      .dj-share-facebook{background:#1877f2;}
-      .dj-share-whatsapp{background:#22c55e;}
-      .dj-share-messenger{background:linear-gradient(135deg,#00b2ff,#7c3aed);}
-      .dj-share-telegram{background:#229ed9;}
-      .dj-share-email{background:#64748b;}
-      .dj-share-copy{background:#334155;}
-      .dj-share-more{background:#111827;}
-
-      .dj-share-note{
-        margin:16px 0 0;
-        color:#6b7280;
-        font-size:11.5px;
-        line-height:1.5;
-        text-align:center;
-      }
-
-      @media(max-width:560px){
-        .dj-share-dialog{
-          padding:18px;
-          border-radius:18px;
-        }
-
-        .dj-share-grid{
-          grid-template-columns:repeat(3,minmax(0,1fr));
-          gap:9px;
-        }
-
-        .dj-share-option{
-          min-height:88px;
-          border-radius:14px;
-          font-size:11px;
-        }
-
-        .dj-share-icon{
-          width:40px;
-          height:40px;
-          border-radius:12px;
-          font-size:18px;
-        }
-      }
-    `;
-
-    document.head.appendChild(style);
-  }
-
-  function openShareWindow(url) {
-    const popup = window.open(
-      url,
-      "_blank",
-      "noopener,noreferrer,width=760,height=680"
+  await env.ADMIN_DB.prepare(`
+      UPDATE website_comments
+      SET
+        status = ?,
+        updated_at = CURRENT_TIMESTAMP
+      WHERE id = ?
+    `).bind(
+    status,
+    commentId
+  ).run();
+  await recordAdminActivity(
+    env,
+    request,
+    "WEBSITE_COMMENT_STATUS_CHANGED",
+    "website_comment",
+    commentId,
+    `${existing.content_key}: comment by ${existing.commenter_name} changed to ${status}.`
+  );
+  return json({
+    success: true,
+    message: `Comment marked ${status}.`
+  });
+}
+async function adminDeleteComment(request, env, commentId) {
+  const existing = await env.ADMIN_DB.prepare(`
+      SELECT id, content_key, commenter_name
+      FROM website_comments
+      WHERE id = ?
+      LIMIT 1
+    `).bind(commentId).first();
+  if (!existing) {
+    return json(
+      {
+        success: false,
+        error: "Comment not found."
+      },
+      404
     );
-
-    if (popup) {
-      try {
-        popup.opener = null;
-      } catch (error) {
-        // Ignore browsers that prevent access to opener.
-      }
-    }
-
-    return popup;
   }
-
-  /* =========================================================
-     SERMON PAGE PREPARATION
-     ========================================================= */
-
-  function createFullSermonEngagementRoot() {
-    const key = currentSermonKey();
-
-    if (!key) {
-      return null;
-    }
-
-    const existing = document.querySelector("[data-engagement-root]");
-
-    if (existing) {
-      existing.dataset.contentKey = key;
-      existing.dataset.pagePath = window.location.pathname;
-      existing.dataset.contentTitle = getBestPageTitle();
-      existing.dataset.contentType = "sermon";
-      existing.dataset.shareUrl = window.location.href;
-      existing.dataset.recordView = "true";
-      return existing;
-    }
-
-    const main = document.querySelector("main");
-
-    if (!main) {
-      return null;
-    }
-
-    const section = document.createElement("section");
-    section.className = "engagement-section sermon-detail-engagement";
-    section.dataset.engagementRoot = "";
-    section.dataset.contentKey = key;
-    section.dataset.pagePath = window.location.pathname;
-    section.dataset.contentTitle = getBestPageTitle();
-    section.dataset.contentType = "sermon";
-    section.dataset.shareUrl = window.location.href;
-    section.dataset.recordView = "true";
-    section.dataset.engagementMode = "full";
-
-    section.innerHTML = `
-      <div class="container">
-        <div class="engagement-card">
-          <div class="engagement-heading">
-            <h2>Connect &amp; Respond</h2>
-            <p>View, like, comment, or share this sermon.</p>
-          </div>
-          ${engagementActionsMarkup("full")}
-          ${engagementCommentPanelMarkup("full")}
-        </div>
-      </div>
-    `;
-
-    main.appendChild(section);
-    return section;
-  }
-
-  function prepareExistingSermonsPageRoot() {
-    const path = window.location.pathname.replace(/\/+$/, "") || "/";
-
-    if (path !== "/sermons" && path !== "/sermons.html") {
-      return;
-    }
-
-    document
-      .querySelectorAll('[data-engagement-root][data-content-key="sermons"]')
-      .forEach((root) => root.remove());
-  }
-
-  function engagementActionsMarkup(mode = "compact") {
-    const isCompact = mode === "compact";
-
-    return `
-      <div class="engagement-actions ${isCompact ? "sermon-engagement-actions" : ""}" aria-label="Engagement">
-        <div class="engagement-action engagement-action--views" data-engagement-action="views" aria-label="Views">
-          <span class="engagement-icon">${iconSvg("views")}</span>
-          <span class="engagement-action-label">Views</span>
-          <span class="engagement-count" data-role="views-count">0</span>
-        </div>
-
-        <button class="engagement-action engagement-action--like" data-engagement-action="like" data-role="like-button" type="button" aria-pressed="false" aria-label="Like this sermon">
-          <span class="engagement-icon">${iconSvg("like")}</span>
-          <span class="engagement-action-label" data-role="like-label">Like</span>
-          <span class="engagement-count" data-role="likes-count">0</span>
-        </button>
-
-        <button class="engagement-action engagement-action--comments" data-engagement-action="comments" data-role="comments-button" type="button" aria-label="Open comments">
-          <span class="engagement-icon">${iconSvg("comments")}</span>
-          <span class="engagement-action-label">Comments</span>
-          <span class="engagement-count" data-role="comments-count">0</span>
-        </button>
-
-        <button class="engagement-action engagement-action--share" data-engagement-action="share" data-role="share-button" type="button" aria-label="Share this sermon">
-          <span class="engagement-icon">${iconSvg("share")}</span>
-          <span class="engagement-action-label">Share</span>
-          <span class="engagement-count" data-role="shares-count">0</span>
-        </button>
-      </div>
-    `;
-  }
-
-  function engagementCommentPanelMarkup(mode = "compact") {
-    const compact = mode === "compact";
-
-    return `
-      <div class="engagement-body ${compact ? "sermon-comment-panel" : ""}" data-role="comment-panel" ${compact ? "hidden" : ""}>
-        <p class="engagement-status" data-role="status" role="status" aria-live="polite" hidden></p>
-
-        <div class="sermon-comment-panel-head">
-          <h3>Comments</h3>
-          ${
-            compact
-              ? '<button class="sermon-comment-close" data-role="comment-close" type="button" aria-label="Close comments">×</button>'
-              : ""
-          }
-        </div>
-
-        <form class="comment-form" data-role="comment-form">
-          <div class="comment-form-grid">
-            <div class="comment-field">
-              <label>Name</label>
-              <input data-role="commenter-name" name="commenter_name" type="text" maxlength="80" autocomplete="name" required>
-            </div>
-
-            <div class="comment-field">
-              <label>Email <span class="muted">(optional)</span></label>
-              <input data-role="commenter-email" name="commenter_email" type="email" maxlength="254" autocomplete="email">
-            </div>
-
-            <div class="comment-field full">
-              <label>Comment</label>
-              <textarea data-role="comment-text" name="comment_text" maxlength="2000" required></textarea>
-              <p class="comment-help">Maximum 2,000 characters. Your email address is not displayed publicly.</p>
-            </div>
-          </div>
-
-          <div class="comment-submit-row">
-            <button class="btn gold" data-role="comment-submit" type="submit">Post Comment</button>
-          </div>
-        </form>
-
-        <div class="engagement-comments-wrap">
-          <div class="engagement-comments-title">
-            <h3>Recent Comments</h3>
-          </div>
-          <div class="engagement-comments-list" data-role="comments-list" aria-live="polite">
-            <p class="engagement-empty">Loading comments...</p>
-          </div>
-        </div>
-      </div>
-    `;
-  }
-
-  function addSermonEngagementToListing() {
-    const path = window.location.pathname.replace(/\/+$/, "") || "/";
-
-    if (path !== "/sermons" && path !== "/sermons.html") {
-      return;
-    }
-
-    const sermonItems = [
-      ...document.querySelectorAll("article.featured, .library article.card")
-    ];
-
-    sermonItems.forEach((article, index) => {
-      if (article.querySelector("[data-engagement-root]")) {
-        return;
-      }
-
-      const readLink = article.querySelector(
-        'a[href^="/sermon-"][href$=".html"], a[href*="/sermon-"][href*=".html"]'
-      );
-
-      const titleElement = article.querySelector("h2, h3");
-      const title =
-        (titleElement && titleElement.textContent.trim()) ||
-        `Sermon ${index + 1}`;
-
-      let key = readLink
-        ? sermonKeyFromPath(readLink.getAttribute("href"))
-        : "";
-
-      if (!key) {
-        const titleSlug = slugify(title);
-        key = titleSlug
-          ? `sermon-${titleSlug}`
-          : `sermon-item-${index + 1}`;
-      }
-
-      const targetPath = readLink
-        ? new URL(readLink.getAttribute("href"), window.location.origin).pathname
-        : `/sermons.html#${key}`;
-
-      if (!readLink && !article.id) {
-        article.id = key;
-      }
-
-      const shareUrl = normalizeAbsoluteUrl(targetPath);
-
-      const root = document.createElement("div");
-      root.className = "sermon-engagement";
-      root.dataset.engagementRoot = "";
-      root.dataset.contentKey = key;
-      root.dataset.pagePath = targetPath;
-      root.dataset.contentTitle = title;
-      root.dataset.contentType = "sermon";
-      root.dataset.shareUrl = shareUrl;
-      root.dataset.recordView = "false";
-      root.dataset.engagementMode = "compact";
-
-      root.innerHTML = `
-        ${engagementActionsMarkup("compact")}
-        <p
-          class="sermon-engagement-inline-status"
-          data-role="inline-status"
-          role="status"
-          aria-live="polite"
-          hidden
-        ></p>
-        ${engagementCommentPanelMarkup("compact")}
-      `;
-
-      article.appendChild(root);
-    });
-  }
-
-  prepareExistingSermonsPageRoot();
-  createFullSermonEngagementRoot();
-  addSermonEngagementToListing();
-
-  /* =========================================================
-     ENGAGEMENT CONTROLLER
-     Supports both legacy single-page markup and new sermon cards.
-     ========================================================= */
-
-  class EngagementController {
-    constructor(root) {
-      this.root = root;
-      this.contentKey = (root.dataset.contentKey || "").trim();
-      this.pagePath =
-        (root.dataset.pagePath || "").trim() ||
-        window.location.pathname ||
-        "/";
-      this.contentTitle =
-        (root.dataset.contentTitle || "").trim() ||
-        document.title ||
-        this.contentKey;
-      this.contentType =
-        (root.dataset.contentType || "page").trim() || "page";
-      this.shareUrl = normalizeAbsoluteUrl(
-        (root.dataset.shareUrl || "").trim() || window.location.href
-      );
-      this.recordViewEnabled =
-        String(root.dataset.recordView || "true").toLowerCase() !== "false";
-      this.mode = (root.dataset.engagementMode || "full").trim();
-      this.currentLiked = false;
-
-      this.viewsCount = this.find(
-        '[data-role="views-count"]',
-        "#engagement-views"
-      );
-      this.likesCount = this.find(
-        '[data-role="likes-count"]',
-        "#engagement-likes"
-      );
-      this.commentsCount = this.find(
-        '[data-role="comments-count"]',
-        "#engagement-comments"
-      );
-      this.sharesCount = this.find(
-        '[data-role="shares-count"]',
-        "#engagement-shares"
-      );
-
-      this.likeButton = this.find(
-        '[data-role="like-button"]',
-        "#engagement-like-btn"
-      );
-      this.likeLabel = this.find(
-        '[data-role="like-label"]',
-        "#engagement-like-label"
-      );
-      this.commentsButton = this.find(
-        '[data-role="comments-button"]',
-        "#engagement-comments-btn"
-      );
-      this.shareButton = this.find(
-        '[data-role="share-button"]',
-        "#engagement-share-btn"
-      );
-
-      this.commentPanel = this.find('[data-role="comment-panel"]');
-      this.commentClose = this.find('[data-role="comment-close"]');
-      this.commentForm = this.find(
-        '[data-role="comment-form"]',
-        "#engagement-comment-form"
-      );
-      this.commenterName = this.find(
-        '[data-role="commenter-name"]',
-        "#commenter-name"
-      );
-      this.commenterEmail = this.find(
-        '[data-role="commenter-email"]',
-        "#commenter-email"
-      );
-      this.commentText = this.find(
-        '[data-role="comment-text"]',
-        "#comment-text"
-      );
-      this.commentSubmit = this.find(
-        '[data-role="comment-submit"]',
-        "#comment-submit"
-      );
-      this.commentsList = this.find(
-        '[data-role="comments-list"]',
-        "#engagement-comments-list"
-      );
-      this.statusMessage = this.find(
-        '[data-role="status"]',
-        "#engagement-status"
-      );
-
-      this.inlineStatusMessage = this.find(
-        '[data-role="inline-status"]'
-      );
-
-      this.enhanceLegacyVisuals();
-    }
-
-    find(...selectors) {
-      for (const selector of selectors) {
-        if (!selector) {
-          continue;
-        }
-
-        const element = this.root.querySelector(selector);
-
-        if (element) {
-          return element;
-        }
-      }
-
-      return null;
-    }
-
-    payload() {
-      return {
-        content_key: this.contentKey,
-        page_path: this.pagePath,
-        title: this.contentTitle,
-        content_type: this.contentType,
-        visitor_key: visitorKey
-      };
-    }
-
-    setStatus(message = "", type = "") {
-      const targets = [
-        this.statusMessage,
-        this.inlineStatusMessage
-      ].filter(Boolean);
-
-      if (targets.length === 0) {
-        return;
-      }
-
-      targets.forEach((target) => {
-        target.textContent = message;
-        target.dataset.state = type;
-        target.hidden = !message;
-      });
-    }
-
-    setCount(element, value) {
-      if (!element) {
-        return;
-      }
-
-      const number = Number(value || 0);
-      element.textContent = Number.isFinite(number)
-        ? number.toLocaleString()
-        : "0";
-    }
-
-    enhanceLegacyVisuals() {
-      const actionInfo = [
-        [this.viewsCount, "views"],
-        [this.likesCount, "like"],
-        [this.commentsCount, "comments"],
-        [this.sharesCount, "share"]
-      ];
-
-      actionInfo.forEach(([countElement, type]) => {
-        if (!countElement) {
-          return;
-        }
-
-        const action = countElement.closest(".engagement-action");
-
-        if (!action) {
-          return;
-        }
-
-        action.classList.add(`engagement-action--${type}`);
-        action.dataset.engagementAction = type;
-
-        const icon = action.querySelector(".engagement-icon");
-
-        if (icon) {
-          icon.innerHTML = iconSvg(type);
-        }
-      });
-    }
-
-    renderComments(comments) {
-      if (!this.commentsList) {
-        return;
-      }
-
-      this.commentsList.replaceChildren();
-
-      if (!Array.isArray(comments) || comments.length === 0) {
-        const empty = document.createElement("p");
-        empty.className = "engagement-empty";
-        empty.textContent =
-          "No comments yet. Be the first to leave a comment.";
-
-        this.commentsList.appendChild(empty);
-        return;
-      }
-
-      comments.forEach((comment) => {
-        const article = document.createElement("article");
-        article.className = "public-comment";
-
-        const avatar = document.createElement("div");
-        avatar.className = "public-comment-avatar";
-        avatar.setAttribute("aria-hidden", "true");
-        avatar.textContent = String(
-          comment.commenter_name || "V"
-        )
-          .trim()
-          .charAt(0)
-          .toUpperCase();
-
-        const body = document.createElement("div");
-        body.className = "public-comment-body";
-
-        const header = document.createElement("div");
-        header.className = "public-comment-head";
-
-        const name = document.createElement("strong");
-        name.className = "public-comment-name";
-        name.textContent = comment.commenter_name || "Website Visitor";
-
-        const time = document.createElement("time");
-        time.className = "public-comment-date";
-        time.textContent = formatCommentDate(comment.created_at);
-
-        const text = document.createElement("p");
-        text.className = "public-comment-text";
-        text.textContent = comment.comment_text || "";
-
-        header.appendChild(name);
-        header.appendChild(time);
-        body.appendChild(header);
-        body.appendChild(text);
-
-        article.appendChild(avatar);
-        article.appendChild(body);
-
-        this.commentsList.appendChild(article);
-      });
-    }
-
-    render(data) {
-      if (!data || !data.engagement) {
-        return;
-      }
-
-      const engagement = data.engagement;
-
-      this.setCount(this.viewsCount, engagement.views);
-      this.setCount(this.likesCount, engagement.likes);
-      this.setCount(this.commentsCount, engagement.comments);
-      this.setCount(this.sharesCount, engagement.shares);
-
-      this.currentLiked = Boolean(engagement.liked);
-
-      if (this.likeButton) {
-        this.likeButton.classList.toggle("is-liked", this.currentLiked);
-        this.likeButton.setAttribute(
-          "aria-pressed",
-          String(this.currentLiked)
-        );
-      }
-
-      if (this.likeLabel) {
-        this.likeLabel.textContent = this.currentLiked ? "Liked" : "Like";
-      }
-
-      this.renderComments(data.comments || []);
-    }
-
-    async load() {
-      const url =
-        "/api/engagement?content_key=" +
-        encodeURIComponent(this.contentKey) +
-        "&visitor_key=" +
-        encodeURIComponent(visitorKey);
-
-      const data = await apiRequest(url);
-      this.render(data);
-      return data;
-    }
-
-    async recordView() {
-      return apiRequest("/api/engagement/view", {
-        method: "POST",
-        body: this.payload()
-      });
-    }
-
-    async toggleLike() {
-      if (!this.likeButton || this.likeButton.disabled) {
-        return;
-      }
-
-      const wasLiked = this.currentLiked;
-      const nextLiked = !wasLiked;
-
-      const previousCount = Number(
-        String(this.likesCount ? this.likesCount.textContent : "0")
-          .replace(/[^0-9.-]/g, "") || 0
-      );
-
-      const optimisticCount = Math.max(
-        0,
-        previousCount + (nextLiked ? 1 : -1)
-      );
-
-      this.likeButton.disabled = true;
-      this.setStatus("");
-
-      /* Show the requested state immediately. */
-      this.currentLiked = nextLiked;
-
-      this.likeButton.classList.toggle(
-        "is-liked",
-        nextLiked
-      );
-
-      this.likeButton.setAttribute(
-        "aria-pressed",
-        String(nextLiked)
-      );
-
-      if (this.likeLabel) {
-        this.likeLabel.textContent =
-          nextLiked ? "Liked" : "Like";
-      }
-
-      this.setCount(
-        this.likesCount,
-        optimisticCount
-      );
-
-      try {
-        let result;
-
-        if (wasLiked) {
-          result = await apiRequest(
-            "/api/engagement/like",
-            {
-              method: "DELETE",
-              body: {
-                content_key: this.contentKey,
-                visitor_key: visitorKey
-              }
-            }
-          );
-        } else {
-          result = await apiRequest(
-            "/api/engagement/like",
-            {
-              method: "POST",
-              body: this.payload()
-            }
-          );
-        }
-
-        /*
-         * Do not depend on a particular server response field for
-         * liked/unliked state. A successful request means the requested
-         * action succeeded. Use the server count only when it is valid.
-         */
-        this.currentLiked = nextLiked;
-
-        this.likeButton.classList.toggle(
-          "is-liked",
-          nextLiked
-        );
-
-        this.likeButton.setAttribute(
-          "aria-pressed",
-          String(nextLiked)
-        );
-
-        if (this.likeLabel) {
-          this.likeLabel.textContent =
-            nextLiked ? "Liked" : "Like";
-        }
-
-        const serverLikes = Number(result.likes);
-
-        this.setCount(
-          this.likesCount,
-          Number.isFinite(serverLikes)
-            ? serverLikes
-            : optimisticCount
-        );
-      } catch (error) {
-        /* Restore the old state only when the API request actually fails. */
-        this.currentLiked = wasLiked;
-
-        this.likeButton.classList.toggle(
-          "is-liked",
-          wasLiked
-        );
-
-        this.likeButton.setAttribute(
-          "aria-pressed",
-          String(wasLiked)
-        );
-
-        if (this.likeLabel) {
-          this.likeLabel.textContent =
-            wasLiked ? "Liked" : "Like";
-        }
-
-        this.setCount(
-          this.likesCount,
-          previousCount
-        );
-
-        this.setStatus(
-          error.message ||
-            "Unable to update your like.",
-          "error"
-        );
-
-        console.error(
-          `Like update failed for ${this.contentKey}:`,
-          error
-        );
-      } finally {
-        this.likeButton.disabled = false;
-      }
-    }
-
-    openComments() {
-      if (this.commentPanel) {
-        this.commentPanel.hidden = false;
-        this.commentPanel.classList.add("is-open");
-      }
-
-      const target = this.commentPanel || this.commentForm;
-
-      if (target) {
-        target.scrollIntoView({
-          behavior: "smooth",
-          block: "nearest"
-        });
-      }
-
-      window.setTimeout(() => {
-        if (this.commenterName) {
-          this.commenterName.focus();
-        }
-      }, 300);
-    }
-
-    closeComments() {
-      if (!this.commentPanel) {
-        return;
-      }
-
-      this.commentPanel.classList.remove("is-open");
-      this.commentPanel.hidden = true;
-    }
-
-    async submitComment(event) {
-      event.preventDefault();
-
-      if (!this.commenterName || !this.commentText) {
-        return;
-      }
-
-      const name = this.commenterName.value.trim();
-      const email = this.commenterEmail
-        ? this.commenterEmail.value.trim()
-        : "";
-      const text = this.commentText.value.trim();
-
-      if (!name) {
-        this.setStatus("Please enter your name.", "error");
-        this.commenterName.focus();
-        return;
-      }
-
-      if (!text) {
-        this.setStatus("Please enter your comment.", "error");
-        this.commentText.focus();
-        return;
-      }
-
-      if (name.length > 80) {
-        this.setStatus("Your name is too long.", "error");
-        return;
-      }
-
-      if (email.length > 254) {
-        this.setStatus("Your email address is too long.", "error");
-        return;
-      }
-
-      if (text.length > 2000) {
-        this.setStatus(
-          "Your comment must be 2,000 characters or fewer.",
-          "error"
-        );
-        return;
-      }
-
-      if (this.commentSubmit) {
-        this.commentSubmit.disabled = true;
-        this.commentSubmit.textContent = "Posting...";
-      }
-
-      this.setStatus("");
-
-      try {
-        await apiRequest("/api/engagement/comment", {
-          method: "POST",
-          body: {
-            ...this.payload(),
-            commenter_name: name,
-            commenter_email: email,
-            comment_text: text
-          }
-        });
-
-        this.commentText.value = "";
-        this.setStatus(
-          "Thank you. Your comment has been posted.",
-          "success"
-        );
-
-        await this.load();
-      } catch (error) {
-        this.setStatus(
-          error.message || "Unable to post your comment.",
-          "error"
-        );
-      } finally {
-        if (this.commentSubmit) {
-          this.commentSubmit.disabled = false;
-          this.commentSubmit.textContent = "Post Comment";
-        }
-      }
-    }
-
-    async recordShare(shareType) {
-      await apiRequest("/api/engagement/share", {
-        method: "POST",
-        body: {
-          ...this.payload(),
-          share_type: shareType
-        }
-      });
-    }
-
-    async copyShareLink() {
-      if (
-        navigator.clipboard &&
-        typeof navigator.clipboard.writeText === "function"
-      ) {
-        await navigator.clipboard.writeText(this.shareUrl);
-        return;
-      }
-
-      const temporaryInput = document.createElement("textarea");
-      temporaryInput.value = this.shareUrl;
-      temporaryInput.setAttribute("readonly", "");
-      temporaryInput.style.position = "fixed";
-      temporaryInput.style.left = "-9999px";
-      temporaryInput.style.top = "0";
-
-      document.body.appendChild(temporaryInput);
-      temporaryInput.select();
-
-      const copied = document.execCommand("copy");
-      temporaryInput.remove();
-
-      if (!copied) {
-        throw new Error("The page link could not be copied.");
-      }
-    }
-
-    async completeShareAction(shareType, successMessage = "") {
-      try {
-        await this.recordShare(shareType);
-        await this.load();
-
-        if (successMessage) {
-          this.setStatus(successMessage, "success");
-        }
-      } catch (error) {
-        this.setStatus(
-          error.message || "Unable to record this share.",
-          "error"
-        );
-      }
-    }
-
-    openShareChooser() {
-      if (!this.shareButton) {
-        return;
-      }
-
-      ensureShareChooserStyles();
-      this.setStatus("");
-
-      document
-        .querySelectorAll(".dj-share-backdrop")
-        .forEach((item) => item.remove());
-
-      const backdrop = document.createElement("div");
-      backdrop.className = "dj-share-backdrop";
-
-      const dialog = document.createElement("div");
-      dialog.className = "dj-share-dialog";
-      dialog.setAttribute("role", "dialog");
-      dialog.setAttribute("aria-modal", "true");
-      dialog.setAttribute("aria-label", "Share options");
-
-      const head = document.createElement("div");
-      head.className = "dj-share-head";
-
-      const headingWrap = document.createElement("div");
-      const title = document.createElement("h2");
-      title.className = "dj-share-title";
-      title.textContent = "Share";
-
-      const subtitle = document.createElement("p");
-      subtitle.className = "dj-share-subtitle";
-      subtitle.textContent = this.contentTitle || "Choose where you want to share.";
-
-      headingWrap.appendChild(title);
-      headingWrap.appendChild(subtitle);
-
-      const closeButton = document.createElement("button");
-      closeButton.className = "dj-share-close";
-      closeButton.type = "button";
-      closeButton.setAttribute("aria-label", "Close share options");
-      closeButton.textContent = "×";
-
-      head.appendChild(headingWrap);
-      head.appendChild(closeButton);
-
-      const grid = document.createElement("div");
-      grid.className = "dj-share-grid";
-
-      const options = [
-        ["facebook", "f", "Facebook", "dj-share-facebook"],
-        ["whatsapp", "W", "WhatsApp", "dj-share-whatsapp"],
-        ["messenger", "M", "Messenger", "dj-share-messenger"],
-        ["telegram", "T", "Telegram", "dj-share-telegram"],
-        ["email", "@", "Email", "dj-share-email"],
-        ["copy_link", "⧉", "Copy link", "dj-share-copy"],
-        ["native_share", "⋯", "More apps", "dj-share-more"]
-      ];
-
-      const closeChooser = () => {
-        document.removeEventListener("keydown", onKeyDown);
-        backdrop.remove();
-        this.shareButton.focus();
-      };
-
-      const onKeyDown = (event) => {
-        if (event.key === "Escape") {
-          closeChooser();
-        }
-      };
-
-      options.forEach(([platform, symbol, label, iconClass]) => {
-        if (
-          platform === "native_share" &&
-          !(navigator.share && typeof navigator.share === "function")
-        ) {
-          return;
-        }
-
-        const button = document.createElement("button");
-        button.className = "dj-share-option";
-        button.type = "button";
-        button.dataset.sharePlatform = platform;
-
-        const icon = document.createElement("span");
-        icon.className = `dj-share-icon ${iconClass}`;
-        icon.setAttribute("aria-hidden", "true");
-        icon.textContent = symbol;
-
-        const text = document.createElement("span");
-        text.textContent = label;
-
-        button.appendChild(icon);
-        button.appendChild(text);
-
-        button.addEventListener("click", async () => {
-          button.disabled = true;
-
-          const encodedUrl = encodeURIComponent(this.shareUrl);
-          const encodedTitle = encodeURIComponent(this.contentTitle || "");
-          const combinedText = encodeURIComponent(
-            `${this.contentTitle || ""} ${this.shareUrl}`.trim()
-          );
-
-          try {
-            if (platform === "facebook") {
-              openShareWindow(
-                `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`
-              );
-              closeChooser();
-              await this.completeShareAction(
-                "facebook",
-                "Facebook sharing opened."
-              );
-              return;
-            }
-
-            if (platform === "whatsapp") {
-              openShareWindow(
-                `https://wa.me/?text=${combinedText}`
-              );
-              closeChooser();
-              await this.completeShareAction(
-                "whatsapp",
-                "WhatsApp sharing opened."
-              );
-              return;
-            }
-
-            if (platform === "telegram") {
-              openShareWindow(
-                `https://t.me/share/url?url=${encodedUrl}&text=${encodedTitle}`
-              );
-              closeChooser();
-              await this.completeShareAction(
-                "telegram",
-                "Telegram sharing opened."
-              );
-              return;
-            }
-
-            if (platform === "email") {
-              window.location.href =
-                `mailto:?subject=${encodedTitle}&body=${combinedText}`;
-              closeChooser();
-              await this.completeShareAction(
-                "email",
-                "Email sharing opened."
-              );
-              return;
-            }
-
-            if (platform === "copy_link") {
-              await this.copyShareLink();
-              closeChooser();
-              await this.completeShareAction(
-                "copy_link",
-                "Link copied."
-              );
-              return;
-            }
-
-            if (platform === "messenger") {
-              if (
-                navigator.share &&
-                typeof navigator.share === "function"
-              ) {
-                try {
-                  await navigator.share({
-                    title: this.contentTitle,
-                    text: this.contentTitle,
-                    url: this.shareUrl
-                  });
-                } catch (error) {
-                  if (error && error.name === "AbortError") {
-                    button.disabled = false;
-                    return;
-                  }
-
-                  throw error;
-                }
-
-                closeChooser();
-                await this.completeShareAction(
-                  "messenger",
-                  "Sharing completed."
-                );
-                return;
-              }
-
-              await this.copyShareLink();
-              openShareWindow("https://www.messenger.com/");
-              closeChooser();
-              await this.completeShareAction(
-                "messenger",
-                "Messenger opened."
-              );
-              return;
-            }
-
-            if (platform === "native_share") {
-              try {
-                await navigator.share({
-                  title: this.contentTitle,
-                  text: this.contentTitle,
-                  url: this.shareUrl
-                });
-              } catch (error) {
-                if (error && error.name === "AbortError") {
-                  button.disabled = false;
-                  return;
-                }
-
-                throw error;
-              }
-
-              closeChooser();
-              await this.completeShareAction(
-                "native_share",
-                "Sharing completed."
-              );
-            }
-          } catch (error) {
-            button.disabled = false;
-            this.setStatus(
-              error.message || "Unable to share this content.",
-              "error"
-            );
-          }
-        });
-
-        grid.appendChild(button);
-      });
-
-      const note = document.createElement("p");
-      note.className = "dj-share-note";
-      note.textContent =
-        "Choose a platform. On supported phones and computers, More apps opens your system sharing menu.";
-
-      dialog.appendChild(head);
-      dialog.appendChild(grid);
-      dialog.appendChild(note);
-      backdrop.appendChild(dialog);
-      document.body.appendChild(backdrop);
-
-      closeButton.addEventListener("click", closeChooser);
-
-      backdrop.addEventListener("click", (event) => {
-        if (event.target === backdrop) {
-          closeChooser();
-        }
-      });
-
-      document.addEventListener("keydown", onKeyDown);
-
-      const firstOption = grid.querySelector(".dj-share-option");
-      if (firstOption) {
-        firstOption.focus();
-      }
-    }
-
-    share() {
-      this.openShareChooser();
-    }
-
-    bindEvents() {
-      if (this.commentsButton) {
-        this.commentsButton.addEventListener("click", () =>
-          this.openComments()
-        );
-      }
-
-      if (this.commentClose) {
-        this.commentClose.addEventListener("click", () =>
-          this.closeComments()
-        );
-      }
-
-      if (this.commentForm) {
-        this.commentForm.addEventListener("submit", (event) =>
-          this.submitComment(event)
-        );
-      }
-
-      if (this.shareButton) {
-        this.shareButton.addEventListener("click", () => this.share());
-      }
-    }
-
-    async initialize() {
-      if (!this.contentKey) {
-        return;
-      }
-
-      this.bindEvents();
-      this.setStatus("");
-
-      if (this.recordViewEnabled) {
-        try {
-          await this.recordView();
-        } catch (error) {
-          console.warn(
-            `View recording failed for ${this.contentKey}:`,
-            error
-          );
-        }
-      }
-
-      try {
-        await this.load();
-      } catch (error) {
-        this.setStatus(
-          "Engagement information is temporarily unavailable.",
-          "error"
-        );
-      }
-    }
-  }
-
-  /* =========================================================
-     START ALL ENGAGEMENT ROOTS
-     ========================================================= */
-
-  const engagementRoots = [
-    ...document.querySelectorAll("[data-engagement-root]")
+  await env.ADMIN_DB.prepare(`
+      DELETE FROM website_comments
+      WHERE id = ?
+    `).bind(commentId).run();
+  await recordAdminActivity(
+    env,
+    request,
+    "WEBSITE_COMMENT_DELETED",
+    "website_comment",
+    commentId,
+    `${existing.content_key}: comment by ${existing.commenter_name} permanently deleted.`
+  );
+  return json({
+    success: true,
+    message: "Comment permanently deleted."
+  });
+}
+
+async function exportSales(
+  env
+) {
+  const result =
+    await env.ADMIN_DB
+      .prepare(`
+        SELECT *
+        FROM sales
+        ORDER BY id ASC
+      `)
+      .all();
+
+  const sales =
+    result.results || [];
+
+  const headers = [
+    "S.N.",
+    "Sale Number",
+    "Invoice Number",
+    "Product Type",
+    "Product Code",
+    "Product Name",
+    "Customer Name",
+    "Customer Email",
+    "Customer Phone",
+    "Quantity",
+    "Unit Price NPR",
+    "Total Paid NPR",
+    "Payment Method",
+    "Transaction Reference",
+    "Payment Date",
+    "Licence Key",
+    "Licence Status",
+    "Device ID",
+    "Reset Count",
+    "Delivery Format",
+    "Delivery Method",
+    "Delivery Status",
+    "Tracking Reference",
+    "Invoice Sent",
+    "Licence Email Sent",
+    "Installer Sent",
+    "Installation Guide Sent",
+    "User Manual Sent",
+    "Approved By",
+    "Approved At",
+    "Notes"
   ];
 
-  const engagementControllerMap = new WeakMap();
+  const rows =
+    sales.map(
+      (
+        sale,
+        index
+      ) => [
+        index + 1,
+        sale.sale_number,
+        sale.invoice_number,
+        sale.product_type,
+        sale.product_code,
+        sale.product_name,
+        sale.customer_name,
+        sale.customer_email,
+        sale.customer_phone,
+        sale.quantity,
+        sale.unit_price_npr,
+        sale.total_paid_npr,
+        sale.payment_method,
+        sale.transaction_reference,
+        sale.payment_date,
+        sale.licence_key,
+        sale.licence_status,
+        sale.device_id,
+        sale.reset_count,
+        sale.delivery_format,
+        sale.delivery_method,
+        sale.delivery_status,
+        sale.tracking_reference,
+        sale.invoice_sent,
+        sale.licence_email_sent,
+        sale.installer_sent,
+        sale.installation_guide_sent,
+        sale.user_manual_sent,
+        sale.approved_by,
+        sale.approved_at,
+        sale.notes
+      ]
+        .map(
+          csvValue
+        )
+        .join(",")
+    );
 
-  engagementRoots.forEach((root) => {
-    const controller = new EngagementController(root);
-    engagementControllerMap.set(root, controller);
-    controller.initialize();
-  });
+  const csv = [
+    headers
+      .map(
+        csvValue
+      )
+      .join(","),
+    ...rows
+  ].join("\r\n");
 
-  /*
-   * Robust Like handling.
-   * Use one document-level capture listener so the Like action still works
-   * even if a sermon card or another page element has its own click handler.
-   */
-  document.addEventListener(
-    "click",
-    (event) => {
-      const target =
-        event.target instanceof Element
-          ? event.target
-          : event.target && event.target.parentElement;
+  return new Response(
+    csv,
+    {
+      headers: {
+        "content-type":
+          "text/csv; charset=utf-8",
 
-      if (!target) {
-        return;
+        "content-disposition":
+          `attachment; filename="Durga-Jung-Sales-${currentYear()}.csv"`,
+
+        "cache-control":
+          "no-store"
+      }
+    }
+  );
+}
+
+
+export default {
+  async fetch(
+    request,
+    env
+  ) {
+    try {
+      const url =
+        new URL(
+          request.url
+        );
+
+      const path =
+        url.pathname;
+
+      const method =
+        request.method
+          .toUpperCase();
+
+      if (
+        path ===
+          "/api/health" &&
+        method === "GET"
+      ) {
+        return health(
+          env
+        );
       }
 
-      const likeButton = target.closest(
-        '[data-role="like-button"], #engagement-like-btn'
+      if (
+        path ===
+          "/api/products" &&
+        method === "GET"
+      ) {
+        return publicProducts(
+          env
+        );
+      }
+
+      if (
+        path ===
+          "/api/engagement" &&
+        method === "GET"
+      ) {
+        return publicEngagementStats(
+          request,
+          env
+        );
+      }
+
+      if (
+        path ===
+          "/api/engagement/view" &&
+        method === "POST"
+      ) {
+        return publicRecordView(
+          request,
+          env
+        );
+      }
+
+      if (
+        path ===
+          "/api/engagement/like" &&
+        method === "POST"
+      ) {
+        return publicAddLike(
+          request,
+          env
+        );
+      }
+
+      if (
+        path ===
+          "/api/engagement/like" &&
+        method === "DELETE"
+      ) {
+        return publicRemoveLike(
+          request,
+          env
+        );
+      }
+
+      if (
+        path ===
+          "/api/engagement/comment" &&
+        method === "POST"
+      ) {
+        return publicAddComment(
+          request,
+          env
+        );
+      }
+
+      if (
+        path ===
+          "/api/engagement/share" &&
+        method === "POST"
+      ) {
+        return publicRecordShare(
+          request,
+          env
+        );
+      }
+
+      if (
+        path ===
+          "/api/orders" &&
+        method === "POST"
+      ) {
+        return createOrder(
+          request,
+          env
+        );
+      }
+
+      if (
+        path.startsWith(
+          "/api/admin/"
+        )
+      ) {
+        const denied =
+          requireAdmin(
+            request
+          );
+
+        if (denied) {
+          return denied;
+        }
+      }
+
+      if (
+        path ===
+          "/api/admin/dashboard" &&
+        method === "GET"
+      ) {
+        return adminDashboard(
+          env
+        );
+      }
+
+
+      if (
+        path ===
+          "/api/admin/engagement" &&
+        method === "GET"
+      ) {
+        return adminEngagement(
+          env
+        );
+      }
+
+      if (
+        path ===
+          "/api/admin/comments" &&
+        method === "GET"
+      ) {
+        return adminComments(
+          env
+        );
+      }
+
+      const commentStatusMatch =
+        path.match(
+          /^\/api\/admin\/comments\/(\d+)\/status$/
+        );
+
+      if (
+        commentStatusMatch &&
+        method === "PATCH"
+      ) {
+        return adminSetCommentStatus(
+          request,
+          env,
+          Number(
+            commentStatusMatch[1]
+          )
+        );
+      }
+
+      const commentDeleteMatch =
+        path.match(
+          /^\/api\/admin\/comments\/(\d+)$/
+        );
+
+      if (
+        commentDeleteMatch &&
+        method === "DELETE"
+      ) {
+        return adminDeleteComment(
+          request,
+          env,
+          Number(
+            commentDeleteMatch[1]
+          )
+        );
+      }
+
+      if (
+        path ===
+          "/api/admin/products" &&
+        method === "GET"
+      ) {
+        return adminProducts(
+          env
+        );
+      }
+
+      if (
+        path ===
+          "/api/admin/software" &&
+        method === "GET"
+      ) {
+        return adminSoftware(
+          env
+        );
+      }
+
+      if (
+        path ===
+          "/api/admin/books" &&
+        method === "GET"
+      ) {
+        return adminBooks(
+          env
+        );
+      }
+
+      if (
+        path ===
+          "/api/admin/orders" &&
+        method === "GET"
+      ) {
+        return adminOrders(
+          env
+        );
+      }
+
+      const orderDetailMatch =
+        path.match(
+          /^\/api\/admin\/orders\/(\d+)$/
+        );
+
+      if (
+        orderDetailMatch &&
+        method === "GET"
+      ) {
+        return adminGetOrder(
+          env,
+          Number(
+            orderDetailMatch[1]
+          )
+        );
+      }
+
+      const orderStatusMatch =
+        path.match(
+          /^\/api\/admin\/orders\/(\d+)\/status$/
+        );
+
+      if (
+        orderStatusMatch &&
+        method === "PATCH"
+      ) {
+        return adminSetOrderStatus(
+          request,
+          env,
+          Number(
+            orderStatusMatch[1]
+          )
+        );
+      }
+
+      const confirmPaymentMatch =
+        path.match(
+          /^\/api\/admin\/orders\/(\d+)\/confirm-payment$/
+        );
+
+      if (
+        confirmPaymentMatch &&
+        method === "POST"
+      ) {
+        return adminConfirmPayment(
+          request,
+          env,
+          Number(
+            confirmPaymentMatch[1]
+          )
+        );
+      }
+
+      if (
+        path ===
+          "/api/admin/sales" &&
+        method === "GET"
+      ) {
+        return adminSales(
+          env
+        );
+      }
+
+      const saleDetailMatch =
+        path.match(
+          /^\/api\/admin\/sales\/(\d+)$/
+        );
+
+      if (
+        saleDetailMatch &&
+        method === "GET"
+      ) {
+        return adminGetSale(
+          env,
+          Number(
+            saleDetailMatch[1]
+          )
+        );
+      }
+
+      if (
+        path ===
+          "/api/admin/export-sales" &&
+        method === "GET"
+      ) {
+        return exportSales(
+          env
+        );
+      }
+
+      if (
+        path ===
+          "/api/admin/invoices" &&
+        method === "GET"
+      ) {
+        return adminInvoices(
+          env
+        );
+      }
+
+      if (
+        path ===
+          "/api/admin/customers" &&
+        method === "GET"
+      ) {
+        return adminCustomers(
+          env
+        );
+      }
+
+      if (
+        path ===
+          "/api/admin/activity" &&
+        method === "GET"
+      ) {
+        return adminActivity(
+          env
+        );
+      }
+
+      if (
+        path.startsWith(
+          "/api/admin/"
+        )
+      ) {
+        return json(
+          {
+            success: false,
+            error:
+              "Admin API endpoint not found."
+          },
+          404
+        );
+      }
+
+      return env.ASSETS.fetch(
+        request
+      );
+    } catch (error) {
+      console.error(
+        "Worker error:",
+        error
       );
 
-      if (!likeButton) {
-        return;
-      }
-
-      const root = likeButton.closest("[data-engagement-root]");
-
-      if (!root) {
-        return;
-      }
-
-      const controller = engagementControllerMap.get(root);
-
-      if (!controller) {
-        return;
-      }
-
-      event.preventDefault();
-      event.stopPropagation();
-
-      controller.toggleLike();
-    },
-    true
-  );
-})();
+      return json(
+        {
+          success: false,
+          error:
+            "Internal server error.",
+          detail:
+            error.message
+        },
+        500
+      );
+    }
+  }
+};
