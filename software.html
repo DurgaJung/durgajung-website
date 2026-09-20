@@ -71,10 +71,6 @@
       width: auto;
     }
 
-    .software-status.special-offer {
-      background: #7a1f1f;
-    }
-
     .software-logo-wrap {
       min-height: 150px;
       padding: 18px 22px;
@@ -138,6 +134,40 @@
 
     .software-status.available::before {
       background: #2f8a49;
+    }
+
+    .software-status.special-offer {
+      background: #c41e3a;
+      color: #ffffff;
+      box-shadow: 0 0 0 2px #fff, 0 0 12px rgba(196, 30, 58, .55);
+      animation: offer-blink 1.05s ease-in-out infinite;
+    }
+
+    .software-status.special-offer::before {
+      background: #ffffff;
+      box-shadow: 0 0 6px #ffffff;
+    }
+
+    @keyframes offer-blink {
+      0%,
+      100% {
+        opacity: 1;
+        background: #c41e3a;
+        transform: scale(1);
+      }
+      50% {
+        opacity: 1;
+        background: #986719;
+        transform: scale(1.04);
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .software-status.special-offer {
+        animation: none;
+        background: #c41e3a;
+        color: #ffffff;
+      }
     }
 
     .software-body h2 {
