@@ -1582,6 +1582,170 @@ async function getProductByCode(
 }
 
 
+async function ensureSoftwareCatalogue(
+  env
+) {
+  const catalogue = [
+    {
+      product_code:
+        "MERO-MANDALI",
+      product_name:
+        "Mero Mandali",
+      description:
+        "Church projection and presentation software",
+      price_npr:
+        5000,
+      version:
+        "1.0.2",
+      cover_image_url:
+        "/assets/images/software/mero-mandali-logo.png",
+      installation_guide_url:
+        GUIDE_URL,
+      user_manual_url:
+        GUIDE_URL
+    },
+    {
+      product_code:
+        "NEPALI-BIBLE-QUIZ",
+      product_name:
+        "Nepali Bible Quiz",
+      description:
+        "Professional bilingual Bible quiz and projection software",
+      price_npr:
+        3500,
+      version:
+        "1.0.2",
+      cover_image_url:
+        "/assets/images/software/nepali-bible-quiz-app-icon.png",
+      installation_guide_url:
+        "https://durgajung.com.np/software#purchase-nepali-bible-quiz",
+      user_manual_url:
+        "https://durgajung.com.np/software#nbq-features"
+    }
+  ];
+
+  for (const item of catalogue) {
+    let product =
+      await getProductByCode(
+        env,
+        item.product_code
+      );
+
+    if (!product) {
+      await env.ADMIN_DB
+        .prepare(`
+          INSERT INTO products (
+            product_code,
+            product_type,
+            product_name,
+            description,
+            price_npr,
+            status,
+            cover_image_url
+          )
+          VALUES (
+            ?,
+            'software',
+            ?,
+            ?,
+            ?,
+            'active',
+            ?
+          )
+        `)
+        .bind(
+          item.product_code,
+          item.product_name,
+          item.description,
+          item.price_npr,
+          item.cover_image_url
+        )
+        .run();
+
+      product =
+        await getProductByCode(
+          env,
+          item.product_code
+        );
+    } else if (
+      item.product_code ===
+        "NEPALI-BIBLE-QUIZ" &&
+      product.status !==
+        "active"
+    ) {
+      await env.ADMIN_DB
+        .prepare(`
+          UPDATE products
+          SET
+            status = 'active',
+            product_name = ?,
+            description = ?,
+            price_npr = ?,
+            cover_image_url = ?,
+            updated_at = CURRENT_TIMESTAMP
+          WHERE id = ?
+        `)
+        .bind(
+          item.product_name,
+          item.description,
+          item.price_npr,
+          item.cover_image_url,
+          product.id
+        )
+        .run();
+    }
+
+    if (!product) {
+      continue;
+    }
+
+    const softwareRow =
+      await env.ADMIN_DB
+        .prepare(`
+          SELECT id
+          FROM software_products
+          WHERE product_id = ?
+          LIMIT 1
+        `)
+        .bind(
+          product.id
+        )
+        .first();
+
+    if (!softwareRow) {
+      await env.ADMIN_DB
+        .prepare(`
+          INSERT INTO software_products (
+            product_id,
+            version,
+            installer_file_url,
+            installation_guide_url,
+            user_manual_url,
+            licence_required,
+            licence_type_default
+          )
+          VALUES (
+            ?,
+            ?,
+            '',
+            ?,
+            ?,
+            1,
+            'customer'
+          )
+        `)
+        .bind(
+          product.id,
+          item.version,
+          item.installation_guide_url,
+          item.user_manual_url
+        )
+        .run();
+    }
+  }
+}
+
+
 async function getSaleById(
   env,
   saleId
@@ -3363,6 +3527,10 @@ async function createOrder(
 async function adminDashboard(
   env
 ) {
+  await ensureSoftwareCatalogue(
+    env
+  );
+
   const pendingOrders =
     await env.ADMIN_DB
       .prepare(`
@@ -3534,6 +3702,10 @@ async function adminDashboard(
 async function adminProducts(
   env
 ) {
+  await ensureSoftwareCatalogue(
+    env
+  );
+
   const result =
     await env.ADMIN_DB
       .prepare(`
@@ -3566,6 +3738,10 @@ async function adminProducts(
 async function adminSoftware(
   env
 ) {
+  await ensureSoftwareCatalogue(
+    env
+  );
+
   const result =
     await env.ADMIN_DB
       .prepare(`

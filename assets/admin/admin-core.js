@@ -84,6 +84,14 @@
         loadSoftware();
         break;
 
+      case "licenses":
+        loadSoftware();
+        break;
+
+      case "downloads":
+        loadSoftware();
+        break;
+
       case "books":
         loadBooks();
         break;
@@ -1484,18 +1492,32 @@
   async function loadSoftware() {
     const body =
       $("softwareTableBody");
+    const licensesBody =
+      $("licensesTableBody");
 
-    if (!body) {
+    if (!body && !licensesBody) {
       return;
     }
 
-    body.innerHTML = `
-      <tr>
-        <td colspan="6">
-          Loading software products…
-        </td>
-      </tr>
-    `;
+    if (body) {
+      body.innerHTML = `
+        <tr>
+          <td colspan="6">
+            Loading software products…
+          </td>
+        </tr>
+      `;
+    }
+
+    if (licensesBody) {
+      licensesBody.innerHTML = `
+        <tr>
+          <td colspan="6">
+            Loading licensed software…
+          </td>
+        </tr>
+      `;
+    }
 
     try {
       const data =
@@ -1507,7 +1529,7 @@
         data.software || [];
 
       if (!software.length) {
-        body.innerHTML = `
+        const empty = `
           <tr>
             <td
               colspan="6"
@@ -1518,80 +1540,140 @@
           </tr>
         `;
 
+        if (body) {
+          body.innerHTML = empty;
+        }
+
+        if (licensesBody) {
+          licensesBody.innerHTML = empty;
+        }
+
         return;
       }
 
-      body.innerHTML =
-        software.map(
-          (item) => `
-            <tr>
+      if (body) {
+        body.innerHTML =
+          software.map(
+            (item) => `
+              <tr>
 
-              <td>
-                <code>
+                <td>
+                  <code>
+                    ${escapeHtml(
+                      item.product_code
+                    )}
+                  </code>
+                </td>
+
+                <td>
+                  <strong>
+                    ${escapeHtml(
+                      item.product_name
+                    )}
+                  </strong>
+
+                  ${
+                    item.description
+                      ? `
+                        <br>
+                        <small>
+                          ${escapeHtml(
+                            item.description
+                          )}
+                        </small>
+                      `
+                      : ""
+                  }
+                </td>
+
+                <td>
                   ${escapeHtml(
-                    item.product_code
+                    item.version ||
+                    "—"
                   )}
-                </code>
-              </td>
+                </td>
 
-              <td>
-                <strong>
+                <td>
+                  NPR ${money(
+                    item.price_npr
+                  )}
+                </td>
+
+                <td>
+                  ${
+                    Number(
+                      item.licence_required
+                    ) === 1
+                      ? "Yes"
+                      : "No"
+                  }
+                </td>
+
+                <td>
+                  ${statusBadge(
+                    item.status
+                  )}
+                </td>
+
+              </tr>
+            `
+          ).join("");
+      }
+
+      if (licensesBody) {
+        licensesBody.innerHTML =
+          software.map(
+            (item) => `
+              <tr>
+                <td>
+                  <code>
+                    ${escapeHtml(
+                      item.product_code
+                    )}
+                  </code>
+                </td>
+                <td>
+                  <strong>
+                    ${escapeHtml(
+                      item.product_name
+                    )}
+                  </strong>
+                </td>
+                <td>
                   ${escapeHtml(
-                    item.product_name
+                    item.version ||
+                    "—"
                   )}
-                </strong>
-
-                ${
-                  item.description
-                    ? `
-                      <br>
-                      <small>
-                        ${escapeHtml(
-                          item.description
-                        )}
-                      </small>
-                    `
-                    : ""
-                }
-              </td>
-
-              <td>
-                ${escapeHtml(
-                  item.version ||
-                  "—"
-                )}
-              </td>
-
-              <td>
-                NPR ${money(
-                  item.price_npr
-                )}
-              </td>
-
-              <td>
-                ${
-                  Number(
-                    item.licence_required
-                  ) === 1
-                    ? "Yes"
-                    : "No"
-                }
-              </td>
-
-              <td>
-                ${statusBadge(
-                  item.status
-                )}
-              </td>
-
-            </tr>
-          `
-        ).join("");
+                </td>
+                <td>
+                  ${
+                    Number(
+                      item.licence_required
+                    ) === 1
+                      ? "Yes"
+                      : "No"
+                  }
+                </td>
+                <td>
+                  ${escapeHtml(
+                    item.licence_type_default ||
+                    "customer"
+                  )}
+                </td>
+                <td>
+                  ${statusBadge(
+                    item.status
+                  )}
+                </td>
+              </tr>
+            `
+          ).join("");
+      }
 
     } catch (error) {
       console.error(error);
 
-      body.innerHTML = `
+      const failed = `
         <tr>
           <td
             colspan="6"
@@ -1601,6 +1683,14 @@
           </td>
         </tr>
       `;
+
+      if (body) {
+        body.innerHTML = failed;
+      }
+
+      if (licensesBody) {
+        licensesBody.innerHTML = failed;
+      }
 
       toast(
         error.message,
