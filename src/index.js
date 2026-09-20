@@ -3241,6 +3241,24 @@ async function sendCustomerDelivery(
     )
     .run();
 
+  await env.ADMIN_DB
+    .prepare(`
+      UPDATE invoices
+      SET
+        email_sent = 1,
+        email_sent_at =
+          CURRENT_TIMESTAMP,
+        pdf_file_name = ?,
+        updated_at =
+          CURRENT_TIMESTAMP
+      WHERE sale_id = ?
+    `)
+    .bind(
+      `${sale.invoice_number}.pdf`,
+      sale.id
+    )
+    .run();
+
   const updatedSale =
     await getSaleById(
       env,
