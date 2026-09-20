@@ -138,76 +138,30 @@
     }
 
     .software-status.special-offer {
-      background: #c41e3a;
-      color: #ffffff;
+      background: #c41e3a !important;
+      color: #ffffff !important;
       transform-origin: center center;
-      will-change: transform, opacity, background-color, box-shadow;
-      animation: offer-heartbeat 0.95s ease-in-out infinite;
+      /* Site CSS kills CSS animations when Windows “reduce motion” is on.
+         Heartbeat is driven by JS class toggling instead. */
+      animation: none !important;
+      transition: none !important;
     }
 
     .software-status.special-offer::before {
-      background: #ffffff;
-      animation: offer-heartbeat-dot 0.95s ease-in-out infinite;
+      background: #ffffff !important;
+      animation: none !important;
     }
 
-    @keyframes offer-heartbeat {
-      0%,
-      100% {
-        transform: scale(1);
-        opacity: 1;
-        background: #c41e3a;
-        color: #ffffff;
-        box-shadow: 0 0 0 0 rgba(196, 30, 58, 0.7);
-      }
-      12% {
-        transform: scale(1.18);
-        opacity: 1;
-        background: #ffd54a;
-        color: #7a1200;
-        box-shadow: 0 0 18px 4px rgba(196, 30, 58, 0.45);
-      }
-      24% {
-        transform: scale(1);
-        background: #c41e3a;
-        color: #ffffff;
-        box-shadow: 0 0 0 0 rgba(196, 30, 58, 0.2);
-      }
-      36% {
-        transform: scale(1.14);
-        background: #ffd54a;
-        color: #7a1200;
-        box-shadow: 0 0 14px 3px rgba(196, 30, 58, 0.35);
-      }
-      52% {
-        transform: scale(1);
-        background: #c41e3a;
-        color: #ffffff;
-        box-shadow: none;
-      }
+    .software-status.special-offer.is-beat {
+      background: #ffd54a !important;
+      color: #7a1200 !important;
+      transform: scale(1.16);
+      box-shadow: 0 0 18px 4px rgba(196, 30, 58, 0.5);
     }
 
-    @keyframes offer-heartbeat-dot {
-      0%,
-      24%,
-      52%,
-      100% {
-        transform: scale(1);
-        opacity: 1;
-        background: #ffffff;
-      }
-      12%,
-      36% {
-        transform: scale(1.8);
-        opacity: 1;
-        background: #7a1200;
-      }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      .software-status.special-offer,
-      .software-status.special-offer::before {
-        animation: none;
-      }
+    .software-status.special-offer.is-beat::before {
+      background: #7a1200 !important;
+      transform: scale(1.8);
     }
 
     .software-body h2 {
@@ -748,7 +702,7 @@
 
             <span
               class="software-status special-offer"
-              data-pulse="heartbeat-v2"
+              data-pulse="heartbeat-js"
             >
               Special Offer till 10 October 2026
             </span>
@@ -2833,6 +2787,20 @@
       submitButton.textContent = "I HAVE PAID — SUBMIT PAYMENT";
     }
   });
+})();
+</script>
+<script>
+(function () {
+  var badges = document.querySelectorAll(".software-status.special-offer");
+  if (!badges.length) return;
+  var step = 0;
+  setInterval(function () {
+    step = (step + 1) % 8;
+    var beat = step === 1 || step === 3;
+    for (var i = 0; i < badges.length; i += 1) {
+      badges[i].classList.toggle("is-beat", beat);
+    }
+  }, 120);
 })();
 </script>
 
