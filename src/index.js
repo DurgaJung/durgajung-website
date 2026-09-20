@@ -68,6 +68,15 @@ function clean(value) {
 }
 
 
+function isNepaliBibleQuiz(row) {
+  return (
+    clean(
+      row?.product_code
+    ) === "NEPALI-BIBLE-QUIZ"
+  );
+}
+
+
 function safeInt(
   value,
   fallback = 1
@@ -1798,6 +1807,34 @@ async function ensureCustomerLicence(
   }
 
   if (
+    isNepaliBibleQuiz(
+      sale
+    )
+  ) {
+    await env.ADMIN_DB
+      .prepare(`
+        UPDATE sales
+        SET
+          licence_status = 'nbq_worker'
+        WHERE id = ?
+      `)
+      .bind(
+        sale.id
+      )
+      .run();
+
+    return {
+      success: true,
+      nbqExternal: true,
+      sale:
+        await getSaleById(
+          env,
+          sale.id
+        )
+    };
+  }
+
+  if (
     !clean(
       env.LICENSE_API_ADMIN_KEY
     )
@@ -2453,6 +2490,18 @@ async function sendCustomerDelivery(
     return {
       success: true,
       sale
+    };
+  }
+
+  if (
+    isNepaliBibleQuiz(
+      sale
+    )
+  ) {
+    return {
+      success: true,
+      sale,
+      skipped: true
     };
   }
 
@@ -4185,10 +4234,14 @@ async function adminConfirmPayment(
       await recordAdminActivity(
         env,
         request,
-        "LICENCE_ISSUED",
+        licenceResult.nbqExternal
+          ? "NBQ_LICENCE_WORKER"
+          : "LICENCE_ISSUED",
         "sale",
         existingSale.id,
-        `${existingSale.sale_number}: customer licence issued.`
+        licenceResult.nbqExternal
+          ? `${existingSale.sale_number}: Nepali Bible Quiz licence stays on the Quiz Worker. Approve with python tools/license_admin.py.`
+          : `${existingSale.sale_number}: customer licence issued.`
       );
     }
 
@@ -4578,10 +4631,14 @@ async function adminConfirmPayment(
     await recordAdminActivity(
       env,
       request,
-      "LICENCE_ISSUED",
+      licenceResult.nbqExternal
+        ? "NBQ_LICENCE_WORKER"
+        : "LICENCE_ISSUED",
       "sale",
       saleId,
-      `${saleNumber}: customer licence issued.`
+      licenceResult.nbqExternal
+        ? `${saleNumber}: Nepali Bible Quiz licence stays on the Quiz Worker. Approve with python tools/license_admin.py.`
+        : `${saleNumber}: customer licence issued.`
     );
 
     const deliveryResult =

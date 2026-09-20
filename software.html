@@ -2240,6 +2240,35 @@
       }
 
       const orderNumber = data.orderNumber || "";
+      const church = trimValue(churchInput);
+      const notes = trimValue(customerNotesInput);
+      try {
+        await fetch("/api/orders", {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({
+            product_code: "NEPALI-BIBLE-QUIZ",
+            quantity: 1,
+            customer_name: customerName,
+            customer_email: customerEmail,
+            customer_phone: trimValue(customerPhoneInput) || null,
+            church_organization: church || null,
+            payment_method: paymentMethod,
+            transaction_reference: transactionReference,
+            payment_date: paymentDate,
+            delivery_format: "Windows Installer",
+            delivery_method: "Email",
+            tracking_reference: orderNumber || null,
+            customer_notes: [
+              notes,
+              orderNumber ? "NBQ Worker order " + orderNumber : "",
+              "Licence: python tools/license_admin.py"
+            ].filter(Boolean).join(" | ")
+          })
+        });
+      } catch (adminError) {
+        console.error(adminError);
+      }
       showResult(
         "success",
         orderNumber
