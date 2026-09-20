@@ -56,6 +56,7 @@
     .software-card.combo-offer {
       grid-column: 1 / -1;
       border: 2px solid #986719;
+      overflow: visible;
     }
 
     .combo-logos {
@@ -139,51 +140,66 @@
     .software-status.special-offer {
       background: #c41e3a;
       color: #ffffff;
-      transform-origin: left center;
-      animation: offer-heartbeat 1.15s ease-in-out infinite;
+      transform-origin: center center;
+      will-change: transform, opacity, background-color, box-shadow;
+      animation: offer-heartbeat 0.95s ease-in-out infinite;
     }
 
     .software-status.special-offer::before {
       background: #ffffff;
-      animation: offer-heartbeat-dot 1.15s ease-in-out infinite;
+      animation: offer-heartbeat-dot 0.95s ease-in-out infinite;
     }
 
     @keyframes offer-heartbeat {
       0%,
       100% {
         transform: scale(1);
-        box-shadow: 0 0 0 0 rgba(196, 30, 58, 0.55);
+        opacity: 1;
+        background: #c41e3a;
+        color: #ffffff;
+        box-shadow: 0 0 0 0 rgba(196, 30, 58, 0.7);
       }
-      14% {
+      12% {
+        transform: scale(1.18);
+        opacity: 1;
+        background: #ffd54a;
+        color: #7a1200;
+        box-shadow: 0 0 18px 4px rgba(196, 30, 58, 0.45);
+      }
+      24% {
+        transform: scale(1);
+        background: #c41e3a;
+        color: #ffffff;
+        box-shadow: 0 0 0 0 rgba(196, 30, 58, 0.2);
+      }
+      36% {
         transform: scale(1.14);
-        box-shadow: 0 0 0 10px rgba(196, 30, 58, 0);
+        background: #ffd54a;
+        color: #7a1200;
+        box-shadow: 0 0 14px 3px rgba(196, 30, 58, 0.35);
       }
-      28% {
+      52% {
         transform: scale(1);
-        box-shadow: 0 0 0 0 rgba(196, 30, 58, 0.35);
-      }
-      42% {
-        transform: scale(1.1);
-        box-shadow: 0 0 0 7px rgba(196, 30, 58, 0);
-      }
-      60% {
-        transform: scale(1);
-        box-shadow: 0 0 0 0 rgba(196, 30, 58, 0);
+        background: #c41e3a;
+        color: #ffffff;
+        box-shadow: none;
       }
     }
 
     @keyframes offer-heartbeat-dot {
       0%,
-      28%,
-      60%,
+      24%,
+      52%,
       100% {
         transform: scale(1);
         opacity: 1;
+        background: #ffffff;
       }
-      14%,
-      42% {
-        transform: scale(1.35);
-        opacity: 0.85;
+      12%,
+      36% {
+        transform: scale(1.8);
+        opacity: 1;
+        background: #7a1200;
       }
     }
 
@@ -730,7 +746,10 @@
 
           <div class="software-body">
 
-            <span class="software-status special-offer">
+            <span
+              class="software-status special-offer"
+              data-pulse="heartbeat-v2"
+            >
               Special Offer till 10 October 2026
             </span>
 
