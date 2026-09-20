@@ -1,13 +1,7 @@
-README.md
-wrangler.jsonc
-.assetsignore
 .git
-.github
-_headers
-*.zip
-
+.wrangler
 node_modules
-package.json
 package-lock.json
-src
-migrations
+*.md
+.env
+.dev.vars
