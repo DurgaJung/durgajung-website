@@ -15,6 +15,7 @@
   const menuToggle = $("menuToggle");
 
   let currentOrderId = null;
+  let currentOrderProductCode = null;
   let allOrders = [];
   let allSales = [];
   let allComments = [];
@@ -1207,6 +1208,9 @@
 
       currentOrderId =
         id;
+      currentOrderProductCode =
+        order.product_code ||
+        null;
 
       if ($("orderModalTitle")) {
         $("orderModalTitle").textContent =
@@ -1252,6 +1256,22 @@
             order.product_code ||
             "—"
           )}
+
+          ${
+            order.product_code ===
+            "NEPALI-BIBLE-QUIZ"
+              ? `
+                <div class="detail-card full">
+                  <div class="detail-label">
+                    Nepali Bible Quiz licence
+                  </div>
+                  <div class="detail-value">
+                    Confirm Payment only records this sale in Admin. It does not create an NBQ- key or send the Quiz email. After the Bank / eSewa / Khalti payment is real, approve the Quiz Worker order with python tools/license_admin.py order-approve.
+                  </div>
+                </div>
+              `
+              : ""
+          }
 
           ${detail(
             "Quantity",
@@ -1392,6 +1412,8 @@
 
     currentOrderId =
       null;
+    currentOrderProductCode =
+      null;
   }
 
 
@@ -1445,7 +1467,10 @@
 
     const confirmed =
       window.confirm(
-        "Confirm this customer's payment and create the permanent Sales and Invoice records?"
+        currentOrderProductCode ===
+        "NEPALI-BIBLE-QUIZ"
+          ? "Record this Nepali Bible Quiz payment in Admin? This does not issue the Quiz licence. After this, still run python tools/license_admin.py order-approve on the Quiz Worker order."
+          : "Confirm this customer's payment and create the permanent Sales and Invoice records?"
       );
 
     if (!confirmed) {
@@ -1991,8 +2016,16 @@
                     ? `
                       <code>
                         ${escapeHtml(
-                          sale.licence_key ||
-                          "Not issued"
+                          sale.product_code ===
+                          "NEPALI-BIBLE-QUIZ"
+                            ? (
+                                sale.licence_key ||
+                                "Quiz Worker"
+                              )
+                            : (
+                                sale.licence_key ||
+                                "Not issued"
+                              )
                         )}
                       </code>
                     `

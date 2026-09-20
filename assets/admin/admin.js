@@ -53,7 +53,7 @@
   };
 
   const core = document.createElement("script");
-  core.src = "/assets/admin/admin-core.js?v=20260920-1";
+  core.src = "/assets/admin/admin-core.js?v=20260920-2";
   core.async = false;
   core.dataset.adminCore = "true";
 

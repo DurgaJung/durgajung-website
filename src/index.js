@@ -77,6 +77,11 @@ function isNepaliBibleQuiz(row) {
 }
 
 
+function nbqAdminConfirmMessage() {
+  return "Payment recorded in Admin. This does not issue a Nepali Bible Quiz licence or send the Quiz email. Approve the Quiz Worker order with python tools/license_admin.py order-approve.";
+}
+
+
 function safeInt(
   value,
   fallback = 1
@@ -4289,12 +4294,20 @@ async function adminConfirmPayment(
         success: true,
 
         message:
-          deliveryResult.already_sent
-            ? "Payment was already confirmed. Licence and customer delivery were already completed."
-            : "Payment was already confirmed. Licence and customer email delivery are now completed.",
+          isNepaliBibleQuiz(
+            existingSale
+          )
+            ? nbqAdminConfirmMessage()
+            : deliveryResult.already_sent
+              ? "Payment was already confirmed. Licence and customer delivery were already completed."
+              : "Payment was already confirmed. Licence and customer email delivery are now completed.",
 
         email_sent:
-          true,
+          isNepaliBibleQuiz(
+            existingSale
+          )
+            ? false
+            : true,
 
         sale:
           deliveryResult.sale
@@ -4686,14 +4699,22 @@ async function adminConfirmPayment(
     success: true,
 
     message:
-      isSoftware
-        ? "Payment confirmed, Sales record and invoice created, customer licence issued, and customer email sent."
-        : "Payment confirmed and permanent Sales record created.",
+      isNepaliBibleQuiz(
+        sale
+      )
+        ? nbqAdminConfirmMessage()
+        : isSoftware
+          ? "Payment confirmed, Sales record and invoice created, customer licence issued, and customer email sent."
+          : "Payment confirmed and permanent Sales record created.",
 
     email_sent:
-      isSoftware
-        ? true
-        : null,
+      isNepaliBibleQuiz(
+        sale
+      )
+        ? false
+        : isSoftware
+          ? true
+          : null,
 
     sale
   });
