@@ -2032,15 +2032,25 @@
                       <code>
                         ${escapeHtml(
                           sale.product_code ===
-                          "NEPALI-BIBLE-QUIZ"
-                            ? (
-                                sale.licence_key ||
-                                "Quiz Worker"
-                              )
-                            : (
-                                sale.licence_key ||
-                                "Not issued"
-                              )
+                          "SOFTWARE-COMBO-7500"
+                            ? [
+                                sale.licence_key
+                                  ? "MM " + sale.licence_key
+                                  : "MM pending",
+                                (String(sale.notes || "").match(/COMBO_NBQ_KEY=(\S+)/) || [])[1]
+                                  ? "NBQ " + (String(sale.notes || "").match(/COMBO_NBQ_KEY=(\S+)/) || [])[1]
+                                  : "NBQ pending"
+                              ].join(" | ")
+                            : sale.product_code ===
+                              "NEPALI-BIBLE-QUIZ"
+                              ? (
+                                  sale.licence_key ||
+                                  "Quiz Worker"
+                                )
+                              : (
+                                  sale.licence_key ||
+                                  "Not issued"
+                                )
                         )}
                       </code>
                     `
