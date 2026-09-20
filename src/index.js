@@ -22,6 +22,18 @@ const INSTALLER_URL =
 const GUIDE_URL =
   "https://durgajung.com.np/assets/mero-mandali/documents/Mero_Mandali_Programme_Operating_Guide_EN_NP.pdf";
 
+const NBQ_LICENSE_API_URL =
+  "https://nepali-bible-quiz-license-api.durgajung-nits.workers.dev";
+
+const NBQ_EMAIL_FROM =
+  "Nepali Bible Quiz <sales@durgajung.com.np>";
+
+const NBQ_OPERATING_GUIDE_URL =
+  "https://durgajung.com.np/assets/nepali-bible-quiz/documents/Nepali_Bible_Quiz_Operating_Guide_v1.0.2.pdf";
+
+const NBQ_ADMIN_GUIDE_URL =
+  "https://durgajung.com.np/assets/nepali-bible-quiz/documents/Nepali_Bible_Quiz_Admin_Guide_v1.0.2.pdf";
+
 const SOFTWARE_VERSION = "1.0.2";
 
 const SIGNATURE_ASSET_PATH =
@@ -77,8 +89,177 @@ function isNepaliBibleQuiz(row) {
 }
 
 
-function nbqAdminConfirmMessage() {
-  return "Payment recorded in Admin. This does not issue a Nepali Bible Quiz licence or send the Quiz email. Approve the Quiz Worker order with python tools/license_admin.py order-approve.";
+function nbqAdminConfirmMessage(emailSent) {
+  if (emailSent) {
+    return "Payment confirmed. Nepali Bible Quiz licence, invoice, download link, and guides were emailed to the customer.";
+  }
+
+  return "Payment confirmed. Nepali Bible Quiz licence was issued. Customer email could not be sent — open the sale and confirm payment again, or send the pack from sales@durgajung.com.np.";
+}
+
+
+function documentBrand(sale) {
+  if (
+    isNepaliBibleQuiz(
+      sale
+    )
+  ) {
+    return {
+      productCaps:
+        "NEPALI BIBLE QUIZ",
+      productName:
+        "Nepali Bible Quiz",
+      invoiceSubject:
+        "Official Nepali Bible Quiz Software Invoice",
+      invoiceNote:
+        "This invoice confirms payment for Nepali Bible Quiz. The amount shown above is the final purchase price. No VAT breakdown is applied.",
+      ownerLine:
+        "Developer / Owner - Nepali Bible Quiz",
+      certTitle:
+        "NEPALI BIBLE QUIZ",
+      certMeta:
+        "Official Nepali Bible Quiz Customer Software Licence Certificate",
+      terms3:
+        "3. If the authorized computer is permanently replaced, contact Nepali Bible Quiz support for a licence reset.",
+      terms4:
+        "4. The licence remains subject to Nepali Bible Quiz licence conditions and valid activation status.",
+      includes0:
+        "Nepali Bible Quiz version 1.0.2",
+      includesGuide:
+        "English + Nepali Installation, Setup & Quiz Operating Guide"
+    };
+  }
+
+  return {
+    productCaps:
+      "MERO MANDALI",
+    productName:
+      "Mero Mandali",
+    invoiceSubject:
+      "Official Mero Mandali Software Invoice",
+    invoiceNote:
+      "This invoice confirms payment for Mero Mandali Software. The amount shown above is the final purchase price. No VAT breakdown is applied.",
+    ownerLine:
+      "Developer / Owner - Mero Mandali Software",
+    certTitle:
+      "MERO MANDALI SOFTWARE",
+    certMeta:
+      "Official Mero Mandali Customer Software Licence Certificate",
+    terms3:
+      "3. If the authorized computer is permanently replaced, contact Mero Mandali support for a licence reset.",
+    terms4:
+      "4. The licence remains subject to Mero Mandali Software licence conditions and valid activation status.",
+    includes0:
+      "Mero Mandali Software version 1.0.2",
+    includesGuide:
+      "English + Nepali Installation, Setup & Programme Operating Guide"
+  };
+}
+
+
+function nbqDownloadFromNotes(notes) {
+  const match =
+    String(
+      notes || ""
+    ).match(
+      /NBQ_DOWNLOAD_URL=(\S+)/
+    );
+
+  return match
+    ? match[1]
+    : null;
+}
+
+
+function withNbqDownloadNote(
+  notes,
+  url
+) {
+  const stripped =
+    String(
+      notes || ""
+    )
+      .replace(
+        /\s*NBQ_DOWNLOAD_URL=\S+/g,
+        ""
+      )
+      .trim();
+
+  if (!url) {
+    return stripped || null;
+  }
+
+  return [
+    stripped,
+    `NBQ_DOWNLOAD_URL=${url}`
+  ]
+    .filter(
+      Boolean
+    )
+    .join(
+      "\n"
+    );
+}
+
+
+function parseNbqWorkerOrderId(order) {
+  const text = [
+    order?.tracking_reference,
+    order?.customer_notes,
+    order?.notes
+  ]
+    .filter(
+      Boolean
+    )
+    .join(
+      " "
+    );
+
+  const named =
+    String(
+      text
+    ).match(
+      /NBQ-ORD-\d{4}-(\d{5})/i
+    );
+
+  if (named) {
+    return Number(
+      named[1]
+    );
+  }
+
+  const workerNote =
+    String(
+      text
+    ).match(
+      /NBQ Worker order\s+(\d+)/i
+    );
+
+  if (workerNote) {
+    return Number(
+      workerNote[1]
+    );
+  }
+
+  return null;
+}
+
+
+function installerHref(sale) {
+  if (
+    isNepaliBibleQuiz(
+      sale
+    )
+  ) {
+    return (
+      nbqDownloadFromNotes(
+        sale.notes
+      ) ||
+      "https://durgajung.com.np/software"
+    );
+  }
+
+  return INSTALLER_URL;
 }
 
 
@@ -366,16 +547,50 @@ function bytesToBase64(
 function licenceCertificateNumber(
   sale
 ) {
-  const match =
+  const saleNumber =
     String(
       sale.sale_number || ""
-    ).match(
+    );
+
+  const mmMatch =
+    saleNumber.match(
       /^MM-SALE-(\d{4})-(\d{5})$/
     );
 
-  if (match) {
+  if (mmMatch) {
     return (
-      `MM-LIC-${match[1]}-${match[2]}`
+      `MM-LIC-${mmMatch[1]}-${mmMatch[2]}`
+    );
+  }
+
+  const nbqMatch =
+    saleNumber.match(
+      /^NBQ-SALE-(\d{4})-(\d{5})$/
+    );
+
+  if (
+    nbqMatch ||
+    isNepaliBibleQuiz(
+      sale
+    )
+  ) {
+    const year =
+      nbqMatch
+        ? nbqMatch[1]
+        : currentYear();
+
+    const serial =
+      nbqMatch
+        ? nbqMatch[2]
+        : String(
+            sale.id
+          ).padStart(
+            5,
+            "0"
+          );
+
+    return (
+      `NBQ-LIC-${year}-${serial}`
     );
   }
 
@@ -629,6 +844,11 @@ async function createInvoicePdf(
   order,
   signatureBytes
 ) {
+  const brand =
+    documentBrand(
+      sale
+    );
+
   const pdfDoc =
     await PDFDocument.create();
 
@@ -650,7 +870,7 @@ async function createInvoicePdf(
   addPdfMetadata(
     pdfDoc,
     `Invoice ${sale.invoice_number}`,
-    "Official Mero Mandali Software Invoice",
+    brand.invoiceSubject,
     stablePdfDate(
       sale.approved_at ||
       sale.created_at
@@ -684,7 +904,7 @@ async function createInvoicePdf(
 
   drawText(
     page,
-    "MERO MANDALI",
+    brand.productCaps,
     48,
     height - 55,
     {
@@ -1013,7 +1233,7 @@ async function createInvoicePdf(
 
   drawWrappedText(
     page,
-    "This invoice confirms payment for Mero Mandali Software. The amount shown above is the final purchase price. No VAT breakdown is applied.",
+    brand.invoiceNote,
     48,
     y,
     width - 96,
@@ -1068,7 +1288,7 @@ async function createInvoicePdf(
 
   drawText(
     page,
-    "Developer / Owner - Mero Mandali Software",
+    brand.ownerLine,
     48,
     66,
     {
@@ -1108,6 +1328,11 @@ async function createLicenceCertificatePdf(
   order,
   signatureBytes
 ) {
+  const brand =
+    documentBrand(
+      sale
+    );
+
   const pdfDoc =
     await PDFDocument.create();
 
@@ -1133,8 +1358,8 @@ async function createLicenceCertificatePdf(
 
   addPdfMetadata(
     pdfDoc,
-    `Mero Mandali Licence Certificate ${certificateNumber}`,
-    "Official Mero Mandali Customer Software Licence Certificate",
+    `${brand.productName} Licence Certificate ${certificateNumber}`,
+    brand.certMeta,
     stablePdfDate(
       sale.approved_at ||
       sale.created_at
@@ -1171,7 +1396,7 @@ async function createLicenceCertificatePdf(
 
   drawText(
     page,
-    "MERO MANDALI SOFTWARE",
+    brand.certTitle,
     48,
     height - 75,
     {
@@ -1230,7 +1455,7 @@ async function createLicenceCertificatePdf(
     ],
     [
       "Software",
-      "Mero Mandali"
+      brand.productName
     ],
     [
       "Version",
@@ -1358,8 +1583,8 @@ async function createLicenceCertificatePdf(
   const terms = [
     "1. This Customer Licence authorizes activation on one Windows PC only.",
     "2. The licence key must not be shared, sold, copied, or used on another computer.",
-    "3. If the authorized computer is permanently replaced, contact Mero Mandali support for a licence reset.",
-    "4. The licence remains subject to Mero Mandali Software licence conditions and valid activation status."
+    brand.terms3,
+    brand.terms4
   ];
 
   for (
@@ -1398,11 +1623,11 @@ async function createLicenceCertificatePdf(
     bottomTop - 20;
 
   const includes = [
-    "Mero Mandali Software version 1.0.2",
+    brand.includes0,
     "Unique customer licence key",
     "Official purchase invoice",
     "Customer licence certificate",
-    "English + Nepali Installation, Setup & Programme Operating Guide",
+    brand.includesGuide,
     "Windows installer download access"
   ];
 
@@ -1796,6 +2021,235 @@ async function getOrderById(
 }
 
 
+async function ensureNbqCustomerLicence(
+  env,
+  sale
+) {
+  if (
+    clean(
+      sale.licence_key
+    ) &&
+    sale.licence_status ===
+      "issued"
+  ) {
+    return {
+      success: true,
+      sale
+    };
+  }
+
+  const adminKey =
+    clean(
+      env.NBQ_LICENSE_ADMIN_KEY
+    );
+
+  if (!adminKey) {
+    return {
+      success: false,
+      status: 500,
+      error:
+        "NBQ_LICENSE_ADMIN_KEY is not configured on the website Worker."
+    };
+  }
+
+  const order =
+    await getOrderById(
+      env,
+      sale.order_id
+    );
+
+  let workerOrderId =
+    parseNbqWorkerOrderId(
+      order
+    );
+
+  if (!workerOrderId) {
+    try {
+      const listResponse =
+        await fetch(
+          `${NBQ_LICENSE_API_URL}/v1/admin/orders`,
+          {
+            headers: {
+              "X-Admin-Key":
+                adminKey
+            }
+          }
+        );
+
+      const listPayload =
+        await listResponse.json();
+
+      const workerOrders =
+        Array.isArray(
+          listPayload?.orders
+        )
+          ? listPayload.orders
+          : [];
+
+      const email =
+        String(
+          sale.customer_email ||
+          ""
+        )
+          .trim()
+          .toLowerCase();
+
+      const txn =
+        clean(
+          sale.transaction_reference
+        ) ||
+        clean(
+          order?.transaction_reference
+        );
+
+      const match =
+        workerOrders.find(
+          (item) =>
+            String(
+              item.customerEmail ||
+              ""
+            )
+              .trim()
+              .toLowerCase() ===
+              email &&
+            (
+              !txn ||
+              clean(
+                item.transactionReference
+              ) === txn
+            ) &&
+            item.status !==
+              "rejected"
+        );
+
+      if (match) {
+        workerOrderId =
+          Number(
+            match.id
+          );
+      }
+    } catch (error) {
+      return {
+        success: false,
+        status: 502,
+        error:
+          `Quiz licence lookup failed: ${error.message}`
+      };
+    }
+  }
+
+  if (!workerOrderId) {
+    return {
+      success: false,
+      status: 400,
+      error:
+        "No matching Nepali Bible Quiz Worker order was found for this payment."
+    };
+  }
+
+  let response;
+  let payload = {};
+
+  try {
+    response =
+      await fetch(
+        `${NBQ_LICENSE_API_URL}/v1/admin/orders/${workerOrderId}/approve`,
+        {
+          method: "POST",
+          headers: {
+            "content-type":
+              "application/json; charset=utf-8",
+            "X-Admin-Key":
+              adminKey
+          },
+          body:
+            JSON.stringify({
+              skipEmail: true
+            })
+        }
+      );
+
+    payload =
+      await response.json();
+  } catch (error) {
+    return {
+      success: false,
+      status: 502,
+      error:
+        `Quiz licence API request failed: ${error.message}`
+    };
+  }
+
+  const licenceKey =
+    clean(
+      payload?.licenseKey
+    );
+
+  const downloadUrl =
+    clean(
+      payload?.download?.url
+    );
+
+  if (
+    payload?.alreadyPaid &&
+    !licenceKey
+  ) {
+    return {
+      success: false,
+      status: 409,
+      error:
+        "This Quiz order was already approved on the licence Worker, but the plaintext key is not stored in Admin. Use python tools/license_admin.py order-redownload for a new download link, then email the customer from sales@durgajung.com.np."
+    };
+  }
+
+  if (
+    !response.ok ||
+    payload?.success !== true ||
+    !licenceKey
+  ) {
+    return {
+      success: false,
+      status:
+        response.status ||
+        502,
+      error:
+        payload?.error ||
+        "Quiz licence API did not create the customer licence."
+    };
+  }
+
+  await env.ADMIN_DB
+    .prepare(`
+      UPDATE sales
+      SET
+        licence_key = ?,
+        licence_status = 'issued',
+        notes = ?,
+        updated_at =
+          CURRENT_TIMESTAMP
+      WHERE id = ?
+    `)
+    .bind(
+      licenceKey,
+      withNbqDownloadNote(
+        sale.notes,
+        downloadUrl
+      ),
+      sale.id
+    )
+    .run();
+
+  return {
+    success: true,
+    sale:
+      await getSaleById(
+        env,
+        sale.id
+      )
+  };
+}
+
+
 async function ensureCustomerLicence(
   env,
   sale
@@ -1816,27 +2270,10 @@ async function ensureCustomerLicence(
       sale
     )
   ) {
-    await env.ADMIN_DB
-      .prepare(`
-        UPDATE sales
-        SET
-          licence_status = 'nbq_worker'
-        WHERE id = ?
-      `)
-      .bind(
-        sale.id
-      )
-      .run();
-
-    return {
-      success: true,
-      nbqExternal: true,
-      sale:
-        await getSaleById(
-          env,
-          sale.id
-        )
-    };
+    return ensureNbqCustomerLicence(
+      env,
+      sale
+    );
   }
 
   if (
@@ -2127,6 +2564,16 @@ function makeCustomerEmailHtml(
   order,
   certificateNumber
 ) {
+  const brand =
+    documentBrand(
+      sale
+    );
+
+  const quiz =
+    isNepaliBibleQuiz(
+      sale
+    );
+
   const name =
     escapeHtml(
       sale.customer_name ||
@@ -2193,7 +2640,7 @@ function makeCustomerEmailHtml(
         font-size:25px;
         font-weight:700;
       ">
-        Mero Mandali
+        ${escapeHtml(brand.productName)}
       </div>
 
       <div style="
@@ -2201,7 +2648,7 @@ function makeCustomerEmailHtml(
         font-size:14px;
         opacity:.9;
       ">
-        Church Presentation Software
+        ${quiz ? "Bible Quiz Software" : "Church Presentation Software"}
       </div>
 
     </div>
@@ -2218,7 +2665,7 @@ function makeCustomerEmailHtml(
 
       <p>
         Thank you for purchasing
-        <strong>Mero Mandali Software</strong>.
+        <strong>${escapeHtml(brand.productName)}</strong>.
         Your payment has been verified and
         your customer licence has been issued.
       </p>
@@ -2236,7 +2683,7 @@ function makeCustomerEmailHtml(
           font-weight:700;
           color:#52606d;
         ">
-          YOUR MERO MANDALI LICENCE KEY
+          YOUR ${escapeHtml(brand.productCaps)} LICENCE KEY
         </div>
 
         <div style="
@@ -2344,7 +2791,7 @@ function makeCustomerEmailHtml(
       ">
 
         <a
-          href="${INSTALLER_URL}"
+          href="${escapeHtml(installerHref(sale))}"
           style="
             display:inline-block;
             background:#102a47;
@@ -2355,7 +2802,7 @@ function makeCustomerEmailHtml(
             font-weight:700;
           "
         >
-          Download Mero Mandali ${SOFTWARE_VERSION}
+          Download ${escapeHtml(brand.productName)} ${SOFTWARE_VERSION}
         </a>
 
       </div>
@@ -2384,8 +2831,7 @@ function makeCustomerEmailHtml(
         </li>
 
         <li>
-          English + Nepali Installation,
-          Setup & Programme Operating Guide
+          ${escapeHtml(brand.includesGuide)}
         </li>
       </ul>
 
@@ -2414,7 +2860,7 @@ function makeCustomerEmailHtml(
         font-size:13px;
         line-height:1.6;
       ">
-        Developer / Owner - Mero Mandali Software<br>
+        ${escapeHtml(brand.ownerLine)}<br>
         developer@durgajung.com.np<br>
         durgajung.com.np
       </p>
@@ -2434,12 +2880,17 @@ function makeCustomerEmailText(
   order,
   certificateNumber
 ) {
+  const brand =
+    documentBrand(
+      sale
+    );
+
   return `
-MERO MANDALI SOFTWARE
+${brand.productCaps}
 
 Dear ${sale.customer_name || "Customer"},
 
-Thank you for purchasing Mero Mandali Software.
+Thank you for purchasing ${brand.productName}.
 
 Your payment has been verified and your customer licence has been issued.
 
@@ -2461,8 +2912,8 @@ ${order?.order_number || sale.order_id}
 Total Paid:
 ${npr(sale.total_paid_npr)}
 
-Download Mero Mandali ${SOFTWARE_VERSION}:
-${INSTALLER_URL}
+Download ${brand.productName} ${SOFTWARE_VERSION}:
+${installerHref(sale)}
 
 IMPORTANT:
 One Customer Licence is authorized for one Windows PC.
@@ -2472,10 +2923,10 @@ If you permanently replace your computer, please contact us so the existing devi
 Attachments:
 - Official Invoice PDF
 - Customer Licence Certificate PDF
-- English + Nepali Installation, Setup & Programme Operating Guide
+- ${brand.includesGuide}
 
 Durga Jung Kunwar
-Developer / Owner - Mero Mandali Software
+${brand.ownerLine}
 developer@durgajung.com.np
 durgajung.com.np
   `.trim();
@@ -2495,18 +2946,6 @@ async function sendCustomerDelivery(
     return {
       success: true,
       sale
-    };
-  }
-
-  if (
-    isNepaliBibleQuiz(
-      sale
-    )
-  ) {
-    return {
-      success: true,
-      sale,
-      skipped: true
     };
   }
 
@@ -2610,16 +3049,28 @@ async function sendCustomerDelivery(
     };
   }
 
+  const quiz =
+    isNepaliBibleQuiz(
+      sale
+    );
+
+  const brand =
+    documentBrand(
+      sale
+    );
+
   const emailPayload = {
     from:
-      EMAIL_FROM,
+      quiz
+        ? NBQ_EMAIL_FROM
+        : EMAIL_FROM,
 
     to: [
       sale.customer_email
     ],
 
     subject:
-      `Mero Mandali Purchase Complete - ${sale.invoice_number}`,
+      `${brand.productName} Purchase Complete - ${sale.invoice_number}`,
 
     html:
       makeCustomerEmailHtml(
@@ -2658,18 +3109,38 @@ async function sendCustomerDelivery(
           `${licenceDocument.certificateNumber}.pdf`
       },
 
-      {
-        path:
-          GUIDE_URL,
-
-        filename:
-          "Mero_Mandali_Programme_Operating_Guide_EN_NP.pdf"
-      }
+      ...(
+        quiz
+          ? [
+              {
+                path:
+                  NBQ_OPERATING_GUIDE_URL,
+                filename:
+                  "Nepali_Bible_Quiz_Operating_Guide_v1.0.2.pdf"
+              },
+              {
+                path:
+                  NBQ_ADMIN_GUIDE_URL,
+                filename:
+                  "Nepali_Bible_Quiz_Admin_Guide_v1.0.2.pdf"
+              }
+            ]
+          : [
+              {
+                path:
+                  GUIDE_URL,
+                filename:
+                  "Mero_Mandali_Programme_Operating_Guide_EN_NP.pdf"
+              }
+            ]
+      )
     ]
   };
 
   const idempotencyKey =
-    `mero-mandali-delivery-${sale.id}-${sale.invoice_number}`;
+    quiz
+      ? `nbq-delivery-${sale.id}-${sale.invoice_number}`
+      : `mero-mandali-delivery-${sale.id}-${sale.invoice_number}`;
 
   let response;
   let payload = {};
@@ -4239,14 +4710,10 @@ async function adminConfirmPayment(
       await recordAdminActivity(
         env,
         request,
-        licenceResult.nbqExternal
-          ? "NBQ_LICENCE_WORKER"
-          : "LICENCE_ISSUED",
+        "LICENCE_ISSUED",
         "sale",
         existingSale.id,
-        licenceResult.nbqExternal
-          ? `${existingSale.sale_number}: Nepali Bible Quiz licence stays on the Quiz Worker. Approve with python tools/license_admin.py.`
-          : `${existingSale.sale_number}: customer licence issued.`
+        `${existingSale.sale_number}: customer licence issued.`
       );
     }
 
@@ -4294,20 +4761,12 @@ async function adminConfirmPayment(
         success: true,
 
         message:
-          isNepaliBibleQuiz(
-            existingSale
-          )
-            ? nbqAdminConfirmMessage()
-            : deliveryResult.already_sent
-              ? "Payment was already confirmed. Licence and customer delivery were already completed."
-              : "Payment was already confirmed. Licence and customer email delivery are now completed.",
+          deliveryResult.already_sent
+            ? "Payment was already confirmed. Licence and customer delivery were already completed."
+            : "Payment was already confirmed. Licence and customer email delivery are now completed.",
 
         email_sent:
-          isNepaliBibleQuiz(
-            existingSale
-          )
-            ? false
-            : true,
+          true,
 
         sale:
           deliveryResult.sale
@@ -4522,13 +4981,21 @@ async function adminConfirmPayment(
 
   const saleNumber =
     makeNumber(
-      "MM-SALE",
+      isNepaliBibleQuiz(
+        order
+      )
+        ? "NBQ-SALE"
+        : "MM-SALE",
       saleId
     );
 
   const invoiceNumber =
     makeNumber(
-      "MM-INV",
+      isNepaliBibleQuiz(
+        order
+      )
+        ? "NBQ-INV"
+        : "MM-INV",
       saleId
     );
 
@@ -4644,14 +5111,10 @@ async function adminConfirmPayment(
     await recordAdminActivity(
       env,
       request,
-      licenceResult.nbqExternal
-        ? "NBQ_LICENCE_WORKER"
-        : "LICENCE_ISSUED",
+      "LICENCE_ISSUED",
       "sale",
       saleId,
-      licenceResult.nbqExternal
-        ? `${saleNumber}: Nepali Bible Quiz licence stays on the Quiz Worker. Approve with python tools/license_admin.py.`
-        : `${saleNumber}: customer licence issued.`
+      `${saleNumber}: customer licence issued.`
     );
 
     const deliveryResult =
@@ -4702,19 +5165,17 @@ async function adminConfirmPayment(
       isNepaliBibleQuiz(
         sale
       )
-        ? nbqAdminConfirmMessage()
+        ? nbqAdminConfirmMessage(
+            true
+          )
         : isSoftware
           ? "Payment confirmed, Sales record and invoice created, customer licence issued, and customer email sent."
           : "Payment confirmed and permanent Sales record created.",
 
     email_sent:
-      isNepaliBibleQuiz(
-        sale
-      )
-        ? false
-        : isSoftware
-          ? true
-          : null,
+      isSoftware
+        ? true
+        : null,
 
     sale
   });

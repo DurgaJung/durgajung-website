@@ -1266,7 +1266,7 @@
                     Nepali Bible Quiz licence
                   </div>
                   <div class="detail-value">
-                    Confirm Payment only records this sale in Admin. It does not create an NBQ- key or send the Quiz email. After the Bank / eSewa / Khalti payment is real, approve the Quiz Worker order with python tools/license_admin.py order-approve.
+                    Confirm Payment issues the Nepali Bible Quiz customer licence, invoice, download link, and email (same process as Mero Mandali). The installer is never attached. If email status stays Pending, press Confirm Payment again.
                   </div>
                 </div>
               `
@@ -1469,7 +1469,7 @@
       window.confirm(
         currentOrderProductCode ===
         "NEPALI-BIBLE-QUIZ"
-          ? "Record this Nepali Bible Quiz payment in Admin? This does not issue the Quiz licence. After this, still run python tools/license_admin.py order-approve on the Quiz Worker order."
+          ? "Confirm this Nepali Bible Quiz payment? This will issue the customer licence, generate the invoice, and email the key, download link, and guides."
           : "Confirm this customer's payment and create the permanent Sales and Invoice records?"
       );
 
