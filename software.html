@@ -53,6 +53,28 @@
       flex-direction: column;
     }
 
+    .software-card.combo-offer {
+      grid-column: 1 / -1;
+      border: 2px solid #986719;
+    }
+
+    .combo-logos {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 28px;
+      flex-wrap: wrap;
+    }
+
+    .combo-logos img {
+      max-height: 72px;
+      width: auto;
+    }
+
+    .software-status.special-offer {
+      background: #7a1f1f;
+    }
+
     .software-logo-wrap {
       min-height: 150px;
       padding: 18px 22px;
@@ -613,7 +635,9 @@
             I develop practical software tools to support churches,
             Christian ministries, Bible teaching, worship presentation
             and ministry activities. Mero Mandali and Nepali Bible Quiz
-            are available for purchase.
+            are available for purchase. Until 10 October 2026, both
+            programmes are also offered together as a special NPR 7,500
+            combo pack.
           </p>
         </div>
 
@@ -629,6 +653,80 @@
       </div>
 
       <div class="software-grid">
+
+        <article
+          class="software-card combo-offer"
+          id="combo-offer-card"
+        >
+
+          <div class="software-logo-wrap">
+            <div class="combo-logos">
+              <img
+                class="software-logo"
+                src="/assets/images/software/mero-mandali-logo.png"
+                alt="Mero Mandali logo"
+              >
+              <img
+                class="software-logo software-logo-nbq"
+                src="/assets/images/software/nepali-bible-quiz-app-icon.png?v=1.0.2"
+                alt="Nepali Bible Quiz logo"
+              >
+            </div>
+          </div>
+
+          <div class="software-body">
+
+            <span class="software-status special-offer">
+              Special Offer till 10 October 2026
+            </span>
+
+            <h2>
+              Special Offer 2 Software Combo Pack in NPR 7,500
+            </h2>
+
+            <div class="software-local nepali">
+              विशेष प्रस्ताव: दुई सफ्टवेयर कम्बो प्याक
+            </div>
+
+            <p>
+              Mero Mandali (NPR 5,000) and Nepali Bible Quiz (NPR 3,500)
+              together for <strong>NPR 7,500</strong> until
+              10 October 2026. After payment is verified you receive one
+              email with both licence keys, both download links, both
+              document packs, and one combo invoice.
+            </p>
+
+            <div class="price-block">
+
+              <span class="price-main">
+                NPR 7,500
+              </span>
+
+              <span class="launch-price">
+                Combo Pack · Save NPR 1,000
+              </span>
+
+              <p class="licence-note">
+                Two customer licences: 1 licence = 1 Windows PC for each
+                programme. Offer ends 10 October 2026.
+              </p>
+
+            </div>
+
+            <div class="software-actions">
+
+              <a
+                class="buy-btn"
+                href="#purchase-software-combo"
+              >
+                Buy Now
+              </a>
+
+            </div>
+
+          </div>
+
+        </article>
 
         <article class="software-card">
 
@@ -891,6 +989,211 @@
         <div class="developer-box">
           <strong>Developed by Durga Jung Kunwar</strong><br>
           Mero Mandali – Church Presentation Software
+        </div>
+
+      </section>
+
+      <section
+        id="purchase-software-combo"
+        class="purchase-panel"
+      >
+
+        <h2>
+          Purchase Special Offer 2 Software Combo Pack
+        </h2>
+
+        <p class="nepali">
+          <strong>दुई सफ्टवेयर कम्बो प्याक खरिद गर्नुहोस्</strong>
+        </p>
+
+        <p>
+          <strong>Price: NPR 7,500</strong>
+          — Special Offer till 10 October 2026.
+          Includes Mero Mandali and Nepali Bible Quiz.
+        </p>
+
+        <p>
+          Choose a payment method below. After we verify the payment,
+          one email is sent with both download links, both licence keys,
+          both document packs, and one invoice for
+          <strong>Mero Mandali &amp; Nepali Bible Combo Pack · NPR 7,500</strong>.
+        </p>
+
+        <div class="payment-grid">
+
+          <article class="payment-card">
+            <h3>Global IME Bank</h3>
+            <img
+              class="payment-qr"
+              src="/assets/images/payments/global-ime-bank-qr.jpeg"
+              alt="Global IME Bank payment QR code"
+            >
+            <div class="payment-details">
+              <strong>DURGA JUNG KUNWAR</strong><br>
+              A/C No. 01507010199124
+            </div>
+          </article>
+
+          <article class="payment-card">
+            <h3>eSewa</h3>
+            <img
+              class="payment-qr"
+              src="/assets/images/payments/esewa-qr.jpeg"
+              alt="eSewa payment QR code"
+            >
+            <div class="payment-details">
+              <strong>Durga Jung Kunwar</strong><br>
+              9700807642
+            </div>
+          </article>
+
+          <article class="payment-card">
+            <h3>Khalti</h3>
+            <img
+              class="payment-qr"
+              src="/assets/images/payments/khalti-qr.jpeg"
+              alt="Khalti payment QR code"
+            >
+            <div class="payment-details">
+              <strong>Durga Jung Kunwar</strong><br>
+              9700807642
+            </div>
+          </article>
+
+        </div>
+
+        <div class="purchase-instruction">
+          <strong>Secure delivery:</strong>
+          The installer files are never attached to email.
+          <ul class="delivery-list">
+            <li>Mero Mandali download link and customer licence</li>
+            <li>Nepali Bible Quiz expiring download link and customer licence</li>
+            <li>One combo invoice: NPR 7,500</li>
+            <li>Both licence certificates</li>
+            <li>Mero Mandali and Nepali Bible Quiz guides</li>
+          </ul>
+        </div>
+
+        <div class="payment-form-wrap">
+
+          <h3>Submit Payment for Verification</h3>
+
+          <form
+            id="software-combo-payment-form"
+            class="payment-form"
+            novalidate
+          >
+
+            <div class="payment-field">
+              <label for="combo-customer-name">
+                Full Name
+                <span class="required-mark">*</span>
+              </label>
+              <input
+                id="combo-customer-name"
+                name="customer_name"
+                type="text"
+                autocomplete="name"
+                required
+              >
+            </div>
+
+            <div class="payment-field">
+              <label for="combo-customer-email">
+                Email Address
+                <span class="required-mark">*</span>
+              </label>
+              <input
+                id="combo-customer-email"
+                name="customer_email"
+                type="email"
+                autocomplete="email"
+                required
+              >
+            </div>
+
+            <div class="payment-field">
+              <label for="combo-customer-phone">
+                WhatsApp / Viber / Phone
+              </label>
+              <input
+                id="combo-customer-phone"
+                name="customer_phone"
+                type="tel"
+                autocomplete="tel"
+              >
+            </div>
+
+            <div class="payment-field">
+              <label for="combo-payment-method">
+                Payment Method
+                <span class="required-mark">*</span>
+              </label>
+              <select
+                id="combo-payment-method"
+                name="payment_method"
+                required
+              >
+                <option value="">Select payment method</option>
+                <option value="Global IME Bank">Global IME Bank</option>
+                <option value="eSewa">eSewa</option>
+                <option value="Khalti">Khalti</option>
+              </select>
+            </div>
+
+            <div class="payment-field">
+              <label for="combo-transaction-reference">
+                Transaction / Reference Number
+                <span class="required-mark">*</span>
+              </label>
+              <input
+                id="combo-transaction-reference"
+                name="transaction_reference"
+                type="text"
+                required
+              >
+            </div>
+
+            <div class="payment-field">
+              <label for="combo-payment-date">
+                Payment Date
+                <span class="required-mark">*</span>
+              </label>
+              <input
+                id="combo-payment-date"
+                name="payment_date"
+                type="date"
+                required
+              >
+            </div>
+
+            <div class="payment-field">
+              <label for="combo-customer-notes">
+                Notes
+              </label>
+              <textarea
+                id="combo-customer-notes"
+                name="customer_notes"
+                rows="3"
+              ></textarea>
+            </div>
+
+            <p
+              id="combo-payment-result"
+              class="payment-result"
+              hidden
+            ></p>
+
+            <button
+              id="combo-submit-payment"
+              class="paid-btn"
+              type="submit"
+            >
+              I HAVE PAID — SUBMIT PAYMENT
+            </button>
+
+          </form>
+
         </div>
 
       </section>
@@ -2288,6 +2591,163 @@
       );
       form.reset();
       setToday();
+    } catch (error) {
+      showResult(
+        "error",
+        error && error.message
+          ? error.message
+          : "Payment submission failed. Please try again, or email sales@durgajung.com.np"
+      );
+    } finally {
+      submitButton.disabled = false;
+      submitButton.textContent = "I HAVE PAID — SUBMIT PAYMENT";
+    }
+  });
+})();
+</script>
+<script>
+(function () {
+  var offerEnds = Date.parse("2026-10-10T18:14:59.000Z");
+  if (Date.now() > offerEnds) {
+    var card = document.getElementById("combo-offer-card");
+    var panel = document.getElementById("purchase-software-combo");
+    if (card) {
+      card.remove();
+    }
+    if (panel) {
+      panel.remove();
+    }
+    return;
+  }
+
+  var form = document.getElementById("software-combo-payment-form");
+  if (!form) {
+    return;
+  }
+
+  var nameInput = document.getElementById("combo-customer-name");
+  var emailInput = document.getElementById("combo-customer-email");
+  var phoneInput = document.getElementById("combo-customer-phone");
+  var methodInput = document.getElementById("combo-payment-method");
+  var txnInput = document.getElementById("combo-transaction-reference");
+  var dateInput = document.getElementById("combo-payment-date");
+  var notesInput = document.getElementById("combo-customer-notes");
+  var resultBox = document.getElementById("combo-payment-result");
+  var submitButton = document.getElementById("combo-submit-payment");
+
+  function trimValue(el) {
+    return el && el.value ? String(el.value).trim() : "";
+  }
+
+  function showResult(type, message) {
+    resultBox.hidden = false;
+    resultBox.className = "payment-result " + type;
+    resultBox.textContent = message;
+  }
+
+  function clearResult() {
+    resultBox.hidden = true;
+    resultBox.textContent = "";
+  }
+
+  var now = new Date();
+  dateInput.value =
+    now.getFullYear() +
+    "-" +
+    String(now.getMonth() + 1).padStart(2, "0") +
+    "-" +
+    String(now.getDate()).padStart(2, "0");
+
+  form.addEventListener("submit", async function (event) {
+    event.preventDefault();
+    clearResult();
+
+    var customerName = trimValue(nameInput);
+    var customerEmail = trimValue(emailInput);
+    var paymentMethod = trimValue(methodInput);
+    var transactionReference = trimValue(txnInput);
+    var paymentDate = trimValue(dateInput);
+
+    if (!customerName) {
+      showResult("error", "Please enter your full name.");
+      nameInput.focus();
+      return;
+    }
+    if (!customerEmail || customerEmail.indexOf("@") < 0) {
+      showResult("error", "Please enter a valid email address.");
+      emailInput.focus();
+      return;
+    }
+    if (!paymentMethod) {
+      showResult("error", "Please choose a payment method.");
+      methodInput.focus();
+      return;
+    }
+    if (!transactionReference) {
+      showResult("error", "Please enter your transaction or reference number.");
+      txnInput.focus();
+      return;
+    }
+    if (!paymentDate) {
+      showResult("error", "Please enter the payment date.");
+      dateInput.focus();
+      return;
+    }
+
+    submitButton.disabled = true;
+    submitButton.textContent = "SUBMITTING...";
+
+    try {
+      var response = await fetch("/api/orders", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({
+          product_code: "SOFTWARE-COMBO-7500",
+          quantity: 1,
+          customer_name: customerName,
+          customer_email: customerEmail,
+          customer_phone: trimValue(phoneInput) || null,
+          payment_method: paymentMethod,
+          transaction_reference: transactionReference,
+          payment_date: paymentDate,
+          delivery_format: "Windows Installer",
+          delivery_method: "Email",
+          customer_notes: trimValue(notesInput) || "Combo pack NPR 7500"
+        })
+      });
+
+      var data = {};
+      try {
+        data = await response.json();
+      } catch (ignore) {
+        data = {};
+      }
+
+      if (!response.ok || data.success !== true) {
+        throw new Error(
+          data.error || "Payment submission could not be recorded."
+        );
+      }
+
+      var orderNumber =
+        data.order && data.order.order_number
+          ? data.order.order_number
+          : "";
+
+      showResult(
+        "success",
+        (orderNumber
+          ? "Payment submission received. Order " + orderNumber + ". "
+          : "Payment submission received. ") +
+          "Amount: NPR 7,500 combo pack. After approval you will receive one email with both licences, both download links, documents, and the combo invoice."
+      );
+      form.reset();
+      dateInput.value =
+        now.getFullYear() +
+        "-" +
+        String(now.getMonth() + 1).padStart(2, "0") +
+        "-" +
+        String(now.getDate()).padStart(2, "0");
     } catch (error) {
       showResult(
         "error",

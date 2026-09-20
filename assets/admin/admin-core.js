@@ -1270,6 +1270,18 @@
                   </div>
                 </div>
               `
+              : order.product_code ===
+                "SOFTWARE-COMBO-7500"
+                ? `
+                <div class="detail-card full">
+                  <div class="detail-label">
+                    Combo pack
+                  </div>
+                  <div class="detail-value">
+                    Confirm Payment issues both customer licences, one NPR 7,500 combo invoice, both download links, and both document packs in a single email. Installers are never attached.
+                  </div>
+                </div>
+              `
               : ""
           }
 
@@ -1470,7 +1482,10 @@
         currentOrderProductCode ===
         "NEPALI-BIBLE-QUIZ"
           ? "Confirm this Nepali Bible Quiz payment? This will issue the customer licence, generate the invoice, and email the key, download link, and guides."
-          : "Confirm this customer's payment and create the permanent Sales and Invoice records?"
+          : currentOrderProductCode ===
+            "SOFTWARE-COMBO-7500"
+            ? "Confirm this NPR 7,500 combo payment? This emails one combo invoice plus both licence keys, both download links, and both document packs."
+            : "Confirm this customer's payment and create the permanent Sales and Invoice records?"
       );
 
     if (!confirmed) {
