@@ -2795,8 +2795,8 @@
   if (!badges.length) return;
   var step = 0;
   setInterval(function () {
-    step = (step + 1) % 8;
-    var beat = step === 1 || step === 3;
+    step = (step + 1) % 10;
+    var beat = step === 1 || step === 2 || step === 4 || step === 5;
     for (var i = 0; i < badges.length; i += 1) {
       badges[i].classList.toggle("is-beat", beat);
     }
