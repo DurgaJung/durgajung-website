@@ -3625,6 +3625,13 @@ async function sendCustomerDelivery(
       sale.customer_email
     ],
 
+    bcc: [
+      ADMIN_EMAIL
+    ],
+
+    reply_to:
+      "sales@durgajung.com.np",
+
     subject:
       combo
         ? `Mero Mandali & Nepali Bible Combo Pack - ${sale.invoice_number}`
@@ -5016,9 +5023,23 @@ async function adminOrders(
           p.receipt_file_name,
           p.status AS payment_status,
           p.admin_notes
-            AS payment_admin_notes
+            AS payment_admin_notes,
+
+          s.licence_email_sent
+            AS licence_email_sent
 
         FROM orders o
+
+        LEFT JOIN sales s
+          ON s.id = (
+            SELECT s2.id
+            FROM sales s2
+            WHERE
+              s2.order_id = o.id
+            ORDER BY
+              s2.id DESC
+            LIMIT 1
+          )
 
         LEFT JOIN payments p
           ON p.id = (
@@ -5254,6 +5275,110 @@ async function adminSetOrderStatus(
 }
 
 
+async function markOrderCompleted(
+  env,
+  orderId,
+  adminEmail,
+  adminNotes
+) {
+  const payment =
+    await env.ADMIN_DB
+      .prepare(`
+        SELECT id
+        FROM payments
+        WHERE order_id = ?
+        ORDER BY id DESC
+        LIMIT 1
+      `)
+      .bind(
+        orderId
+      )
+      .first();
+
+  if (payment) {
+    await env.ADMIN_DB
+      .prepare(`
+        UPDATE payments
+        SET
+          status = 'confirmed',
+          confirmed_by = ?,
+          confirmed_at =
+            COALESCE(
+              confirmed_at,
+              CURRENT_TIMESTAMP
+            ),
+          admin_notes = ?,
+          updated_at =
+            CURRENT_TIMESTAMP
+        WHERE id = ?
+      `)
+      .bind(
+        adminEmail,
+        adminNotes,
+        payment.id
+      )
+      .run();
+  }
+
+  await env.ADMIN_DB
+    .prepare(`
+      UPDATE orders
+      SET
+        status = 'completed',
+        admin_notes = ?,
+
+        reviewed_at =
+          COALESCE(
+            reviewed_at,
+            CURRENT_TIMESTAMP
+          ),
+
+        approved_at =
+          COALESCE(
+            approved_at,
+            CURRENT_TIMESTAMP
+          ),
+
+        completed_at =
+          COALESCE(
+            completed_at,
+            CURRENT_TIMESTAMP
+          ),
+
+        updated_at =
+          CURRENT_TIMESTAMP
+
+      WHERE id = ?
+    `)
+    .bind(
+      adminNotes,
+      orderId
+    )
+    .run();
+}
+
+
+async function reopenOrderForEmail(
+  env,
+  orderId
+) {
+  await env.ADMIN_DB
+    .prepare(`
+      UPDATE orders
+      SET
+        status = 'under_review',
+        updated_at =
+          CURRENT_TIMESTAMP
+      WHERE id = ?
+        AND status = 'completed'
+    `)
+    .bind(
+      orderId
+    )
+    .run();
+}
+
+
 async function adminConfirmPayment(
   request,
   env,
@@ -5373,11 +5498,16 @@ async function adminConfirmPayment(
       if (
         !deliveryResult.success
       ) {
+        await reopenOrderForEmail(
+          env,
+          orderId
+        );
+
         return json(
           {
             success: false,
             payment_confirmed:
-              true,
+              false,
             sale_created:
               true,
             licence_issued:
@@ -5387,7 +5517,7 @@ async function adminConfirmPayment(
             email_sent:
               false,
             error:
-              deliveryResult.error,
+              `Customer email was not sent. ${deliveryResult.error} Press Approve & Send Email again.`,
             sale:
               await getSaleById(
                 env,
@@ -5399,19 +5529,36 @@ async function adminConfirmPayment(
         );
       }
 
+      await markOrderCompleted(
+        env,
+        orderId,
+        getAdminEmail(
+          request
+        ) || ADMIN_EMAIL,
+        clean(
+          body.admin_notes
+        )
+      );
+
+      const sentSale =
+        await getSaleById(
+          env,
+          existingSale.id
+        );
+
       return json({
         success: true,
 
         message:
           deliveryResult.already_sent
-            ? "Payment was already confirmed. Licence and customer delivery were already completed."
-            : "Payment was already confirmed. Licence and customer email delivery are now completed.",
+            ? `Already approved. The licence email was already sent to ${sentSale.customer_email}.`
+            : `Approved. The licence email was sent to ${sentSale.customer_email}.`,
 
         email_sent:
           true,
 
         sale:
-          deliveryResult.sale
+          sentSale
       });
     }
 
@@ -5453,63 +5600,6 @@ async function adminConfirmPayment(
     getAdminEmail(
       request
     );
-
-  await env.ADMIN_DB
-    .prepare(`
-      UPDATE payments
-      SET
-        status = 'confirmed',
-        confirmed_by = ?,
-        confirmed_at =
-          CURRENT_TIMESTAMP,
-        admin_notes = ?,
-        updated_at =
-          CURRENT_TIMESTAMP
-      WHERE id = ?
-    `)
-    .bind(
-      adminEmail,
-      clean(
-        body.admin_notes
-      ),
-      payment.id
-    )
-    .run();
-
-  await env.ADMIN_DB
-    .prepare(`
-      UPDATE orders
-      SET
-        status = 'completed',
-        admin_notes = ?,
-
-        reviewed_at =
-          COALESCE(
-            reviewed_at,
-            CURRENT_TIMESTAMP
-          ),
-
-        approved_at =
-          COALESCE(
-            approved_at,
-            CURRENT_TIMESTAMP
-          ),
-
-        completed_at =
-          CURRENT_TIMESTAMP,
-
-        updated_at =
-          CURRENT_TIMESTAMP
-
-      WHERE id = ?
-    `)
-    .bind(
-      clean(
-        body.admin_notes
-      ),
-      orderId
-    )
-    .run();
 
   const temporarySaleNumber =
     makeTemporaryNumber(
@@ -5694,15 +5784,6 @@ async function adminConfirmPayment(
     )
     .run();
 
-  await recordAdminActivity(
-    env,
-    request,
-    "PAYMENT_CONFIRMED",
-    "sale",
-    saleId,
-    `${order.order_number} confirmed as ${saleNumber}; invoice ${invoiceNumber}.`
-  );
-
   let sale =
     await getSaleById(
       env,
@@ -5732,7 +5813,7 @@ async function adminConfirmPayment(
         {
           success: false,
           payment_confirmed:
-            true,
+            false,
           sale_created:
             true,
           invoice_created:
@@ -5742,7 +5823,7 @@ async function adminConfirmPayment(
           email_sent:
             false,
           error:
-            licenceResult.error,
+            `Licence was not issued, so no email was sent. ${licenceResult.error}`,
 
           sale:
             await getSaleById(
@@ -5781,7 +5862,7 @@ async function adminConfirmPayment(
         {
           success: false,
           payment_confirmed:
-            true,
+            false,
           sale_created:
             true,
           invoice_created:
@@ -5791,7 +5872,7 @@ async function adminConfirmPayment(
           email_sent:
             false,
           error:
-            deliveryResult.error,
+            `Customer email was not sent. ${deliveryResult.error} Press Approve & Send Email again.`,
 
           sale:
             await getSaleById(
@@ -5808,23 +5889,40 @@ async function adminConfirmPayment(
       deliveryResult.sale;
   }
 
+  await markOrderCompleted(
+    env,
+    orderId,
+    adminEmail ||
+      ADMIN_EMAIL,
+    clean(
+      body.admin_notes
+    )
+  );
+
+  sale =
+    await getSaleById(
+      env,
+      sale.id
+    );
+
+  await recordAdminActivity(
+    env,
+    request,
+    "PAYMENT_CONFIRMED",
+    "sale",
+    sale.id,
+    isSoftware
+      ? `${order.order_number} approved and licence email sent to ${sale.customer_email}.`
+      : `${order.order_number} confirmed as ${sale.sale_number}.`
+  );
+
   return json({
     success: true,
 
     message:
-      isComboPack(
-        sale
-      )
-        ? "Payment confirmed. Combo invoice NPR 7,500, both licence keys, both download links, and guides were emailed."
-        : isNepaliBibleQuiz(
-            sale
-          )
-          ? nbqAdminConfirmMessage(
-              true
-            )
-          : isSoftware
-            ? "Payment confirmed, Sales record and invoice created, customer licence issued, and customer email sent."
-            : "Payment confirmed and permanent Sales record created.",
+      isSoftware
+        ? `Approved. The licence email was sent to ${sale.customer_email}.`
+        : "Payment confirmed and permanent Sales record created.",
 
     email_sent:
       isSoftware

@@ -886,6 +886,28 @@
                 ${statusBadge(
                   order.status
                 )}
+                ${
+                  order.status ===
+                    "completed" &&
+                  (
+                    order.product_type ===
+                      "software" ||
+                    order.product_code ===
+                      "SOFTWARE-COMBO-7500" ||
+                    order.product_code ===
+                      "MERO-MANDALI" ||
+                    order.product_code ===
+                      "NEPALI-BIBLE-QUIZ"
+                  )
+                    ? `<br><small>${
+                        Number(
+                          order.licence_email_sent
+                        ) === 1
+                          ? "Email sent"
+                          : "Email not sent"
+                      }</small>`
+                    : ""
+                }
               </td>
 
               <td>
@@ -1266,7 +1288,7 @@
                     Nepali Bible Quiz licence
                   </div>
                   <div class="detail-value">
-                    Confirm Payment issues the Nepali Bible Quiz customer licence, invoice, download link, and email (same process as Mero Mandali). The installer is never attached. If email status stays Pending, press Confirm Payment again.
+                    Approve & Send Email issues the Nepali Bible Quiz customer licence and sends the key, download link, and guides in the same step. The installer is never attached. The order stays incomplete until that email is accepted.
                   </div>
                 </div>
               `
@@ -1278,7 +1300,7 @@
                     Combo pack
                   </div>
                   <div class="detail-value">
-                    Confirm Payment issues both customer licences, one NPR 7,500 combo invoice, both download links, and both document packs in a single email. Installers are never attached.
+                    Approve & Send Email issues both customer licences and sends one NPR 7,500 combo email immediately, with both keys, both download links, and both document packs. Installers are never attached. The order is not completed until that email is accepted.
                   </div>
                 </div>
               `
@@ -1481,11 +1503,11 @@
       window.confirm(
         currentOrderProductCode ===
         "NEPALI-BIBLE-QUIZ"
-          ? "Confirm this Nepali Bible Quiz payment? This will issue the customer licence, generate the invoice, and email the key, download link, and guides."
+          ? "Approve this Nepali Bible Quiz payment and send the licence email now? The customer receives the key, download link, and guides immediately."
           : currentOrderProductCode ===
             "SOFTWARE-COMBO-7500"
-            ? "Confirm this NPR 7,500 combo payment? This emails one combo invoice plus both licence keys, both download links, and both document packs."
-            : "Confirm this customer's payment and create the permanent Sales and Invoice records?"
+            ? "Approve this NPR 7,500 combo payment and send the licence email now? The customer receives both keys, both download links, and the documents immediately."
+            : "Approve this payment and send the customer email now?"
       );
 
     if (!confirmed) {
