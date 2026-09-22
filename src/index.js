@@ -6482,27 +6482,10 @@ function bindingsForSale(
 function deviceSummary(
   bindings
 ) {
-  const known =
-    bindings.filter(
-      (binding) =>
-        clean(
-          binding.device_id
-        )
-    );
-
-  if (!known.length) {
-    return null;
-  }
-
   if (
-    bindings.length === 1
+    !bindings.length
   ) {
-    const binding =
-      known[0];
-
-    return binding.device_label
-      ? `${binding.device_label} (${binding.device_id})`
-      : binding.device_id;
+    return "Not installed";
   }
 
   return bindings
@@ -6516,17 +6499,285 @@ function deviceSummary(
             ? "MM"
             : "Licence";
 
-      const where =
-        binding.device_label
-          ? `${binding.device_label} (${binding.device_id || "not installed"})`
-          : (
-              binding.device_id ||
-              "not installed"
-            );
+      if (
+        binding.device_id
+      ) {
+        const where =
+          binding.device_label
+            ? `${binding.device_label} · ${binding.device_id}`
+            : binding.device_id;
 
-      return `${name}: ${where}`;
+        return `${name}: Installed (${where})`;
+      }
+
+      if (
+        binding.install_status ===
+        "installed"
+      ) {
+        return `${name}: Installed`;
+      }
+
+      return `${name}: Not installed`;
     })
     .join(" | ");
+}
+
+
+async function probeValidateStatus(
+  apiRoot,
+  licenseKey
+) {
+  const key =
+    clean(
+      licenseKey
+    );
+
+  if (
+    !apiRoot ||
+    !key
+  ) {
+    return null;
+  }
+
+  const sentinel =
+    "admin-status-check";
+
+  try {
+    const response =
+      await fetch(
+        `${apiRoot}/v1/validate`,
+        {
+          method:
+            "POST",
+          headers: {
+            "content-type":
+              "application/json; charset=utf-8"
+          },
+          body:
+            JSON.stringify({
+              license_key:
+                key,
+              device_id:
+                sentinel,
+              licenseKey:
+                key,
+              deviceId:
+                sentinel
+            })
+        }
+      );
+
+    const payload =
+      await response.json();
+
+    const licence =
+      payload?.licence ||
+      payload?.license ||
+      {};
+
+    const error =
+      String(
+        payload?.error ||
+        ""
+      ).toLowerCase();
+
+    const deviceId =
+      deviceIdOf(
+        payload
+      ) ||
+      deviceIdOf(
+        licence
+      );
+
+    const realDevice =
+      deviceId &&
+      deviceId !==
+        sentinel
+        ? deviceId
+        : null;
+
+    if (
+      /bound to another/.test(
+        error
+      ) ||
+      licence.bound ===
+        true
+    ) {
+      return {
+        device_id:
+          realDevice,
+        install_status:
+          "installed"
+      };
+    }
+
+    if (
+      payload?.valid ===
+        true
+    ) {
+      return {
+        device_id:
+          realDevice,
+        install_status:
+          "installed"
+      };
+    }
+
+    if (
+      /not activated\.?$/.test(
+        error
+      ) ||
+      /not activated on this pc/.test(
+        error
+      ) ||
+      /already deactivated/.test(
+        error
+      ) ||
+      /not activated/.test(
+        error
+      )
+    ) {
+      return {
+        device_id:
+          null,
+        install_status:
+          "not_installed"
+      };
+    }
+  } catch {
+    return null;
+  }
+
+  return null;
+}
+
+
+function licenceApiRoot(
+  binding
+) {
+  const key =
+    String(
+      binding.license_key ||
+      ""
+    );
+
+  if (
+    binding.product ===
+      "Nepali Bible Quiz" ||
+    key.startsWith(
+      "NBQ"
+    )
+  ) {
+    return NBQ_LICENSE_API_URL;
+  }
+
+  return "https://mero-mandali-license-api.durgajung-nits.workers.dev";
+}
+
+
+async function enrichBindingStatus(
+  binding
+) {
+  if (
+    !binding?.license_key
+  ) {
+    return {
+      ...binding,
+      install_status:
+        "not_installed"
+    };
+  }
+
+  if (
+    binding.device_id ||
+    binding.install_status ===
+      "installed"
+  ) {
+    return {
+      ...binding,
+      install_status:
+        "installed"
+    };
+  }
+
+  const probed =
+    await probeValidateStatus(
+      licenceApiRoot(
+        binding
+      ),
+      binding.license_key
+    );
+
+  if (!probed) {
+    return {
+      ...binding,
+      install_status:
+        "not_installed"
+    };
+  }
+
+  return {
+    ...binding,
+    device_id:
+      probed.device_id ||
+      binding.device_id ||
+      null,
+    install_status:
+      probed.install_status ||
+      "not_installed"
+  };
+}
+
+
+async function fetchAdminLicenceRecord(
+  apiRoot,
+  adminKey,
+  licenseKey
+) {
+  const key =
+    clean(
+      licenseKey
+    );
+
+  if (
+    !apiRoot ||
+    !adminKey ||
+    !key
+  ) {
+    return null;
+  }
+
+  const urls = [
+    `${apiRoot}/v1/admin/licenses/${encodeURIComponent(key)}`,
+    `${apiRoot}/v1/admin/licenses?license_key=${encodeURIComponent(key)}`
+  ];
+
+  for (const url of urls) {
+    try {
+      const response =
+        await fetch(
+          url,
+          {
+            headers: {
+              "X-Admin-Key":
+                adminKey
+            }
+          }
+        );
+
+      if (
+        !response.ok
+      ) {
+        continue;
+      }
+
+      return await response.json();
+    } catch {
+      continue;
+    }
+  }
+
+  return null;
 }
 
 
@@ -6552,13 +6803,159 @@ async function attachDeviceBindings(
       new Map();
   }
 
+  const extraKeys = [];
+
+  for (const sale of rows) {
+    if (
+      clean(
+        sale.licence_key
+      )
+    ) {
+      extraKeys.push({
+        root:
+          isNepaliBibleQuiz(
+            sale
+          )
+            ? NBQ_LICENSE_API_URL
+            : "https://mero-mandali-license-api.durgajung-nits.workers.dev",
+        key:
+          sale.licence_key,
+        adminKey:
+          isNepaliBibleQuiz(
+            sale
+          )
+            ? env.NBQ_LICENSE_ADMIN_KEY
+            : env.LICENSE_API_ADMIN_KEY
+      });
+    }
+
+    if (
+      isComboPack(
+        sale
+      )
+    ) {
+      extraKeys.push({
+        root:
+          NBQ_LICENSE_API_URL,
+        key:
+          comboNbqKeyFromNotes(
+            sale.notes
+          ),
+        adminKey:
+          env.NBQ_LICENSE_ADMIN_KEY
+      });
+    }
+  }
+
+  await Promise.all(
+    extraKeys.map(
+      async (item) => {
+        const payload =
+          await fetchAdminLicenceRecord(
+            item.root,
+            item.adminKey,
+            item.key
+          );
+
+        const records =
+          collectLicenceRecords(
+            payload
+          );
+
+        if (
+          payload &&
+          payload.license_key
+        ) {
+          records.push(
+            payload
+          );
+        }
+
+        if (
+          payload?.licence
+        ) {
+          records.push(
+            payload.licence
+          );
+        }
+
+        if (
+          payload?.license
+        ) {
+          records.push(
+            payload.license
+          );
+        }
+
+        for (
+          const record of records
+        ) {
+          const binding = {
+            license_key:
+              licenceKeyOf(
+                record
+              ) ||
+              item.key,
+            device_id:
+              deviceIdOf(
+                record
+              ),
+            device_label:
+              deviceLabelOf(
+                record
+              ),
+            install_status:
+              (
+                deviceIdOf(
+                  record
+                ) ||
+                record?.bound ===
+                  true
+              )
+                ? "installed"
+                : null
+          };
+
+          if (
+            binding.license_key
+          ) {
+            const prev =
+              deviceMap.get(
+                binding.license_key.toUpperCase()
+              ) || {};
+
+            deviceMap.set(
+              binding.license_key.toUpperCase(),
+              {
+                ...prev,
+                ...binding,
+                device_id:
+                  binding.device_id ||
+                  prev.device_id ||
+                  null,
+                install_status:
+                  binding.install_status ||
+                  prev.install_status ||
+                  null
+              }
+            );
+          }
+        }
+      }
+    )
+  );
+
   for (
     const sale of rows
   ) {
     const bindings =
-      bindingsForSale(
-        sale,
-        deviceMap
+      await Promise.all(
+        bindingsForSale(
+          sale,
+          deviceMap
+        ).map(
+          enrichBindingStatus
+        )
       );
 
     sale.device_bindings =
@@ -6567,34 +6964,37 @@ async function attachDeviceBindings(
     const summary =
       deviceSummary(
         bindings
+      ) ||
+      (
+        bindings.some(
+          (binding) =>
+            binding.install_status ===
+            "installed"
+        )
+          ? "Installed"
+          : "Not installed"
       );
 
-    if (
-      summary &&
-      summary !==
-        sale.device_id
-    ) {
-      sale.device_id =
-        summary;
+    sale.device_id =
+      summary;
 
-      try {
-        await env.ADMIN_DB
-          .prepare(`
-            UPDATE sales
-            SET
-              device_id = ?,
-              updated_at =
-                CURRENT_TIMESTAMP
-            WHERE id = ?
-          `)
-          .bind(
-            summary,
-            sale.id
-          )
-          .run();
-      } catch {
-        /* Showing the device in this response still works if the save fails. */
-      }
+    try {
+      await env.ADMIN_DB
+        .prepare(`
+          UPDATE sales
+          SET
+            device_id = ?,
+            updated_at =
+              CURRENT_TIMESTAMP
+          WHERE id = ?
+        `)
+        .bind(
+          summary,
+          sale.id
+        )
+        .run();
+    } catch {
+      /* Showing the device in this response still works if the save fails. */
     }
   }
 
