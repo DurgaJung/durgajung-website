@@ -6164,6 +6164,10 @@ function mergeBinding(
     device_label:
       next.device_label ||
       prev.device_label ||
+      null,
+    install_status:
+      next.install_status ||
+      prev.install_status ||
       null
   });
 }
@@ -6266,19 +6270,31 @@ async function loadDeviceMap(
       continue;
     }
 
+    const deviceId =
+      deviceIdOf(
+        item
+      );
+
     const binding = {
       license_key:
         licenceKeyOf(
           item
         ),
       device_id:
-        deviceIdOf(
-          item
-        ),
+        deviceId,
       device_label:
         deviceLabelOf(
           item
-        )
+        ),
+      install_status:
+        deviceId ||
+        item.activated_at ||
+        item.activatedAt ||
+        item.installed_at ||
+        item.installedAt ||
+        item.bound === true
+          ? "installed"
+          : null
     };
 
     mergeBinding(
@@ -6400,7 +6416,13 @@ function bindingsForSale(
           null,
         device_label:
           mm?.device_label ||
-          null
+          null,
+        install_status:
+          mm?.device_id ||
+          mm?.install_status ===
+            "installed"
+            ? "installed"
+            : "not_installed"
       },
       {
         product:
@@ -6412,7 +6434,13 @@ function bindingsForSale(
           null,
         device_label:
           nbq?.device_label ||
-          null
+          null,
+        install_status:
+          nbq?.device_id ||
+          nbq?.install_status ===
+            "installed"
+            ? "installed"
+            : "not_installed"
       }
     ];
   }
@@ -6433,12 +6461,19 @@ function bindingsForSale(
         null,
       device_id:
         found?.device_id ||
-        clean(
-          sale.device_id
-        ),
+        null,
       device_label:
         found?.device_label ||
-        null
+        null,
+      install_status:
+        found?.device_id ||
+        found?.install_status ===
+          "installed" ||
+        clean(
+          sale.device_id
+        )
+          ? "installed"
+          : "not_installed"
     }
   ];
 }

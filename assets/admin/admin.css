@@ -723,9 +723,15 @@ h1{
   white-space:nowrap;
 }
 
-.status-badge.pending{
+.status-badge.pending,
+.status-badge.not_installed{
   background:var(--amber-soft);
   color:#7c520b;
+}
+
+.status-badge.installed{
+  background:#e5f6ea;
+  color:#146c36;
 }
 
 .status-badge.under_review{

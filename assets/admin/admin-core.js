@@ -1957,16 +1957,24 @@
 
     return bindings
       .map((binding) => {
+        const installed =
+          Boolean(
+            binding.device_id
+          ) ||
+          binding.install_status ===
+            "installed";
+
         const where =
+          binding.device_label &&
           binding.device_id
-            ? (
-                binding.device_label
-                  ? binding.device_label +
-                    " · " +
-                    binding.device_id
-                  : binding.device_id
-              )
-            : "Not installed";
+            ? binding.device_label +
+              " · " +
+              binding.device_id
+            : (
+                binding.device_label ||
+                binding.device_id ||
+                ""
+              );
 
         return `
           <div>
@@ -1977,11 +1985,18 @@
               )}
             </small>
             <br>
-            <strong>
-              ${escapeHtml(
-                where
-              )}
-            </strong>
+            ${statusBadge(
+              installed
+                ? "installed"
+                : "not_installed"
+            )}
+            ${
+              where
+                ? `<br><strong>${escapeHtml(
+                    where
+                  )}</strong>`
+                : ""
+            }
           </div>
         `;
       })
