@@ -5980,6 +5980,8 @@ function deviceIdOf(item) {
 
   const direct =
     clean(
+      item.active_device_id ||
+      item.activeDeviceId ||
       item.device_id ||
       item.deviceId ||
       item.machine_id ||
@@ -5987,7 +5989,9 @@ function deviceIdOf(item) {
       item.hardware_id ||
       item.hwid ||
       item.bound_device_id ||
-      item.current_device_id
+      item.current_device_id ||
+      item.license?.active_device_id ||
+      item.licence?.active_device_id
     );
 
   if (direct) {
@@ -6116,13 +6120,15 @@ function collectLicenceRecords(
 
   for (
     const key of [
-      "licenses",
-      "licences",
-      "devices",
-      "activations",
-      "results",
-      "orders",
-      "data"
+    "licenses",
+    "licences",
+    "license",
+    "licence",
+    "devices",
+    "activations",
+    "results",
+    "orders",
+    "data"
     ]
   ) {
     if (
@@ -6133,7 +6139,28 @@ function collectLicenceRecords(
       records.push(
         ...payload[key]
       );
+    } else if (
+      payload[key] &&
+      typeof payload[key] ===
+        "object"
+    ) {
+      records.push(
+        payload[key]
+      );
     }
+  }
+
+  if (
+    licenceKeyOf(
+      payload
+    ) ||
+    deviceIdOf(
+      payload
+    )
+  ) {
+    records.push(
+      payload
+    );
   }
 
   return records;
@@ -6601,11 +6628,17 @@ async function probeValidateStatus(
         error
       ) ||
       licence.bound ===
-        true
+        true ||
+      payload?.license?.active_device_id ||
+      licence.active_device_id
     ) {
       return {
         device_id:
-          realDevice,
+          realDevice ||
+          clean(
+            payload?.license?.active_device_id ||
+            licence.active_device_id
+          ),
         install_status:
           "installed"
       };
@@ -6617,7 +6650,10 @@ async function probeValidateStatus(
     ) {
       return {
         device_id:
-          realDevice,
+          realDevice ||
+          clean(
+            payload?.license?.active_device_id
+          ),
         install_status:
           "installed"
       };
@@ -6626,14 +6662,8 @@ async function probeValidateStatus(
     if (
       /not activated\.?$/.test(
         error
-      ) ||
-      /not activated on this pc/.test(
-        error
-      ) ||
-      /already deactivated/.test(
-        error
-      ) ||
-      /not activated/.test(
+      ) &&
+      !/on this pc/.test(
         error
       )
     ) {
@@ -6643,6 +6673,17 @@ async function probeValidateStatus(
         install_status:
           "not_installed"
       };
+    }
+
+    // Mero Mandali uses this same error for a dummy PC check,
+    // whether or not another computer already holds the licence.
+    // Do not treat it as "not installed".
+    if (
+      /not activated on this pc/.test(
+        error
+      )
+    ) {
+      return null;
     }
   } catch {
     return null;
@@ -6709,11 +6750,7 @@ async function enrichBindingStatus(
     );
 
   if (!probed) {
-    return {
-      ...binding,
-      install_status:
-        "not_installed"
-    };
+    return binding;
   }
 
   return {
@@ -6724,6 +6761,7 @@ async function enrichBindingStatus(
       null,
     install_status:
       probed.install_status ||
+      binding.install_status ||
       "not_installed"
   };
 }
