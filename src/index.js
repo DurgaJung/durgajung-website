@@ -5009,6 +5009,20 @@ async function adminBooks(
 async function adminOrders(
   env
 ) {
+  const softwareSales =
+    await env.ADMIN_DB
+      .prepare(`
+        SELECT *
+        FROM sales
+        WHERE product_type = 'software'
+      `)
+      .all();
+
+  await attachDeviceBindings(
+    env,
+    softwareSales.results || []
+  );
+
   const result =
     await env.ADMIN_DB
       .prepare(`
@@ -5026,7 +5040,10 @@ async function adminOrders(
             AS payment_admin_notes,
 
           s.licence_email_sent
-            AS licence_email_sent
+            AS licence_email_sent,
+
+          s.device_id
+            AS licence_device_id
 
         FROM orders o
 
@@ -5934,6 +5951,622 @@ async function adminConfirmPayment(
 }
 
 
+function licenceKeyOf(item) {
+  if (
+    !item ||
+    typeof item !== "object"
+  ) {
+    return null;
+  }
+
+  return clean(
+    item.license_key ||
+    item.licenseKey ||
+    item.licence_key ||
+    item.key ||
+    item.license?.license_key ||
+    item.license?.licenseKey
+  );
+}
+
+
+function deviceIdOf(item) {
+  if (
+    !item ||
+    typeof item !== "object"
+  ) {
+    return null;
+  }
+
+  const direct =
+    clean(
+      item.device_id ||
+      item.deviceId ||
+      item.machine_id ||
+      item.machineId ||
+      item.hardware_id ||
+      item.hwid ||
+      item.bound_device_id ||
+      item.current_device_id
+    );
+
+  if (direct) {
+    return direct;
+  }
+
+  if (
+    typeof item.device ===
+      "string"
+  ) {
+    return clean(
+      item.device
+    );
+  }
+
+  if (
+    item.device &&
+    typeof item.device ===
+      "object"
+  ) {
+    return deviceIdOf(
+      item.device
+    );
+  }
+
+  const nested =
+    item.devices ||
+    item.activations ||
+    item.machines;
+
+  if (
+    Array.isArray(nested)
+  ) {
+    for (
+      const child of nested
+    ) {
+      if (
+        typeof child ===
+          "string" &&
+        clean(child)
+      ) {
+        return clean(
+          child
+        );
+      }
+
+      const childId =
+        deviceIdOf(
+          child
+        );
+
+      if (childId) {
+        return childId;
+      }
+    }
+  }
+
+  return null;
+}
+
+
+function deviceLabelOf(item) {
+  if (
+    !item ||
+    typeof item !== "object"
+  ) {
+    return null;
+  }
+
+  return clean(
+    item.device_name ||
+    item.deviceName ||
+    item.computer_name ||
+    item.computerName ||
+    item.hostname ||
+    item.machine_name ||
+    item.device?.name ||
+    item.device?.device_name
+  );
+}
+
+
+function recordIdOf(item) {
+  if (
+    !item ||
+    typeof item !== "object"
+  ) {
+    return null;
+  }
+
+  const id =
+    item.id ??
+    item.license_id ??
+    item.licenseId ??
+    item.licence_id;
+
+  if (
+    id === undefined ||
+    id === null ||
+    id === ""
+  ) {
+    return null;
+  }
+
+  return String(id);
+}
+
+
+function collectLicenceRecords(
+  payload
+) {
+  if (
+    Array.isArray(payload)
+  ) {
+    return payload;
+  }
+
+  if (
+    !payload ||
+    typeof payload !== "object"
+  ) {
+    return [];
+  }
+
+  const records = [];
+
+  for (
+    const key of [
+      "licenses",
+      "licences",
+      "devices",
+      "activations",
+      "results",
+      "orders",
+      "data"
+    ]
+  ) {
+    if (
+      Array.isArray(
+        payload[key]
+      )
+    ) {
+      records.push(
+        ...payload[key]
+      );
+    }
+  }
+
+  return records;
+}
+
+
+function mergeBinding(
+  map,
+  id,
+  next
+) {
+  if (!id) {
+    return;
+  }
+
+  const prev =
+    map.get(id) || {};
+
+  map.set(id, {
+    license_key:
+      next.license_key ||
+      prev.license_key ||
+      null,
+    device_id:
+      next.device_id ||
+      prev.device_id ||
+      null,
+    device_label:
+      next.device_label ||
+      prev.device_label ||
+      null
+  });
+}
+
+
+async function loadDeviceMap(
+  env
+) {
+  const jobs = [];
+
+  if (
+    clean(
+      env.LICENSE_API_ADMIN_KEY
+    )
+  ) {
+    const root =
+      "https://mero-mandali-license-api.durgajung-nits.workers.dev";
+
+    jobs.push({
+      key:
+        env.LICENSE_API_ADMIN_KEY,
+      urls: [
+        `${root}/v1/admin/licenses`,
+        `${root}/v1/admin/devices`,
+        `${root}/v1/admin/activations`
+      ]
+    });
+  }
+
+  if (
+    clean(
+      env.NBQ_LICENSE_ADMIN_KEY
+    )
+  ) {
+    jobs.push({
+      key:
+        env.NBQ_LICENSE_ADMIN_KEY,
+      urls: [
+        `${NBQ_LICENSE_API_URL}/v1/admin/licenses`,
+        `${NBQ_LICENSE_API_URL}/v1/admin/devices`,
+        `${NBQ_LICENSE_API_URL}/v1/admin/activations`
+      ]
+    });
+  }
+
+  const payloads = [];
+
+  await Promise.all(
+    jobs.flatMap(
+      (job) =>
+        job.urls.map(
+          async (url) => {
+            try {
+              const response =
+                await fetch(
+                  url,
+                  {
+                    headers: {
+                      "X-Admin-Key":
+                        job.key
+                    }
+                  }
+                );
+
+              if (
+                !response.ok
+              ) {
+                return;
+              }
+
+              payloads.push(
+                await response.json()
+              );
+            } catch {
+              /* One licence server being offline should not hide the other. */
+            }
+          }
+        )
+    )
+  );
+
+  const records =
+    payloads.flatMap(
+      collectLicenceRecords
+    );
+
+  const byKey =
+    new Map();
+
+  const byId =
+    new Map();
+
+  for (
+    const item of records
+  ) {
+    if (
+      !item ||
+      typeof item !== "object"
+    ) {
+      continue;
+    }
+
+    const binding = {
+      license_key:
+        licenceKeyOf(
+          item
+        ),
+      device_id:
+        deviceIdOf(
+          item
+        ),
+      device_label:
+        deviceLabelOf(
+          item
+        )
+    };
+
+    mergeBinding(
+      byKey,
+      binding.license_key
+        ? binding.license_key.toUpperCase()
+        : null,
+      binding
+    );
+
+    mergeBinding(
+      byId,
+      recordIdOf(item),
+      binding
+    );
+
+    const linkedId =
+      item.license_id ??
+      item.licenseId ??
+      item.licence_id;
+
+    if (
+      linkedId !== undefined &&
+      linkedId !== null &&
+      binding.device_id
+    ) {
+      mergeBinding(
+        byId,
+        String(linkedId),
+        {
+          device_id:
+            binding.device_id,
+          device_label:
+            binding.device_label
+        }
+      );
+    }
+  }
+
+  for (
+    const entry of byId.values()
+  ) {
+    if (
+      entry.license_key
+    ) {
+      mergeBinding(
+        byKey,
+        entry.license_key.toUpperCase(),
+        entry
+      );
+    }
+  }
+
+  return byKey;
+}
+
+
+function bindingForKey(
+  deviceMap,
+  licenceKey
+) {
+  if (
+    !clean(licenceKey)
+  ) {
+    return null;
+  }
+
+  return (
+    deviceMap.get(
+      String(
+        licenceKey
+      ).toUpperCase()
+    ) || null
+  );
+}
+
+
+function bindingsForSale(
+  sale,
+  deviceMap
+) {
+  if (
+    !sale ||
+    sale.product_type !==
+      "software"
+  ) {
+    return [];
+  }
+
+  if (
+    isComboPack(sale)
+  ) {
+    const nbqKey =
+      comboNbqKeyFromNotes(
+        sale.notes
+      );
+
+    const mm =
+      bindingForKey(
+        deviceMap,
+        sale.licence_key
+      );
+
+    const nbq =
+      bindingForKey(
+        deviceMap,
+        nbqKey
+      );
+
+    return [
+      {
+        product:
+          "Mero Mandali",
+        license_key:
+          sale.licence_key ||
+          null,
+        device_id:
+          mm?.device_id ||
+          null,
+        device_label:
+          mm?.device_label ||
+          null
+      },
+      {
+        product:
+          "Nepali Bible Quiz",
+        license_key:
+          nbqKey,
+        device_id:
+          nbq?.device_id ||
+          null,
+        device_label:
+          nbq?.device_label ||
+          null
+      }
+    ];
+  }
+
+  const found =
+    bindingForKey(
+      deviceMap,
+      sale.licence_key
+    );
+
+  return [
+    {
+      product:
+        sale.product_name ||
+        "Licence",
+      license_key:
+        sale.licence_key ||
+        null,
+      device_id:
+        found?.device_id ||
+        clean(
+          sale.device_id
+        ),
+      device_label:
+        found?.device_label ||
+        null
+    }
+  ];
+}
+
+
+function deviceSummary(
+  bindings
+) {
+  const known =
+    bindings.filter(
+      (binding) =>
+        clean(
+          binding.device_id
+        )
+    );
+
+  if (!known.length) {
+    return null;
+  }
+
+  if (
+    bindings.length === 1
+  ) {
+    const binding =
+      known[0];
+
+    return binding.device_label
+      ? `${binding.device_label} (${binding.device_id})`
+      : binding.device_id;
+  }
+
+  return bindings
+    .map((binding) => {
+      const name =
+        binding.product ===
+          "Nepali Bible Quiz"
+          ? "NBQ"
+          : binding.product ===
+              "Mero Mandali"
+            ? "MM"
+            : "Licence";
+
+      const where =
+        binding.device_label
+          ? `${binding.device_label} (${binding.device_id || "not installed"})`
+          : (
+              binding.device_id ||
+              "not installed"
+            );
+
+      return `${name}: ${where}`;
+    })
+    .join(" | ");
+}
+
+
+async function attachDeviceBindings(
+  env,
+  sales
+) {
+  const rows =
+    Array.isArray(sales)
+      ? sales
+      : [];
+
+  let deviceMap =
+    new Map();
+
+  try {
+    deviceMap =
+      await loadDeviceMap(
+        env
+      );
+  } catch {
+    deviceMap =
+      new Map();
+  }
+
+  for (
+    const sale of rows
+  ) {
+    const bindings =
+      bindingsForSale(
+        sale,
+        deviceMap
+      );
+
+    sale.device_bindings =
+      bindings;
+
+    const summary =
+      deviceSummary(
+        bindings
+      );
+
+    if (
+      summary &&
+      summary !==
+        sale.device_id
+    ) {
+      sale.device_id =
+        summary;
+
+      try {
+        await env.ADMIN_DB
+          .prepare(`
+            UPDATE sales
+            SET
+              device_id = ?,
+              updated_at =
+                CURRENT_TIMESTAMP
+            WHERE id = ?
+          `)
+          .bind(
+            summary,
+            sale.id
+          )
+          .run();
+      } catch {
+        /* Showing the device in this response still works if the save fails. */
+      }
+    }
+  }
+
+  return rows;
+}
+
+
 async function adminSales(
   env
 ) {
@@ -5946,10 +6579,15 @@ async function adminSales(
       `)
       .all();
 
+  const sales =
+    await attachDeviceBindings(
+      env,
+      result.results || []
+    );
+
   return json({
     success: true,
-    sales:
-      result.results || []
+    sales
   });
 }
 
@@ -6279,7 +6917,10 @@ async function exportSales(
       .all();
 
   const sales =
-    result.results || [];
+    await attachDeviceBindings(
+      env,
+      result.results || []
+    );
 
   const headers = [
     "S.N.",

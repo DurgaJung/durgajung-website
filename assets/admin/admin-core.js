@@ -908,6 +908,13 @@
                       }</small>`
                     : ""
                 }
+                ${
+                  order.licence_device_id
+                    ? `<br><small>${escapeHtml(
+                        order.licence_device_id
+                      )}</small>`
+                    : ""
+                }
               </td>
 
               <td>
@@ -1926,6 +1933,62 @@
      SALES
   ====================================================== */
 
+  function deviceLines(sale) {
+    if (
+      sale.product_type !==
+      "software"
+    ) {
+      return "N/A";
+    }
+
+    const bindings =
+      Array.isArray(
+        sale.device_bindings
+      )
+        ? sale.device_bindings
+        : [];
+
+    if (!bindings.length) {
+      return escapeHtml(
+        sale.device_id ||
+        "Not installed"
+      );
+    }
+
+    return bindings
+      .map((binding) => {
+        const where =
+          binding.device_id
+            ? (
+                binding.device_label
+                  ? binding.device_label +
+                    " · " +
+                    binding.device_id
+                  : binding.device_id
+              )
+            : "Not installed";
+
+        return `
+          <div>
+            <small>
+              ${escapeHtml(
+                binding.product ||
+                "Licence"
+              )}
+            </small>
+            <br>
+            <strong>
+              ${escapeHtml(
+                where
+              )}
+            </strong>
+          </div>
+        `;
+      })
+      .join("");
+  }
+
+
   async function loadSales() {
     const body =
       $("salesTableBody");
@@ -2093,15 +2156,9 @@
               </td>
 
               <td>
-                ${
-                  sale.product_type ===
-                  "software"
-                    ? escapeHtml(
-                        sale.device_id ||
-                        "—"
-                      )
-                    : "N/A"
-                }
+                ${deviceLines(
+                  sale
+                )}
               </td>
 
               <td>
