@@ -25,8 +25,4 @@ The original WordPress site should remain online until this Cloudflare version i
 ## Licence and device tracking
 After a customer installs Mero Mandali or Nepali Bible Quiz and the licence is verified, Admin → Sales and Admin → Licenses show the licence key and the Windows PC (`active_device_id`) it is bound to. Opening those pages, or the five-minute Worker cron, refreshes the record from the licence servers.
 
-Apply the D1 migration after deploy:
-
-```
-npx wrangler d1 migrations apply durgajung-admin-db --remote
-```
+The `license_installs` D1 table is on the live `durgajung-admin-db`. Hard-refresh `/admin` after a Worker deploy so Sales and Licenses load the new page.
