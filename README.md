@@ -21,3 +21,12 @@ The project must contain `index.html` at the repository root.
 - `contact.html`
 
 The original WordPress site should remain online until this Cloudflare version is tested and the custom domain is connected.
+
+## Licence and device tracking
+After a customer installs Mero Mandali or Nepali Bible Quiz and the licence is verified, Admin → Sales and Admin → Licenses show the licence key and the Windows PC (`active_device_id`) it is bound to. Opening those pages, or the five-minute Worker cron, refreshes the record from the licence servers.
+
+Apply the D1 migration after deploy:
+
+```
+npx wrangler d1 migrations apply durgajung-admin-db --remote
+```

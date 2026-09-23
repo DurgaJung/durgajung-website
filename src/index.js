@@ -6053,6 +6053,195 @@ function deviceIdOf(item) {
 }
 
 
+function activatedAtOf(item) {
+  if (
+    !item ||
+    typeof item !== "object"
+  ) {
+    return null;
+  }
+
+  return clean(
+    item.activated_at ||
+    item.activatedAt ||
+    item.bound_at ||
+    item.boundAt ||
+    item.license?.activated_at ||
+    item.licence?.activated_at
+  );
+}
+
+
+function lastSeenOf(item) {
+  if (
+    !item ||
+    typeof item !== "object"
+  ) {
+    return null;
+  }
+
+  return clean(
+    item.last_seen_at ||
+    item.lastSeenAt ||
+    item.last_validated_at ||
+    item.license?.last_seen_at ||
+    item.licence?.last_seen_at
+  );
+}
+
+
+async function ensureLicenseInstallsTable(
+  env
+) {
+  await env.ADMIN_DB.prepare(`
+    CREATE TABLE IF NOT EXISTS license_installs (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      product_code TEXT NOT NULL,
+      product_name TEXT,
+      license_key TEXT NOT NULL,
+      customer_name TEXT,
+      customer_email TEXT,
+      sale_number TEXT,
+      sale_id INTEGER,
+      device_id TEXT,
+      device_label TEXT,
+      install_status TEXT NOT NULL DEFAULT 'not_installed',
+      activated_at TEXT,
+      last_seen_at TEXT,
+      last_synced_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+    )
+  `).run();
+
+  await env.ADMIN_DB.prepare(`
+    CREATE UNIQUE INDEX IF NOT EXISTS idx_license_installs_key
+    ON license_installs(license_key)
+  `).run();
+}
+
+
+async function upsertLicenseInstall(
+  env,
+  row
+) {
+  const key =
+    clean(
+      row.license_key
+    );
+
+  if (!key) {
+    return;
+  }
+
+  const installed =
+    clean(
+      row.device_id
+    ) ||
+    row.install_status ===
+      "installed";
+
+  await ensureLicenseInstallsTable(
+    env
+  );
+
+  await env.ADMIN_DB
+    .prepare(`
+      INSERT INTO license_installs (
+        product_code,
+        product_name,
+        license_key,
+        customer_name,
+        customer_email,
+        sale_number,
+        sale_id,
+        device_id,
+        device_label,
+        install_status,
+        activated_at,
+        last_seen_at,
+        last_synced_at,
+        updated_at
+      )
+      VALUES (
+        ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
+        CURRENT_TIMESTAMP,
+        CURRENT_TIMESTAMP
+      )
+      ON CONFLICT(license_key) DO UPDATE SET
+        product_code =
+          excluded.product_code,
+        product_name =
+          excluded.product_name,
+        customer_name =
+          excluded.customer_name,
+        customer_email =
+          excluded.customer_email,
+        sale_number =
+          excluded.sale_number,
+        sale_id =
+          excluded.sale_id,
+        device_id =
+          COALESCE(
+            excluded.device_id,
+            license_installs.device_id
+          ),
+        device_label =
+          COALESCE(
+            excluded.device_label,
+            license_installs.device_label
+          ),
+        install_status =
+          excluded.install_status,
+        activated_at =
+          COALESCE(
+            excluded.activated_at,
+            license_installs.activated_at
+          ),
+        last_seen_at =
+          COALESCE(
+            excluded.last_seen_at,
+            license_installs.last_seen_at
+          ),
+        last_synced_at =
+          CURRENT_TIMESTAMP,
+        updated_at =
+          CURRENT_TIMESTAMP
+    `)
+    .bind(
+      row.product_code ||
+        "SOFTWARE",
+      row.product_name ||
+        null,
+      key,
+      row.customer_name ||
+        null,
+      row.customer_email ||
+        null,
+      row.sale_number ||
+        null,
+      row.sale_id ||
+        null,
+      clean(
+        row.device_id
+      ),
+      clean(
+        row.device_label
+      ),
+      installed
+        ? "installed"
+        : "not_installed",
+      clean(
+        row.activated_at
+      ),
+      clean(
+        row.last_seen_at
+      )
+    )
+    .run();
+}
+
+
 function deviceLabelOf(item) {
   if (
     !item ||
@@ -6951,7 +7140,15 @@ async function attachDeviceBindings(
                   true
               )
                 ? "installed"
-                : null
+                : null,
+            activated_at:
+              activatedAtOf(
+                record
+              ),
+            last_seen_at:
+              lastSeenOf(
+                record
+              )
           };
 
           if (
@@ -6974,6 +7171,14 @@ async function attachDeviceBindings(
                 install_status:
                   binding.install_status ||
                   prev.install_status ||
+                  null,
+                activated_at:
+                  binding.activated_at ||
+                  prev.activated_at ||
+                  null,
+                last_seen_at:
+                  binding.last_seen_at ||
+                  prev.last_seen_at ||
                   null
               }
             );
@@ -7016,6 +7221,57 @@ async function attachDeviceBindings(
     sale.device_id =
       summary;
 
+    for (
+      const binding of bindings
+    ) {
+      const found =
+        bindingForKey(
+          deviceMap,
+          binding.license_key
+        );
+
+      try {
+        await upsertLicenseInstall(
+          env,
+          {
+            product_code:
+              binding.product ===
+                "Nepali Bible Quiz"
+                ? "NEPALI-BIBLE-QUIZ"
+                : binding.product ===
+                    "Mero Mandali"
+                  ? "MERO-MANDALI"
+                  : sale.product_code,
+            product_name:
+              binding.product ||
+              sale.product_name,
+            license_key:
+              binding.license_key,
+            customer_name:
+              sale.customer_name,
+            customer_email:
+              sale.customer_email,
+            sale_number:
+              sale.sale_number,
+            sale_id:
+              sale.id,
+            device_id:
+              binding.device_id,
+            device_label:
+              binding.device_label,
+            install_status:
+              binding.install_status,
+            activated_at:
+              found?.activated_at,
+            last_seen_at:
+              found?.last_seen_at
+          }
+        );
+      } catch {
+        /* Sales still show the live binding if the install row cannot be saved. */
+      }
+    }
+
     try {
       await env.ADMIN_DB
         .prepare(`
@@ -7037,6 +7293,52 @@ async function attachDeviceBindings(
   }
 
   return rows;
+}
+
+
+async function adminIssuedLicences(
+  env
+) {
+  const sales =
+    await env.ADMIN_DB
+      .prepare(`
+        SELECT *
+        FROM sales
+        WHERE product_type = 'software'
+        ORDER BY id DESC
+      `)
+      .all();
+
+  await attachDeviceBindings(
+    env,
+    sales.results || []
+  );
+
+  await ensureLicenseInstallsTable(
+    env
+  );
+
+  const stored =
+    await env.ADMIN_DB
+      .prepare(`
+        SELECT *
+        FROM license_installs
+        ORDER BY
+          CASE
+            WHEN install_status = 'installed'
+            THEN 0
+            ELSE 1
+          END,
+          updated_at DESC,
+          id DESC
+      `)
+      .all();
+
+  return json({
+    success: true,
+    licenses:
+      stored.results || []
+  });
 }
 
 
@@ -7501,6 +7803,32 @@ async function exportSales(
 
 
 export default {
+  async scheduled(
+    _event,
+    env
+  ) {
+    try {
+      const sales =
+        await env.ADMIN_DB
+          .prepare(`
+            SELECT *
+            FROM sales
+            WHERE product_type = 'software'
+          `)
+          .all();
+
+      await attachDeviceBindings(
+        env,
+        sales.results || []
+      );
+    } catch (error) {
+      console.error(
+        "Licence install sync failed:",
+        error
+      );
+    }
+  },
+
   async fetch(
     request,
     env
@@ -7851,6 +8179,16 @@ export default {
           Number(
             confirmPaymentMatch[1]
           )
+        );
+      }
+
+      if (
+        path ===
+          "/api/admin/issued-licenses" &&
+        method === "GET"
+      ) {
+        return adminIssuedLicences(
+          env
         );
       }
 

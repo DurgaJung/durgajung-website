@@ -1293,14 +1293,64 @@
             </h1>
 
             <p class="lead">
-              Manage licence issuance, activation, device
-              binding, disabling and reset for licensed
-              software products.
+              When a customer installs Mero Mandali or
+              Nepali Bible Quiz and the licence is
+              verified, this page records the licence key
+              and the Windows PC it is bound to.
             </p>
 
           </div>
 
+
+          <div class="section-actions">
+
+            <button
+              id="refreshIssuedLicenses"
+              class="secondary-btn"
+              type="button"
+            >
+              Refresh installs
+            </button>
+
+          </div>
+
         </div>
+
+
+        <article class="panel">
+
+          <div class="table-wrap">
+
+            <table class="admin-table wide-table">
+
+              <thead>
+                <tr>
+                  <th>S.N.</th>
+                  <th>Product</th>
+                  <th>Licence key</th>
+                  <th>Customer</th>
+                  <th>Email</th>
+                  <th>Sale</th>
+                  <th>Device</th>
+                  <th>Install status</th>
+                  <th>Activated</th>
+                  <th>Last seen</th>
+                </tr>
+              </thead>
+
+              <tbody id="issuedLicensesTableBody">
+                <tr>
+                  <td colspan="10">
+                    Loading licence installs…
+                  </td>
+                </tr>
+              </tbody>
+
+            </table>
+
+          </div>
+
+        </article>
 
 
         <article class="panel">

@@ -86,6 +86,7 @@
         break;
 
       case "licenses":
+        loadIssuedLicenses();
         loadSoftware();
         break;
 
@@ -1546,6 +1547,162 @@
       showSection("sales");
 
     } catch (error) {
+      toast(
+        error.message,
+        "error"
+      );
+    }
+  }
+
+
+  /* =====================================================
+     ISSUED LICENCES / DEVICE INSTALLS
+  ====================================================== */
+
+  async function loadIssuedLicenses() {
+    const body =
+      $("issuedLicensesTableBody");
+
+    if (!body) {
+      return;
+    }
+
+    body.innerHTML = `
+      <tr>
+        <td colspan="10">
+          Checking licence servers for installed devices…
+        </td>
+      </tr>
+    `;
+
+    try {
+      const data =
+        await api(
+          "/api/admin/issued-licenses"
+        );
+
+      const licenses =
+        data.licenses || [];
+
+      if (!licenses.length) {
+        body.innerHTML = `
+          <tr>
+            <td
+              colspan="10"
+              class="table-empty"
+            >
+              No customer licences issued yet.
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      body.innerHTML =
+        licenses.map(
+          (item, index) => {
+            const installed =
+              item.install_status ===
+                "installed" ||
+              Boolean(
+                item.device_id
+              );
+
+            const device =
+              item.device_label &&
+              item.device_id
+                ? item.device_label +
+                  " · " +
+                  item.device_id
+                : (
+                    item.device_id ||
+                    "—"
+                  );
+
+            return `
+              <tr>
+                <td>
+                  ${index + 1}
+                </td>
+                <td>
+                  <strong>
+                    ${escapeHtml(
+                      item.product_name ||
+                      item.product_code ||
+                      "Software"
+                    )}
+                  </strong>
+                </td>
+                <td>
+                  <code>
+                    ${escapeHtml(
+                      item.license_key ||
+                      "—"
+                    )}
+                  </code>
+                </td>
+                <td>
+                  ${escapeHtml(
+                    item.customer_name ||
+                    "—"
+                  )}
+                </td>
+                <td>
+                  ${escapeHtml(
+                    item.customer_email ||
+                    "—"
+                  )}
+                </td>
+                <td>
+                  ${escapeHtml(
+                    item.sale_number ||
+                    "—"
+                  )}
+                </td>
+                <td>
+                  <strong>
+                    ${escapeHtml(
+                      device
+                    )}
+                  </strong>
+                </td>
+                <td>
+                  ${statusBadge(
+                    installed
+                      ? "installed"
+                      : "not_installed"
+                  )}
+                </td>
+                <td>
+                  ${escapeHtml(
+                    formatDate(
+                      item.activated_at
+                    )
+                  )}
+                </td>
+                <td>
+                  ${escapeHtml(
+                    formatDate(
+                      item.last_seen_at
+                    )
+                  )}
+                </td>
+              </tr>
+            `;
+          }
+        ).join("");
+    } catch (error) {
+      console.error(error);
+      body.innerHTML = `
+        <tr>
+          <td
+            colspan="10"
+            class="table-empty"
+          >
+            Could not load licence installs.
+          </td>
+        </tr>
+      `;
       toast(
         error.message,
         "error"
@@ -3625,6 +3782,7 @@
       loadOrders(),
       loadPayments(),
       loadSoftware(),
+      loadIssuedLicenses(),
       loadBooks(),
       loadSales(),
       loadInvoices(),
@@ -3657,6 +3815,13 @@
     ?.addEventListener(
       "click",
       loadSales
+    );
+
+
+  $("refreshIssuedLicenses")
+    ?.addEventListener(
+      "click",
+      loadIssuedLicenses
     );
 
 
