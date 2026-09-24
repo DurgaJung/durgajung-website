@@ -1,6 +1,450 @@
 (() => {
   "use strict";
 
+
+  /* =========================================================
+     SITE LANGUAGE SWITCHER — English / Nepali
+     ========================================================= */
+
+  const siteLanguageStorageKey = "dj_site_language";
+
+  const sharedPageNames = {
+    "index.html": {
+      en: "Home",
+      np: "गृहपृष्ठ"
+    },
+    "about.html": {
+      en: "About Me",
+      np: "मेरो बारेमा"
+    },
+    "ministry.html": {
+      en: "Ministry",
+      np: "सेवकाई"
+    },
+    "books.html": {
+      en: "Books & Translations",
+      np: "पुस्तक तथा अनुवाद"
+    },
+    "sermons.html": {
+      en: "Sermons",
+      np: "प्रवचनहरू"
+    },
+    "software.html": {
+      en: "Software Projects",
+      np: "सफ्टवेयर परियोजनाहरू"
+    },
+    "gallery.html": {
+      en: "Gallery",
+      np: "ग्यालरी"
+    },
+    "contact.html": {
+      en: "Contact",
+      np: "सम्पर्क"
+    }
+  };
+
+  function currentPageFile() {
+    const path = window.location.pathname.replace(/\/+$/, "");
+    const file = path.split("/").pop();
+    return file || "index.html";
+  }
+
+  function safeStoredLanguage() {
+    try {
+      const value = localStorage.getItem(siteLanguageStorageKey);
+      return value === "np" ? "np" : "en";
+    } catch (error) {
+      return "en";
+    }
+  }
+
+  function storeLanguage(value) {
+    try {
+      localStorage.setItem(siteLanguageStorageKey, value);
+    } catch (error) {
+      // Language still works for this page if storage is unavailable.
+    }
+  }
+
+  function setElementText(selector, value) {
+    const element = document.querySelector(selector);
+    if (element && typeof value === "string") {
+      element.textContent = value;
+    }
+  }
+
+  function setElementsText(selector, values) {
+    const elements = document.querySelectorAll(selector);
+    elements.forEach((element, index) => {
+      if (typeof values[index] === "string") {
+        element.textContent = values[index];
+      }
+    });
+  }
+
+  function translateNavigation(language) {
+    document.querySelectorAll(".nav-links a").forEach((link) => {
+      let file = "";
+
+      try {
+        file = new URL(link.href, window.location.href).pathname
+          .split("/")
+          .pop() || "index.html";
+      } catch (error) {
+        return;
+      }
+
+      const entry = sharedPageNames[file];
+      if (entry) {
+        link.textContent = entry[language];
+      }
+    });
+
+    const menuButton = document.querySelector(".menu-btn");
+    if (menuButton) {
+      menuButton.setAttribute(
+        "aria-label",
+        language === "np" ? "मुख्य मेनु खोल्नुहोस्" : "Toggle navigation"
+      );
+    }
+  }
+
+  function translatePageHero(language) {
+    const file = currentPageFile();
+    const entry = sharedPageNames[file];
+    const pageHeading = document.querySelector(".page-hero h1");
+    const localSubtitle = document.querySelector(".page-hero .nepali");
+
+    if (entry && pageHeading) {
+      pageHeading.textContent = entry[language];
+    }
+
+    // The H1 itself becomes the selected language, so avoid duplicating
+    // the same title underneath it.
+    if (localSubtitle) {
+      localSubtitle.hidden = true;
+    }
+  }
+
+  function translateFooter(language) {
+    const footer = document.querySelector(".site-footer");
+    if (!footer) return;
+
+    const rights = footer.querySelector(".rights");
+    if (rights) {
+      rights.textContent =
+        language === "np"
+          ? "© २०२६ दुर्गा जङ्ग कुँवर । सर्वाधिकार सुरक्षित ।"
+          : "© 2026 Durga Jung Kunwar. All rights reserved.";
+    }
+
+    const footerLabels = {
+      "ministry.html": {
+        en: "Ministry",
+        np: "सेवकाई"
+      },
+      "books.html": {
+        en: "Translation",
+        np: "अनुवाद"
+      },
+      "sermons.html": {
+        en: "Sermons",
+        np: "प्रवचनहरू"
+      },
+      "software.html": {
+        en: "Software Projects",
+        np: "सफ्टवेयर परियोजनाहरू"
+      }
+    };
+
+    footer.querySelectorAll(".footer-nav a").forEach((link) => {
+      let file = "";
+
+      try {
+        file = new URL(link.href, window.location.href).pathname
+          .split("/")
+          .pop();
+      } catch (error) {
+        return;
+      }
+
+      if (footerLabels[file]) {
+        link.textContent = footerLabels[file][language];
+      }
+    });
+  }
+
+  function translateHomepage(language) {
+    if (currentPageFile() !== "index.html") return;
+
+    const heroLead = document.querySelector(".hero .lead");
+    const heroNepali = document.querySelector(".hero p.nepali");
+
+    setElementText(
+      ".hero .eyebrow",
+      language === "np" ? "आधिकारिक वेबसाइट" : "Official Website"
+    );
+
+    setElementText(
+      ".hero h1",
+      language === "np"
+        ? "मेरो आधिकारिक वेबसाइटमा हार्दिक स्वागत छ"
+        : "Welcome to My Official Website"
+    );
+
+    setElementText(
+      ".hero h2",
+      language === "np"
+        ? "सेवकाई • बाइबल शिक्षण • अनुवाद • प्रविधि"
+        : "Ministry • Bible Teaching • Translation • Technology"
+    );
+
+    if (heroLead) {
+      heroLead.hidden = language === "np";
+    }
+
+    if (heroNepali) {
+      heroNepali.hidden = language !== "np";
+    }
+
+    const heroActionLabels = language === "np"
+      ? ["मेरो परिचय", "प्रवचनहरू हेर्नुहोस्"]
+      : ["Read My Story", "Explore Sermons"];
+
+    setElementsText(".hero-actions .btn", heroActionLabels);
+
+    const focusLabels = language === "np"
+      ? ["ख्रीष्टियन सेवकाई", "बाइबल शिक्षण", "पुस्तक तथा अनुवाद", "सफ्टवेयर विकास"]
+      : ["Christian Ministry", "Bible Teaching", "Books & Translation", "Software Development"];
+
+    setElementsText(".home-focus-pill", focusLabels);
+
+    const sectionHeadings = language === "np"
+      ? ["वेबसाइटका मुख्य खण्डहरू", "नयाँ जानकारी"]
+      : ["Explore the Website", "Latest Updates"];
+
+    const sectionSubs = language === "np"
+      ? ["मुख्य सेवकाई तथा स्रोतहरू", "हालका सामग्री र परियोजनाहरू"]
+      : ["Main areas and resources", "Recent resources and projects"];
+
+    setElementsText(".section-head h2", sectionHeadings);
+    setElementsText(".section-head .sub", sectionSubs);
+
+    const featureHeadings = language === "np"
+      ? ["सेवकाई", "पुस्तक तथा अनुवाद", "प्रवचनहरू", "सफ्टवेयर परियोजनाहरू"]
+      : ["Ministry", "Books & Translations", "Sermons", "Software Projects"];
+
+    const featureDescriptions = language === "np"
+      ? [
+          "शिक्षण, प्रचार र चेलापनमार्फत परमेश्वर र उहाँका जनहरूको सेवा ।",
+          "विश्वासीहरूलाई सुदृढ पार्न विश्वसनीय अनुवाद तथा ख्रीष्टियन स्रोतहरू ।",
+          "उत्साह, सुसज्जित र प्रेरित गर्ने बाइबलीय सन्देशहरू ।",
+          "मण्डली तथा ख्रीष्टियन सेवकाईलाई सहयोग गर्ने उपयोगी सफ्टवेयर समाधानहरू ।"
+        ]
+      : [
+          "Serving God and His people through teaching, preaching, and discipleship.",
+          "Faithful translations and Christian resources to strengthen believers.",
+          "Biblical messages to encourage, equip, and inspire.",
+          "Innovative software solutions to support churches and Christian ministry."
+        ];
+
+    setElementsText(".feature-card h3", featureHeadings);
+    setElementsText(".feature-card p", featureDescriptions);
+
+    document.querySelectorAll(".feature-card .btn").forEach((button) => {
+      button.textContent = language === "np" ? "थप हेर्नुहोस्" : "Learn More";
+    });
+
+    const updateHeadings = language === "np"
+      ? ["नयाँ पुस्तक", "प्रवचन र बाइबल अध्ययन", "सफ्टवेयर परियोजनाहरू"]
+      : ["Latest Book", "Sermons & Bible Studies", "Software Projects"];
+
+    setElementsText(".update-card h3", updateHeadings);
+
+    document.querySelectorAll(".update-card").forEach((card) => {
+      const nepaliText = card.querySelector("p.nepali");
+      const englishParagraphs = Array.from(
+        card.querySelectorAll("p:not(.nepali)")
+      ).filter((paragraph) => !paragraph.classList.contains("title-line"));
+
+      if (nepaliText) {
+        nepaliText.hidden = language !== "np";
+      }
+
+      englishParagraphs.forEach((paragraph) => {
+        paragraph.hidden = language === "np";
+      });
+
+      const titleLine = card.querySelector(".title-line");
+      if (titleLine) {
+        titleLine.hidden = language === "np";
+      }
+    });
+
+    const updateButtonLabels = language === "np"
+      ? ["पुस्तक हेर्नुहोस्", "प्रवचनहरू", "परियोजनाहरू हेर्नुहोस्"]
+      : ["View Book", "Sermons", "View Projects"];
+
+    setElementsText(".update-card .btn", updateButtonLabels);
+  }
+
+  function translateEngagement(language) {
+    const root = document.querySelector("[data-engagement-root]");
+    if (!root) return;
+
+    const mainTitle = root.querySelector("#engagement-title, .engagement-heading h2");
+    if (mainTitle) {
+      mainTitle.textContent =
+        language === "np" ? "सम्पर्क र प्रतिक्रिया" : "Connect & Respond";
+    }
+
+    const intro = root.querySelector(".engagement-heading p");
+    if (intro) {
+      intro.textContent =
+        language === "np"
+          ? "यो पृष्ठ हेर्नुहोस्, मन पराउनुहोस्, टिप्पणी गर्नुहोस् वा साझा गर्नुहोस् ।"
+          : "View, like, comment, or share this page.";
+    }
+
+    const labelMap = {
+      Views: "हेराइ",
+      Like: "मन पराउनुहोस्",
+      Comments: "टिप्पणीहरू",
+      Share: "साझा गर्नुहोस्"
+    };
+
+    root.querySelectorAll(".engagement-action-label").forEach((label) => {
+      const english =
+        label.dataset.englishLabel ||
+        label.textContent.trim();
+
+      if (!label.dataset.englishLabel) {
+        label.dataset.englishLabel = english;
+      }
+
+      label.textContent =
+        language === "np"
+          ? (labelMap[english] || english)
+          : english;
+    });
+
+    root.querySelectorAll("h3").forEach((heading) => {
+      const english =
+        heading.dataset.englishHeading ||
+        heading.textContent.trim();
+
+      if (!heading.dataset.englishHeading) {
+        heading.dataset.englishHeading = english;
+      }
+
+      if (language === "np") {
+        if (english === "Leave a Comment") {
+          heading.textContent = "टिप्पणी लेख्नुहोस्";
+        } else if (english === "Comments") {
+          heading.textContent = "टिप्पणीहरू";
+        }
+      } else {
+        heading.textContent = english;
+      }
+    });
+
+    const submit = root.querySelector("#comment-submit");
+    if (submit) {
+      submit.textContent =
+        language === "np" ? "टिप्पणी पठाउनुहोस्" : "Post Comment";
+    }
+  }
+
+  function updateLanguageButtons(language) {
+    document.querySelectorAll(".site-language-btn").forEach((button) => {
+      const active = button.dataset.language === language;
+      button.classList.toggle("is-active", active);
+      button.setAttribute("aria-pressed", String(active));
+    });
+  }
+
+  function applySiteLanguage(language) {
+    const normalized = language === "np" ? "np" : "en";
+
+    document.documentElement.lang =
+      normalized === "np" ? "ne" : "en";
+
+    document.body.dataset.siteLanguage = normalized;
+
+    translateNavigation(normalized);
+    translatePageHero(normalized);
+    translateFooter(normalized);
+    translateHomepage(normalized);
+    translateEngagement(normalized);
+    updateLanguageButtons(normalized);
+
+    const file = currentPageFile();
+    const pageName = sharedPageNames[file];
+
+    if (pageName) {
+      document.title =
+        pageName[normalized] + " | Durga Jung Kunwar";
+    }
+
+    storeLanguage(normalized);
+  }
+
+  function createLanguageSwitcher() {
+    const navWrap = document.querySelector(".nav-wrap");
+
+    if (!navWrap || document.querySelector(".site-language-bar")) {
+      return;
+    }
+
+    const bar = document.createElement("div");
+    bar.className = "site-language-bar";
+
+    bar.innerHTML = `
+      <div class="container">
+        <span class="site-language-label">Language</span>
+        <div
+          class="site-language-switcher"
+          role="group"
+          aria-label="Choose website language"
+        >
+          <button
+            class="site-language-btn"
+            type="button"
+            data-language="en"
+            aria-pressed="false"
+          >English</button>
+          <button
+            class="site-language-btn"
+            type="button"
+            data-language="np"
+            aria-pressed="false"
+          >नेपाली</button>
+        </div>
+      </div>
+    `;
+
+    navWrap.parentNode.insertBefore(bar, navWrap);
+
+    bar.querySelectorAll(".site-language-btn").forEach((button) => {
+      button.addEventListener("click", () => {
+        applySiteLanguage(button.dataset.language);
+      });
+    });
+  }
+
+  createLanguageSwitcher();
+
+  const initialSiteLanguage = safeStoredLanguage();
+
+  applySiteLanguage(initialSiteLanguage);
+
+  // Some page widgets are prepared later in this file. Reapply once the
+  // current event loop completes so dynamically prepared shared UI uses
+  // the selected language as well.
+  window.setTimeout(() => {
+    applySiteLanguage(safeStoredLanguage());
+  }, 0);
+
   /* =========================================================
      MOBILE NAVIGATION
      ========================================================= */
