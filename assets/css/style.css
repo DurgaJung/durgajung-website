@@ -182,6 +182,45 @@ a{color:inherit}img{max-width:100%;display:block}button{font:inherit}
 .contact-item{padding:18px 0;border-bottom:1px solid var(--line)}
 .contact-item strong{display:block;color:#222}
 
+.contact-social-row{
+  display:flex;
+  flex-wrap:wrap;
+  align-items:center;
+  gap:16px;
+  padding:18px 0;
+  border-bottom:1px solid var(--line)
+}
+.contact-social-link{
+  display:inline-flex;
+  align-items:center;
+  gap:7px;
+  color:var(--navy);
+  font-size:14px;
+  font-weight:800;
+  line-height:1;
+  text-decoration:none;
+  cursor:pointer;
+  transition:color .18s ease,transform .18s ease
+}
+.contact-social-link svg{
+  width:21px;
+  height:21px;
+  flex:0 0 21px
+}
+.contact-social-link.facebook svg{color:#1877f2}
+.contact-social-link.youtube svg{color:#ff0000}
+.contact-social-link:hover,
+.contact-social-link:focus-visible{
+  color:var(--gold);
+  transform:translateY(-1px);
+  outline:none
+}
+.contact-social-link:focus-visible{
+  outline:3px solid rgba(185,133,37,.22);
+  outline-offset:4px;
+  border-radius:5px
+}
+
 .site-footer{background:#f1f1ef;border-top:1px solid #ddddda;padding:32px 0;text-align:center}
 .site-footer p{margin:5px 0;font-size:14px;color:#303030}
 .site-footer .rights{font-weight:800}
