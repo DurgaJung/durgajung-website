@@ -13,6 +13,195 @@
 
   <link rel="icon" href="assets/images/favicon.webp">
   <link rel="stylesheet" href="assets/css/style.css">
+
+  <style id="home-rotating-banner-styles">
+    .home-rotating-banner-wrap {
+      width: 100%;
+      padding: 14px 18px 0;
+      box-sizing: border-box;
+    }
+
+    .home-rotating-banner {
+      position: relative;
+      width: min(1180px, 100%);
+      height: 124px;
+      margin: 0 auto;
+      overflow: hidden;
+      border-radius: 18px;
+      background: #10243d;
+      box-shadow: 0 10px 28px rgba(12, 31, 54, 0.16);
+      isolation: isolate;
+    }
+
+    .home-rotating-banner .banner-slide {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 18px;
+      padding: 18px 42px;
+      box-sizing: border-box;
+      opacity: 0;
+      transform: translateX(34px);
+      transition:
+        opacity 620ms ease,
+        transform 620ms cubic-bezier(.22,.61,.36,1);
+      pointer-events: none;
+    }
+
+    .home-rotating-banner .banner-slide::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at 82% 35%, rgba(255,255,255,.13), transparent 28%),
+        linear-gradient(110deg, transparent 0 72%, rgba(255,255,255,.06) 72% 73%, transparent 73% 100%);
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    .home-rotating-banner .banner-slide.is-active {
+      opacity: 1;
+      transform: translateX(0);
+      pointer-events: auto;
+      z-index: 2;
+    }
+
+    .home-rotating-banner .banner-slide.is-leaving {
+      opacity: 0;
+      transform: translateX(-34px);
+      z-index: 1;
+    }
+
+    .home-rotating-banner .verse-green {
+      background:
+        linear-gradient(105deg, #355f13 0%, #63870f 52%, #7a9417 100%);
+    }
+
+    .home-rotating-banner .verse-red {
+      background:
+        linear-gradient(105deg, #a50c17 0%, #d01922 52%, #e02c2c 100%);
+    }
+
+    .home-rotating-banner .software-promo {
+      background:
+        linear-gradient(105deg, #071d36 0%, #12385f 60%, #8a6517 135%);
+      text-decoration: none;
+      color: #fff;
+    }
+
+    .home-rotating-banner .banner-text {
+      margin: 0;
+      width: 100%;
+      text-align: center;
+      color: #fff;
+      font-family: "Noto Sans Devanagari", "Nirmala UI", Mangal, Arial, sans-serif;
+      font-size: clamp(20px, 2.2vw, 32px);
+      font-weight: 800;
+      line-height: 1.42;
+      letter-spacing: .01em;
+      text-shadow: 0 2px 5px rgba(0,0,0,.27);
+    }
+
+    .home-rotating-banner .verse-ref {
+      color: #ffe36c;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .home-rotating-banner .promo-copy {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 24px;
+      width: 100%;
+      color: #fff;
+    }
+
+    .home-rotating-banner .promo-kicker {
+      display: block;
+      margin-bottom: 4px;
+      color: #ffd968;
+      font-size: clamp(14px, 1.25vw, 18px);
+      font-weight: 900;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    .home-rotating-banner .promo-title {
+      margin: 0;
+      font-family: "Noto Sans Devanagari", "Nirmala UI", Mangal, Arial, sans-serif;
+      font-size: clamp(21px, 2.3vw, 33px);
+      font-weight: 900;
+      line-height: 1.2;
+      text-shadow: 0 2px 5px rgba(0,0,0,.25);
+    }
+
+    .home-rotating-banner .promo-sub {
+      display: block;
+      margin-top: 5px;
+      font-size: clamp(13px, 1.2vw, 17px);
+      font-weight: 700;
+      opacity: .95;
+    }
+
+    .home-rotating-banner .promo-button {
+      flex: 0 0 auto;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 42px;
+      padding: 0 18px;
+      border-radius: 999px;
+      background: #d6a72b;
+      color: #071d36;
+      font-size: 14px;
+      font-weight: 900;
+      letter-spacing: .02em;
+      box-shadow: 0 6px 16px rgba(0,0,0,.22);
+      white-space: nowrap;
+    }
+
+    @media (max-width: 760px) {
+      .home-rotating-banner-wrap {
+        padding: 10px 10px 0;
+      }
+
+      .home-rotating-banner {
+        height: 152px;
+        border-radius: 14px;
+      }
+
+      .home-rotating-banner .banner-slide {
+        padding: 17px 18px;
+      }
+
+      .home-rotating-banner .banner-text {
+        font-size: clamp(18px, 5vw, 24px);
+        line-height: 1.45;
+      }
+
+      .home-rotating-banner .promo-copy {
+        flex-direction: column;
+        gap: 10px;
+        text-align: center;
+      }
+
+      .home-rotating-banner .promo-button {
+        min-height: 38px;
+        padding: 0 16px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .home-rotating-banner .banner-slide {
+        transition: opacity 180ms linear;
+        transform: none !important;
+      }
+    }
+  </style>
+
 </head>
 
 <body>
@@ -79,6 +268,52 @@
 
     </nav>
   </div>
+
+  
+  <section
+    class="home-rotating-banner-wrap"
+    aria-label="Bible verses and software announcement"
+  >
+    <div
+      class="home-rotating-banner"
+      id="home-rotating-banner"
+      aria-live="off"
+    >
+      <article class="banner-slide verse-green is-active">
+        <p class="banner-text nepali">
+          <span class="verse-ref">मत्ती ६:३३</span>
+          तर पहिले उहाँको राज्‍य र उहाँका धार्मिकताको खोजी गर, र यी सबै थोक तिमीहरूका निम्‍ति थपिनेछन्‌ ।
+        </p>
+      </article>
+
+      <article class="banner-slide verse-red">
+        <p class="banner-text nepali">
+          <span class="verse-ref">हितोपदेश १:७</span>
+          परमप्रभुको भय नै ज्ञानको सुरु हो, तर मूर्खले बुद्धि र अनुशासनलाई तुच्‍छ ठान्‍दछ ।
+        </p>
+      </article>
+
+      <a
+        class="banner-slide software-promo"
+        href="/software.html"
+        aria-label="Explore Mero Mandali and Nepali Bible Quiz software"
+      >
+        <div class="promo-copy">
+          <div>
+            <span class="promo-kicker">Software for Church &amp; Bible Learning</span>
+            <p class="promo-title">
+              Mero Mandali &nbsp;•&nbsp; Nepali Bible Quiz
+              <span class="promo-sub nepali">
+                मण्डली सेवकाई र बाइबल अध्ययनका लागि उपयोगी Windows सफ्टवेयर
+              </span>
+            </p>
+          </div>
+          <span class="promo-button">View Software →</span>
+        </div>
+      </a>
+    </div>
+  </section>
+
 
   <main id="main">
 
@@ -730,6 +965,62 @@
   </footer>
 
   <script src="assets/js/main.js"></script>
+
+
+  <script id="home-rotating-banner-script">
+  (function () {
+    "use strict";
+
+    var banner = document.getElementById("home-rotating-banner");
+    if (!banner) return;
+
+    var slides = banner.querySelectorAll(".banner-slide");
+    if (slides.length < 2) return;
+
+    var current = 0;
+    var timer = null;
+    var interval = 6000;
+
+    function showNext() {
+      var previous = current;
+      current = (current + 1) % slides.length;
+
+      slides[previous].classList.remove("is-active");
+      slides[previous].classList.add("is-leaving");
+      slides[current].classList.add("is-active");
+
+      window.setTimeout(function () {
+        slides[previous].classList.remove("is-leaving");
+      }, 680);
+    }
+
+    function start() {
+      if (timer) return;
+      timer = window.setInterval(showNext, interval);
+    }
+
+    function stop() {
+      if (!timer) return;
+      window.clearInterval(timer);
+      timer = null;
+    }
+
+    banner.addEventListener("mouseenter", stop);
+    banner.addEventListener("mouseleave", start);
+    banner.addEventListener("focusin", stop);
+    banner.addEventListener("focusout", start);
+
+    document.addEventListener("visibilitychange", function () {
+      if (document.hidden) {
+        stop();
+      } else {
+        start();
+      }
+    });
+
+    start();
+  })();
+  </script>
 
 </body>
 </html>
