@@ -155,6 +155,31 @@
         linear-gradient(108deg, #301a4c 0%, #59347f 52%, #b07332 118%);
     }
 
+    .home-rotating-banner .upcoming-book-promo {
+      background:
+        linear-gradient(108deg, #071d36 0%, #154d78 46%, #a77b1e 118%);
+      border: 2px solid rgba(255, 222, 119, .70);
+      box-shadow:
+        inset 0 0 0 1px rgba(255,255,255,.08),
+        0 0 28px rgba(214,167,43,.22);
+    }
+
+    .home-rotating-banner .upcoming-book-promo .upcoming-label {
+      background: #ffd34d;
+      color: #10243d;
+      box-shadow: 0 4px 12px rgba(0,0,0,.18);
+    }
+
+    .home-rotating-banner .upcoming-book-promo .banner-buy-btn {
+      background: #ffd34d;
+      color: #10243d;
+    }
+
+    .home-rotating-banner .upcoming-book-cover {
+      transform: rotate(-1deg) scale(1.04);
+      border-color: rgba(255, 222, 119, .95);
+    }
+
     .home-rotating-banner .book-cover-box {
       display: flex;
       align-items: center;
@@ -628,7 +653,7 @@
   
   <section
     class="home-rotating-banner-wrap"
-    aria-label="Bible verses, books and software offers"
+    aria-label="Bible verses, Nepali and Hindi books, upcoming book and software offers"
   >
     <div
       class="home-rotating-banner"
@@ -649,24 +674,90 @@
         </p>
       </article>
 
+      <article class="banner-slide book-promo upcoming-book-promo product-ad">
+        <div class="product-ad-inner">
+          <div class="book-cover-box">
+            <img
+              class="book-cover-mini upcoming-book-cover"
+              src="/assets/images/making-biblical-decisions.png"
+              alt="Cover of Making Biblical Decisions by Durga Jung Kunwar"
+            >
+          </div>
+          <div class="product-info">
+            <span class="book-language upcoming-label">Upcoming Book · Coming Soon</span>
+            <p class="book-title nepali">बाइबलीय निर्णय लिनु</p>
+            <span class="book-subtitle">Making Biblical Decisions · Author: Durga Jung Kunwar · In Progress</span>
+          </div>
+          <a
+            class="banner-buy-btn"
+            href="/books.html"
+            aria-label="View upcoming book Making Biblical Decisions"
+          >View Book</a>
+        </div>
+      </article>
+
       <article class="banner-slide book-promo product-ad">
         <div class="product-ad-inner">
           <div class="book-cover-box">
             <img
               class="book-cover-mini"
-              src="/assets/images/job-nepali.png"
-              alt="Nepali book cover: Job — Answering the Question of Suffering"
+              src="/assets/images/the-city-on-a-hill-np.webp"
+              alt="Nepali book cover: The City on a Hill"
             >
           </div>
           <div class="product-info">
             <span class="book-language">Nepali Book</span>
-            <p class="book-title nepali">अय्यूब: दुःखको प्रश्नको उत्तर</p>
-            <span class="book-subtitle">R. Herbert · Nepali Edition: Durga Jung Kunwar</span>
+            <p class="book-title nepali">डाँडामा बसालिएको सहर</p>
+            <span class="book-subtitle">The City on a Hill · R. Herbert · Translation: Durga Jung Kunwar</span>
           </div>
           <a
             class="banner-buy-btn"
             href="/books.html"
-            aria-label="View Nepali books"
+            aria-label="View Nepali Christian books"
+          >View Books</a>
+        </div>
+      </article>
+
+      <article class="banner-slide book-promo product-ad">
+        <div class="product-ad-inner">
+          <div class="book-cover-box">
+            <img
+              class="book-cover-mini"
+              src="/assets/images/discovering-the-bible-np.webp"
+              alt="Nepali book cover: Discovering the Bible"
+            >
+          </div>
+          <div class="product-info">
+            <span class="book-language">Nepali Book</span>
+            <p class="book-title nepali">बाइबलको अन्वेषण</p>
+            <span class="book-subtitle">Discovering the Bible · R. Herbert · Translation: Durga Jung Kunwar</span>
+          </div>
+          <a
+            class="banner-buy-btn"
+            href="/books.html"
+            aria-label="View Nepali Christian books"
+          >View Books</a>
+        </div>
+      </article>
+
+      <article class="banner-slide book-promo product-ad">
+        <div class="product-ad-inner">
+          <div class="book-cover-box">
+            <img
+              class="book-cover-mini"
+              src="/assets/images/seven-promises-from-the-words-of-jesus-np.webp"
+              alt="Nepali book cover: Seven Promises from the Words of Jesus"
+            >
+          </div>
+          <div class="product-info">
+            <span class="book-language">Nepali Book</span>
+            <p class="book-title nepali">येशूका वचनहरूबाट सात प्रतिज्ञाहरू</p>
+            <span class="book-subtitle">Seven Promises from the Words of Jesus · R. Herbert · Translation: Durga Jung Kunwar</span>
+          </div>
+          <a
+            class="banner-buy-btn"
+            href="/books.html"
+            aria-label="View Nepali Christian books"
           >View Books</a>
         </div>
       </article>
@@ -683,7 +774,227 @@
           <div class="product-info">
             <span class="book-language">Nepali Book</span>
             <p class="book-title nepali">धन्यवादी भई जिउनु</p>
-            <span class="book-subtitle">R. Herbert · Nepali Translation: Durga Jung Kunwar</span>
+            <span class="book-subtitle">Living Thanks · R. Herbert · Translation: Durga Jung Kunwar</span>
+          </div>
+          <a
+            class="banner-buy-btn"
+            href="/books.html"
+            aria-label="View Nepali Christian books"
+          >View Books</a>
+        </div>
+      </article>
+
+      <article class="banner-slide book-promo product-ad">
+        <div class="product-ad-inner">
+          <div class="book-cover-box">
+            <img
+              class="book-cover-mini"
+              src="/assets/images/a-brighter-light-np.webp"
+              alt="Nepali book cover: A Brighter Light"
+            >
+          </div>
+          <div class="product-info">
+            <span class="book-language">Nepali Book</span>
+            <p class="book-title nepali">एक चम्किलो प्रकाश</p>
+            <span class="book-subtitle">A Brighter Light · R. Herbert · Translation: Durga Jung Kunwar</span>
+          </div>
+          <a
+            class="banner-buy-btn"
+            href="/books.html"
+            aria-label="View Nepali Christian books"
+          >View Books</a>
+        </div>
+      </article>
+
+      <article class="banner-slide book-promo product-ad">
+        <div class="product-ad-inner">
+          <div class="book-cover-box">
+            <img
+              class="book-cover-mini"
+              src="/assets/images/the-power-of-speech-np.webp"
+              alt="Nepali book cover: The Power of Speech"
+            >
+          </div>
+          <div class="product-info">
+            <span class="book-language">Nepali Book</span>
+            <p class="book-title nepali">वचनको शक्ति</p>
+            <span class="book-subtitle">The Power of Speech · R. Herbert · Translation: Durga Jung Kunwar</span>
+          </div>
+          <a
+            class="banner-buy-btn"
+            href="/books.html"
+            aria-label="View Nepali Christian books"
+          >View Books</a>
+        </div>
+      </article>
+
+      <article class="banner-slide book-promo product-ad">
+        <div class="product-ad-inner">
+          <div class="book-cover-box">
+            <img
+              class="book-cover-mini"
+              src="/assets/images/how-to-forgive-np.webp"
+              alt="Nepali book cover: How to Forgive"
+            >
+          </div>
+          <div class="product-info">
+            <span class="book-language">Nepali Book</span>
+            <p class="book-title nepali">कसरी क्षमा गर्ने</p>
+            <span class="book-subtitle">How to Forgive · R. Herbert · Translation: Durga Jung Kunwar</span>
+          </div>
+          <a
+            class="banner-buy-btn"
+            href="/books.html"
+            aria-label="View Nepali Christian books"
+          >View Books</a>
+        </div>
+      </article>
+
+      <article class="banner-slide book-promo product-ad">
+        <div class="product-ad-inner">
+          <div class="book-cover-box">
+            <img
+              class="book-cover-mini"
+              src="/assets/images/take-courage-np.webp"
+              alt="Nepali book cover: Take Courage"
+            >
+          </div>
+          <div class="product-info">
+            <span class="book-language">Nepali Book</span>
+            <p class="book-title nepali">साहस गर्नुहोस्</p>
+            <span class="book-subtitle">Take Courage · R. Herbert · Translation: Durga Jung Kunwar</span>
+          </div>
+          <a
+            class="banner-buy-btn"
+            href="/books.html"
+            aria-label="View Nepali Christian books"
+          >View Books</a>
+        </div>
+      </article>
+
+      <article class="banner-slide book-promo product-ad">
+        <div class="product-ad-inner">
+          <div class="book-cover-box">
+            <img
+              class="book-cover-mini"
+              src="/assets/images/some-days-we-soar-np.webp"
+              alt="Nepali book cover: Some Days We Soar"
+            >
+          </div>
+          <div class="product-info">
+            <span class="book-language">Nepali Book</span>
+            <p class="book-title nepali">कहिले काहीँ हामी उड्छौँ</p>
+            <span class="book-subtitle">Some Days We Soar · R. Herbert · Translation: Durga Jung Kunwar</span>
+          </div>
+          <a
+            class="banner-buy-btn"
+            href="/books.html"
+            aria-label="View Nepali Christian books"
+          >View Books</a>
+        </div>
+      </article>
+
+      <article class="banner-slide book-promo product-ad">
+        <div class="product-ad-inner">
+          <div class="book-cover-box">
+            <img
+              class="book-cover-mini"
+              src="/assets/images/your-call-np.webp"
+              alt="Nepali book cover: Your Call"
+            >
+          </div>
+          <div class="product-info">
+            <span class="book-language">Nepali Book</span>
+            <p class="book-title nepali">तपाईंको संवाद</p>
+            <span class="book-subtitle">Your Call · R. Herbert · Translation: Durga Jung Kunwar</span>
+          </div>
+          <a
+            class="banner-buy-btn"
+            href="/books.html"
+            aria-label="View Nepali Christian books"
+          >View Books</a>
+        </div>
+      </article>
+
+      <article class="banner-slide book-promo product-ad">
+        <div class="product-ad-inner">
+          <div class="book-cover-box">
+            <img
+              class="book-cover-mini"
+              src="/assets/images/inside-the-four-gospels-np.webp"
+              alt="Nepali book cover: Inside the Four Gospels"
+            >
+          </div>
+          <div class="product-info">
+            <span class="book-language">Nepali Book</span>
+            <p class="book-title nepali">सुसमाचारका चार पुस्तकहरूभित्र</p>
+            <span class="book-subtitle">Inside the Four Gospels · R. Herbert · Translation: Durga Jung Kunwar</span>
+          </div>
+          <a
+            class="banner-buy-btn"
+            href="/books.html"
+            aria-label="View Nepali Christian books"
+          >View Books</a>
+        </div>
+      </article>
+
+      <article class="banner-slide book-promo product-ad">
+        <div class="product-ad-inner">
+          <div class="book-cover-box">
+            <img
+              class="book-cover-mini"
+              src="/assets/images/getting-christianity-right-np.webp"
+              alt="Nepali book cover: Getting Christianity Right"
+            >
+          </div>
+          <div class="product-info">
+            <span class="book-language">Nepali Book</span>
+            <p class="book-title nepali">ख्रीष्टियन विश्वासको सही अभ्यास</p>
+            <span class="book-subtitle">Getting Christianity Right · R. Herbert · Translation: Durga Jung Kunwar</span>
+          </div>
+          <a
+            class="banner-buy-btn"
+            href="/books.html"
+            aria-label="View Nepali Christian books"
+          >View Books</a>
+        </div>
+      </article>
+
+      <article class="banner-slide book-promo product-ad">
+        <div class="product-ad-inner">
+          <div class="book-cover-box">
+            <img
+              class="book-cover-mini"
+              src="/assets/images/lessons-from-the-lives-of-the-twelve-disciples-np.webp"
+              alt="Nepali book cover: Lessons From the Lives of the Twelve Disciples"
+            >
+          </div>
+          <div class="product-info">
+            <span class="book-language">Nepali Book</span>
+            <p class="book-title nepali">बाह्र चेलाहरूको जीवनबाट प्राप्त शिक्षा</p>
+            <span class="book-subtitle">Lessons From the Lives of the Twelve Disciples · R. Herbert · Translation: Durga Jung Kunwar</span>
+          </div>
+          <a
+            class="banner-buy-btn"
+            href="/books.html"
+            aria-label="View Nepali Christian books"
+          >View Books</a>
+        </div>
+      </article>
+
+      <article class="banner-slide book-promo product-ad">
+        <div class="product-ad-inner">
+          <div class="book-cover-box">
+            <img
+              class="book-cover-mini"
+              src="/assets/images/job-nepali.png"
+              alt="Nepali book cover: JOB NEW"
+            >
+          </div>
+          <div class="product-info">
+            <span class="book-language">Nepali Book</span>
+            <p class="book-title nepali">अय्यूब</p>
+            <span class="book-subtitle">JOB NEW · R. Herbert · Translation: Durga Jung Kunwar</span>
           </div>
           <a
             class="banner-buy-btn"
@@ -705,12 +1016,122 @@
           <div class="product-info">
             <span class="book-language">Hindi Book</span>
             <p class="book-title">यीशु के वचनों से सात प्रतिज्ञाएँ</p>
-            <span class="book-subtitle">R. Herbert · Hindi Translation: Durga Jung Kunwar</span>
+            <span class="book-subtitle">Seven Promises from the Words of Jesus · R. Herbert · Translation: Durga Jung Kunwar</span>
           </div>
           <a
             class="banner-buy-btn"
             href="/books.html"
-            aria-label="View Hindi books"
+            aria-label="View Hindi Christian books"
+          >View Books</a>
+        </div>
+      </article>
+
+      <article class="banner-slide book-promo hindi-book-promo product-ad">
+        <div class="product-ad-inner">
+          <div class="book-cover-box">
+            <img
+              class="book-cover-mini"
+              src="/assets/images/your-call-hi.webp"
+              alt="Hindi book cover: Your Call"
+            >
+          </div>
+          <div class="product-info">
+            <span class="book-language">Hindi Book</span>
+            <p class="book-title">आपका संवाद</p>
+            <span class="book-subtitle">Your Call · R. Herbert · Translation: Durga Jung Kunwar</span>
+          </div>
+          <a
+            class="banner-buy-btn"
+            href="/books.html"
+            aria-label="View Hindi Christian books"
+          >View Books</a>
+        </div>
+      </article>
+
+      <article class="banner-slide book-promo hindi-book-promo product-ad">
+        <div class="product-ad-inner">
+          <div class="book-cover-box">
+            <img
+              class="book-cover-mini"
+              src="/assets/images/take-courage-hi.webp"
+              alt="Hindi book cover: Take Courage!"
+            >
+          </div>
+          <div class="product-info">
+            <span class="book-language">Hindi Book</span>
+            <p class="book-title">हिम्मत रखो!</p>
+            <span class="book-subtitle">Take Courage! · R. Herbert · Translation: Durga Jung Kunwar</span>
+          </div>
+          <a
+            class="banner-buy-btn"
+            href="/books.html"
+            aria-label="View Hindi Christian books"
+          >View Books</a>
+        </div>
+      </article>
+
+      <article class="banner-slide book-promo hindi-book-promo product-ad">
+        <div class="product-ad-inner">
+          <div class="book-cover-box">
+            <img
+              class="book-cover-mini"
+              src="/assets/images/discovering-the-bible-hi.webp"
+              alt="Hindi book cover: Discovering the Bible"
+            >
+          </div>
+          <div class="product-info">
+            <span class="book-language">Hindi Book</span>
+            <p class="book-title">बाइबल का अन्वेषण</p>
+            <span class="book-subtitle">Discovering the Bible · R. Herbert · Translation: Durga Jung Kunwar</span>
+          </div>
+          <a
+            class="banner-buy-btn"
+            href="/books.html"
+            aria-label="View Hindi Christian books"
+          >View Books</a>
+        </div>
+      </article>
+
+      <article class="banner-slide book-promo hindi-book-promo product-ad">
+        <div class="product-ad-inner">
+          <div class="book-cover-box">
+            <img
+              class="book-cover-mini"
+              src="/assets/images/the-power-of-speech-hi.webp"
+              alt="Hindi book cover: The Power of Speech"
+            >
+          </div>
+          <div class="product-info">
+            <span class="book-language">Hindi Book</span>
+            <p class="book-title">वचन की शक्ति</p>
+            <span class="book-subtitle">The Power of Speech · R. Herbert · Translation: Durga Jung Kunwar</span>
+          </div>
+          <a
+            class="banner-buy-btn"
+            href="/books.html"
+            aria-label="View Hindi Christian books"
+          >View Books</a>
+        </div>
+      </article>
+
+      <article class="banner-slide book-promo hindi-book-promo product-ad">
+        <div class="product-ad-inner">
+          <div class="book-cover-box">
+            <img
+              class="book-cover-mini"
+              src="/assets/images/a-brighter-light-hi.webp"
+              alt="Hindi book cover: A Brighter Light"
+            >
+          </div>
+          <div class="product-info">
+            <span class="book-language">Hindi Book</span>
+            <p class="book-title">एक चमकदार प्रकाश</p>
+            <span class="book-subtitle">A Brighter Light · R. Herbert · Translation: Durga Jung Kunwar</span>
+          </div>
+          <a
+            class="banner-buy-btn"
+            href="/books.html"
+            aria-label="View Hindi Christian books"
           >View Books</a>
         </div>
       </article>
@@ -727,7 +1148,29 @@
           <div class="product-info">
             <span class="book-language">Hindi Book</span>
             <p class="book-title">कृतज्ञ होकर जीना</p>
-            <span class="book-subtitle">R. Herbert · Hindi Translation: Durga Jung Kunwar</span>
+            <span class="book-subtitle">Living Thanks · R. Herbert · Translation: Durga Jung Kunwar</span>
+          </div>
+          <a
+            class="banner-buy-btn"
+            href="/books.html"
+            aria-label="View Hindi Christian books"
+          >View Books</a>
+        </div>
+      </article>
+
+      <article class="banner-slide book-promo hindi-book-promo product-ad">
+        <div class="product-ad-inner">
+          <div class="book-cover-box">
+            <img
+              class="book-cover-mini"
+              src="/assets/images/job-answering-the-question-of-suffering-hi.webp"
+              alt="Hindi book cover: Job: Answering the Question of Suffering"
+            >
+          </div>
+          <div class="product-info">
+            <span class="book-language">Hindi Book</span>
+            <p class="book-title">अय्यूब: दुःख के प्रश्न का उत्तर</p>
+            <span class="book-subtitle">Job: Answering the Question of Suffering · R. Herbert · Translation: Durga Jung Kunwar</span>
           </div>
           <a
             class="banner-buy-btn"
