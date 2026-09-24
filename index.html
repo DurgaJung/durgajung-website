@@ -157,6 +157,113 @@
       color: #fff;
     }
 
+    .home-rotating-banner .social-contact-promo {
+      background:
+        radial-gradient(circle at 82% 28%, rgba(215,174,82,.18), transparent 26%),
+        linear-gradient(108deg, #07182b 0%, #0b2b4d 54%, #154d78 100%);
+      color: #fff;
+    }
+
+    .home-rotating-banner .social-contact-inner {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 34px;
+      width: min(820px, 100%);
+      margin: 0 auto;
+    }
+
+    .home-rotating-banner .social-contact-copy {
+      min-width: 0;
+    }
+
+    .home-rotating-banner .social-contact-kicker {
+      display: inline-flex;
+      align-items: center;
+      margin-bottom: 6px;
+      padding: 4px 10px;
+      border: 1px solid rgba(255,255,255,.16);
+      border-radius: 999px;
+      background: rgba(255,255,255,.08);
+      color: #f2d98f;
+      font-size: 10px;
+      font-weight: 900;
+      letter-spacing: .10em;
+      text-transform: uppercase;
+    }
+
+    .home-rotating-banner .social-contact-title {
+      margin: 0;
+      color: #fff;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(24px, 2.6vw, 36px);
+      font-weight: 800;
+      line-height: 1.08;
+      text-shadow: 0 2px 5px rgba(0,0,0,.22);
+    }
+
+    .home-rotating-banner .social-contact-subtitle {
+      display: block;
+      margin-top: 7px;
+      color: rgba(255,255,255,.82);
+      font-size: 13px;
+      font-weight: 650;
+    }
+
+    .home-rotating-banner .social-banner-links {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 18px;
+    }
+
+    .home-rotating-banner .social-banner-link {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      min-width: 92px;
+      padding: 10px 12px;
+      border: 1px solid rgba(255,255,255,.18);
+      border-radius: 16px;
+      background: rgba(255,255,255,.08);
+      color: #fff;
+      font-size: 12px;
+      font-weight: 800;
+      line-height: 1;
+      text-decoration: none;
+      box-shadow: 0 8px 18px rgba(0,0,0,.13);
+      transition:
+        transform .18s ease,
+        background .18s ease,
+        border-color .18s ease,
+        box-shadow .18s ease;
+    }
+
+    .home-rotating-banner .social-banner-link svg {
+      width: 42px;
+      height: 42px;
+      filter: drop-shadow(0 4px 7px rgba(0,0,0,.18));
+    }
+
+    .home-rotating-banner .social-banner-link.facebook svg {
+      color: #4d9cff;
+    }
+
+    .home-rotating-banner .social-banner-link.youtube svg {
+      color: #ff3b3b;
+    }
+
+    .home-rotating-banner .social-banner-link:hover,
+    .home-rotating-banner .social-banner-link:focus-visible {
+      transform: translateY(-4px) scale(1.03);
+      background: rgba(255,255,255,.14);
+      border-color: rgba(242,217,143,.50);
+      box-shadow: 0 12px 24px rgba(0,0,0,.18);
+      outline: none;
+    }
+
     .home-rotating-banner .combo-promo .promo-kicker {
       color: #fff0a6;
     }
@@ -663,6 +770,43 @@
         font-size: 9px;
         padding: 2px 7px;
       }
+
+      .home-rotating-banner .social-contact-inner {
+        grid-template-columns: 1fr;
+        gap: 12px;
+        text-align: center;
+      }
+
+      .home-rotating-banner .social-contact-kicker {
+        margin-bottom: 4px;
+        font-size: 9px;
+        padding: 3px 8px;
+      }
+
+      .home-rotating-banner .social-contact-title {
+        font-size: clamp(21px, 5.8vw, 27px);
+      }
+
+      .home-rotating-banner .social-contact-subtitle {
+        margin-top: 4px;
+        font-size: 11px;
+      }
+
+      .home-rotating-banner .social-banner-links {
+        gap: 12px;
+      }
+
+      .home-rotating-banner .social-banner-link {
+        min-width: 82px;
+        padding: 8px 10px;
+        border-radius: 14px;
+        font-size: 11px;
+      }
+
+      .home-rotating-banner .social-banner-link svg {
+        width: 34px;
+        height: 34px;
+      }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -1025,6 +1169,44 @@
             href="/software.html#purchase-nepali-bible-quiz"
             aria-label="Buy Nepali Bible Quiz for NPR 3,500"
           >Buy Now</a>
+        </div>
+      </article>
+
+      <article class="banner-slide social-contact-promo product-ad">
+        <div class="social-contact-inner">
+          <div class="social-contact-copy">
+            <span class="social-contact-kicker">Stay Connected</span>
+            <p class="social-contact-title">Get in Touch</p>
+            <span class="social-contact-subtitle">Connect with me on Facebook and YouTube</span>
+          </div>
+
+          <div class="social-banner-links" aria-label="Social media links">
+            <a
+              class="social-banner-link facebook"
+              href="https://www.facebook.com/durga.jung.9"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Open Durga Jung Kunwar on Facebook"
+            >
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path fill="currentColor" d="M13.7 21v-8h2.7l.4-3h-3.1V8.1c0-.9.3-1.5 1.6-1.5H17V4a22 22 0 0 0-2.4-.1c-2.4 0-4.1 1.5-4.1 4.2V10H7.8v3h2.7v8h3.2Z"/>
+              </svg>
+              <span>Facebook</span>
+            </a>
+
+            <a
+              class="social-banner-link youtube"
+              href="https://youtube.com/@durgajungkunwarofficial?si=EMTc8eL4kpr8KztP"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Open Durga Jung Kunwar Official on YouTube"
+            >
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path fill="currentColor" d="M21.6 7.2a3 3 0 0 0-2.1-2.1C17.6 4.6 12 4.6 12 4.6s-5.6 0-7.5.5A3 3 0 0 0 2.4 7.2C2 9.1 2 12 2 12s0 2.9.4 4.8a3 3 0 0 0 2.1 2.1c1.9.5 7.5.5 7.5.5s5.6 0 7.5-.5a3 3 0 0 0 2.1-2.1C22 14.9 22 12 22 12s0-2.9-.4-4.8ZM10 15.5v-7l6 3.5-6 3.5Z"/>
+              </svg>
+              <span>YouTube</span>
+            </a>
+          </div>
         </div>
       </article>
 
