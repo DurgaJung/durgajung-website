@@ -207,6 +207,26 @@ a{color:inherit}img{max-width:100%;display:block}button{font:inherit}
   height:21px;
   flex:0 0 21px
 }
+.contact-social-text{
+  display:flex;
+  flex-direction:column;
+  gap:3px
+}
+.contact-social-title{
+  font-size:14px;
+  font-weight:800;
+  line-height:1.05
+}
+.contact-social-name{
+  color:var(--muted);
+  font-size:12px;
+  font-weight:650;
+  line-height:1.15
+}
+.contact-social-link:hover .contact-social-name,
+.contact-social-link:focus-visible .contact-social-name{
+  color:inherit
+}
 .contact-social-link.facebook svg{color:#1877f2}
 .contact-social-link.youtube svg{color:#ff0000}
 .contact-social-link:hover,
