@@ -45,8 +45,8 @@
       opacity: 0;
       transform: translateX(34px);
       transition:
-        opacity 620ms ease,
-        transform 620ms cubic-bezier(.22,.61,.36,1);
+        opacity 380ms ease,
+        transform 380ms cubic-bezier(.22,.61,.36,1);
       pointer-events: none;
     }
 
@@ -979,7 +979,7 @@
 
     var current = 0;
     var timer = null;
-    var interval = 6000;
+    var interval = 2000;
 
     function showNext() {
       var previous = current;
@@ -991,7 +991,7 @@
 
       window.setTimeout(function () {
         slides[previous].classList.remove("is-leaving");
-      }, 680);
+      }, 420);
     }
 
     function start() {
