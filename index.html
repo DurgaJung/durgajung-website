@@ -1347,7 +1347,21 @@
 
     var current = 0;
     var timer = null;
-    var interval = 2000;
+
+    function getSlideDuration(slide) {
+      return slide && slide.classList.contains("product-ad")
+        ? 4000
+        : 3000;
+    }
+
+    function scheduleNext() {
+      if (timer) return;
+
+      timer = window.setTimeout(function () {
+        timer = null;
+        showNext();
+      }, getSlideDuration(slides[current]));
+    }
 
     function showNext() {
       var previous = current;
@@ -1360,16 +1374,17 @@
       window.setTimeout(function () {
         slides[previous].classList.remove("is-leaving");
       }, 420);
+
+      scheduleNext();
     }
 
     function start() {
-      if (timer) return;
-      timer = window.setInterval(showNext, interval);
+      scheduleNext();
     }
 
     function stop() {
       if (!timer) return;
-      window.clearInterval(timer);
+      window.clearTimeout(timer);
       timer = null;
     }
 
