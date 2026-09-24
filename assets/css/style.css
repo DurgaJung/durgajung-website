@@ -2404,3 +2404,113 @@ body {
     padding: 34px 0;
   }
 }
+
+
+/* =========================================================
+   SITE LANGUAGE SWITCHER — English / Nepali
+   ========================================================= */
+.site-language-bar {
+  position: relative;
+  z-index: 55;
+  border-bottom: 1px solid rgba(255,255,255,.08);
+  background:
+    linear-gradient(90deg, #07182b 0%, #0b223d 58%, #12385f 100%);
+  color: rgba(255,255,255,.90);
+}
+
+.site-language-bar .container {
+  min-height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.site-language-label {
+  color: rgba(255,255,255,.68);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .10em;
+  text-transform: uppercase;
+}
+
+.site-language-switcher {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 3px;
+  border: 1px solid rgba(255,255,255,.14);
+  border-radius: 999px;
+  background: rgba(255,255,255,.08);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.06);
+}
+
+.site-language-btn {
+  min-height: 29px;
+  padding: 5px 12px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: rgba(255,255,255,.74);
+  font-family: "Segoe UI", "Noto Sans Devanagari", "Nirmala UI", Mangal, Arial, sans-serif;
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1;
+  cursor: pointer;
+  transition:
+    background .18s ease,
+    color .18s ease,
+    box-shadow .18s ease,
+    transform .18s ease;
+}
+
+.site-language-btn:hover,
+.site-language-btn:focus-visible {
+  color: #fff;
+  background: rgba(255,255,255,.10);
+  outline: none;
+}
+
+.site-language-btn:focus-visible {
+  box-shadow: 0 0 0 3px rgba(215,174,82,.28);
+}
+
+.site-language-btn.is-active {
+  background: linear-gradient(135deg, #d7ae52, #b98525);
+  color: #07182b;
+  box-shadow: 0 4px 12px rgba(0,0,0,.20);
+}
+
+html[lang="ne"] body {
+  font-family: "Noto Sans Devanagari", "Nirmala UI", Mangal, "Segoe UI", Arial, sans-serif;
+}
+
+html[lang="ne"] .brand-mini,
+html[lang="ne"] .brand-mini span {
+  font-family: Georgia, "Times New Roman", serif !important;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+@media (max-width: 620px) {
+  .site-language-bar .container {
+    width: min(100% - 26px, var(--max));
+    min-height: 38px;
+  }
+
+  .site-language-label {
+    display: none;
+  }
+
+  .site-language-switcher {
+    margin-left: auto;
+  }
+
+  .site-language-btn {
+    min-height: 28px;
+    padding: 5px 11px;
+    font-size: 11px;
+  }
+}
