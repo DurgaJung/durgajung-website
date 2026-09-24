@@ -91,6 +91,22 @@
       color: #fff;
     }
 
+    .home-rotating-banner .combo-promo {
+      background:
+        linear-gradient(105deg, #8f0714 0%, #cf1626 48%, #ef8b16 115%);
+      text-decoration: none;
+      color: #fff;
+    }
+
+    .home-rotating-banner .combo-promo .promo-kicker {
+      color: #fff0a6;
+    }
+
+    .home-rotating-banner .combo-promo .promo-button {
+      background: #fff3b0;
+      color: #8f0714;
+    }
+
     .home-rotating-banner .banner-text {
       margin: 0;
       width: 100%;
@@ -309,6 +325,27 @@
             </p>
           </div>
           <span class="promo-button">View Software →</span>
+        </div>
+      </a>
+
+      <a
+        class="banner-slide combo-promo"
+        id="combo-offer-banner"
+        href="/software.html#purchase-software-combo"
+        data-offer-end="2026-10-10T18:14:59.000Z"
+        aria-label="Combo Pack Offer: Mero Mandali and Nepali Bible Quiz for NPR 7,500"
+      >
+        <div class="promo-copy">
+          <div>
+            <span class="promo-kicker">★ Special Combo Pack Offer ★</span>
+            <p class="promo-title">
+              Mero Mandali + Nepali Bible Quiz — NPR 7,500
+              <span class="promo-sub">
+                1 Customer Licence for Each Software
+              </span>
+            </p>
+          </div>
+          <span class="promo-button">View Offer →</span>
         </div>
       </a>
     </div>
@@ -973,6 +1010,14 @@
 
     var banner = document.getElementById("home-rotating-banner");
     if (!banner) return;
+
+    var comboOffer = document.getElementById("combo-offer-banner");
+    if (comboOffer) {
+      var offerEnd = Date.parse(comboOffer.getAttribute("data-offer-end") || "");
+      if (offerEnd && Date.now() > offerEnd) {
+        comboOffer.remove();
+      }
+    }
 
     var slides = banner.querySelectorAll(".banner-slide");
     if (slides.length < 2) return;
