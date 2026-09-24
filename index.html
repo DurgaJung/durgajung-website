@@ -252,6 +252,62 @@
       color: #8f0714;
     }
 
+    .home-rotating-banner .combo-promo {
+      border: 2px solid rgba(255, 240, 166, .92);
+      box-shadow:
+        0 0 0 2px rgba(255, 232, 120, .12) inset,
+        0 0 24px rgba(255, 210, 77, .30);
+    }
+
+    .home-rotating-banner .combo-promo::before {
+      content: "SPECIAL OFFER";
+      position: absolute;
+      top: 9px;
+      right: 12px;
+      z-index: 4;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: #fff2a8;
+      color: #8f0714;
+      font-size: 10px;
+      font-weight: 900;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      box-shadow: 0 4px 10px rgba(0,0,0,.18);
+    }
+
+    .home-rotating-banner .combo-heartbeat-text {
+      display: inline-block;
+      transform-origin: center;
+      will-change: transform, filter, text-shadow;
+      transition:
+        transform 120ms ease,
+        filter 120ms ease,
+        text-shadow 120ms ease;
+    }
+
+    .home-rotating-banner .combo-heartbeat-text.is-beat {
+      transform: scale(1.075);
+      filter: brightness(1.12);
+      text-shadow:
+        0 0 8px rgba(255,255,255,.42),
+        0 0 18px rgba(255,230,108,.50),
+        0 2px 5px rgba(0,0,0,.28);
+    }
+
+    .home-rotating-banner .combo-promo.is-beat {
+      box-shadow:
+        0 0 0 2px rgba(255, 232, 120, .26) inset,
+        0 0 36px rgba(255, 210, 77, .52);
+    }
+
+    .home-rotating-banner .combo-promo .banner-buy-btn.is-beat {
+      transform: scale(1.07);
+      box-shadow:
+        0 0 0 3px rgba(255,255,255,.14),
+        0 8px 22px rgba(0,0,0,.30);
+    }
+
     .home-rotating-banner .promo-kicker {
       display: block;
       margin-bottom: 4px;
@@ -379,6 +435,13 @@
         min-width: 108px;
         padding: 0 16px;
         font-size: 13px;
+      }
+
+      .home-rotating-banner .combo-promo::before {
+        top: 7px;
+        right: 7px;
+        padding: 3px 8px;
+        font-size: 9px;
       }
     }
 
@@ -548,14 +611,14 @@
             >
           </div>
           <div class="product-info">
-            <p class="product-name">Special Combo Pack Offer</p>
+            <p class="product-name combo-heartbeat-text">Special Combo Pack Offer</p>
             <div class="product-price-row">
-              <span class="product-price">NPR 7,500</span>
-              <span class="product-note">Mero Mandali + Nepali Bible Quiz · Save NPR 1,000</span>
+              <span class="product-price combo-heartbeat-text">NPR 7,500</span>
+              <span class="product-note combo-heartbeat-text">Mero Mandali + Nepali Bible Quiz · Save NPR 1,000</span>
             </div>
           </div>
           <a
-            class="banner-buy-btn"
+            class="banner-buy-btn combo-buy-btn"
             href="/software.html#purchase-software-combo"
             aria-label="Buy Mero Mandali and Nepali Bible Quiz Combo Pack for NPR 7,500"
           >Buy Now</a>
@@ -1236,6 +1299,52 @@
     var slides = banner.querySelectorAll(".banner-slide");
     if (slides.length < 2) return;
 
+    var comboHeartbeatItems =
+      banner.querySelectorAll(".combo-heartbeat-text");
+
+    var comboBuyButton =
+      banner.querySelector(".combo-buy-btn");
+
+    var heartbeatTimer = null;
+    var heartbeatStep = 0;
+
+    function setComboBeat(active) {
+      if (comboOffer) {
+        comboOffer.classList.toggle("is-beat", active);
+      }
+
+      for (var i = 0; i < comboHeartbeatItems.length; i += 1) {
+        comboHeartbeatItems[i].classList.toggle("is-beat", active);
+      }
+
+      if (comboBuyButton) {
+        comboBuyButton.classList.toggle("is-beat", active);
+      }
+    }
+
+    function startComboHeartbeat() {
+      if (heartbeatTimer || !comboOffer) return;
+
+      heartbeatTimer = window.setInterval(function () {
+        heartbeatStep = (heartbeatStep + 1) % 10;
+
+        var beat =
+          heartbeatStep === 1 ||
+          heartbeatStep === 2 ||
+          heartbeatStep === 4 ||
+          heartbeatStep === 5;
+
+        setComboBeat(beat);
+      }, 120);
+    }
+
+    function stopComboHeartbeat() {
+      if (!heartbeatTimer) return;
+      window.clearInterval(heartbeatTimer);
+      heartbeatTimer = null;
+      setComboBeat(false);
+    }
+
     var current = 0;
     var timer = null;
     var interval = 2000;
@@ -1272,12 +1381,15 @@
     document.addEventListener("visibilitychange", function () {
       if (document.hidden) {
         stop();
+        stopComboHeartbeat();
       } else {
         start();
+        startComboHeartbeat();
       }
     });
 
     start();
+    startComboHeartbeat();
   })();
   </script>
 
