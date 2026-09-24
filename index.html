@@ -135,6 +135,123 @@
       color: #fff;
     }
 
+    .home-rotating-banner .product-ad {
+      text-decoration: none;
+      color: #fff;
+    }
+
+    .home-rotating-banner .product-ad-inner {
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 22px;
+      width: min(980px, 100%);
+      margin: 0 auto;
+    }
+
+    .home-rotating-banner .product-logo-box {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 92px;
+    }
+
+    .home-rotating-banner .product-logo {
+      display: block;
+      width: auto;
+      max-width: 115px;
+      height: auto;
+      max-height: 78px;
+      object-fit: contain;
+      filter: drop-shadow(0 4px 8px rgba(0,0,0,.22));
+    }
+
+    .home-rotating-banner .product-logo.quiz-logo {
+      max-width: 76px;
+      max-height: 76px;
+    }
+
+    .home-rotating-banner .combo-logo-box {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 154px;
+    }
+
+    .home-rotating-banner .combo-logo-box .product-logo {
+      max-width: 92px;
+      max-height: 62px;
+    }
+
+    .home-rotating-banner .combo-logo-box .quiz-logo {
+      max-width: 58px;
+      max-height: 58px;
+    }
+
+    .home-rotating-banner .product-info {
+      min-width: 0;
+      text-align: left;
+    }
+
+    .home-rotating-banner .product-name {
+      margin: 0;
+      color: #fff;
+      font-size: clamp(21px, 2.15vw, 31px);
+      font-weight: 900;
+      line-height: 1.12;
+      text-shadow: 0 2px 5px rgba(0,0,0,.26);
+    }
+
+    .home-rotating-banner .product-price-row {
+      display: flex;
+      align-items: baseline;
+      gap: 11px;
+      margin-top: 5px;
+      flex-wrap: wrap;
+    }
+
+    .home-rotating-banner .product-price {
+      color: #ffe36c;
+      font-size: clamp(18px, 1.75vw, 25px);
+      font-weight: 900;
+      line-height: 1;
+    }
+
+    .home-rotating-banner .product-note {
+      color: rgba(255,255,255,.92);
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .home-rotating-banner .banner-buy-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 112px;
+      min-height: 44px;
+      padding: 0 19px;
+      border-radius: 999px;
+      background: #ffd34d;
+      color: #10243d;
+      font-size: 14px;
+      font-weight: 900;
+      text-decoration: none;
+      white-space: nowrap;
+      box-shadow: 0 6px 16px rgba(0,0,0,.23);
+      transition: transform .18s ease, box-shadow .18s ease;
+    }
+
+    .home-rotating-banner .banner-buy-btn:hover,
+    .home-rotating-banner .banner-buy-btn:focus-visible {
+      transform: translateY(-2px);
+      box-shadow: 0 9px 20px rgba(0,0,0,.28);
+    }
+
+    .home-rotating-banner .combo-promo .banner-buy-btn {
+      background: #fff2a8;
+      color: #8f0714;
+    }
+
     .home-rotating-banner .promo-kicker {
       display: block;
       margin-bottom: 4px;
@@ -207,6 +324,61 @@
       .home-rotating-banner .promo-button {
         min-height: 38px;
         padding: 0 16px;
+      }
+
+      .home-rotating-banner .product-ad-inner {
+        grid-template-columns: auto minmax(0, 1fr);
+        gap: 12px;
+      }
+
+      .home-rotating-banner .product-logo-box {
+        min-width: 64px;
+      }
+
+      .home-rotating-banner .product-logo {
+        max-width: 72px;
+        max-height: 55px;
+      }
+
+      .home-rotating-banner .product-logo.quiz-logo {
+        max-width: 54px;
+        max-height: 54px;
+      }
+
+      .home-rotating-banner .combo-logo-box {
+        min-width: 104px;
+        gap: 5px;
+      }
+
+      .home-rotating-banner .combo-logo-box .product-logo {
+        max-width: 58px;
+        max-height: 45px;
+      }
+
+      .home-rotating-banner .combo-logo-box .quiz-logo {
+        max-width: 42px;
+        max-height: 42px;
+      }
+
+      .home-rotating-banner .product-name {
+        font-size: clamp(17px, 4.6vw, 22px);
+      }
+
+      .home-rotating-banner .product-price {
+        font-size: clamp(16px, 4.3vw, 21px);
+      }
+
+      .home-rotating-banner .product-note {
+        font-size: 11px;
+      }
+
+      .home-rotating-banner .banner-buy-btn {
+        grid-column: 1 / -1;
+        justify-self: center;
+        min-height: 36px;
+        min-width: 108px;
+        padding: 0 16px;
+        font-size: 13px;
       }
     }
 
@@ -288,7 +460,7 @@
   
   <section
     class="home-rotating-banner-wrap"
-    aria-label="Bible verses and software announcement"
+    aria-label="Bible verses and software offers"
   >
     <div
       class="home-rotating-banner"
@@ -309,45 +481,87 @@
         </p>
       </article>
 
-      <a
-        class="banner-slide software-promo"
-        href="/software.html"
-        aria-label="Explore Mero Mandali and Nepali Bible Quiz software"
-      >
-        <div class="promo-copy">
-          <div>
-            <span class="promo-kicker">Software for Church &amp; Bible Learning</span>
-            <p class="promo-title">
-              Mero Mandali &nbsp;•&nbsp; Nepali Bible Quiz
-              <span class="promo-sub nepali">
-                मण्डली सेवकाई र बाइबल अध्ययनका लागि उपयोगी Windows सफ्टवेयर
-              </span>
-            </p>
+      <article class="banner-slide software-promo product-ad">
+        <div class="product-ad-inner">
+          <div class="product-logo-box">
+            <img
+              class="product-logo"
+              src="/assets/images/software/mero-mandali-logo.png"
+              alt="Mero Mandali logo"
+            >
           </div>
-          <span class="promo-button">View Software →</span>
+          <div class="product-info">
+            <p class="product-name">Mero Mandali</p>
+            <div class="product-price-row">
+              <span class="product-price">NPR 5,000</span>
+              <span class="product-note">1 Customer Licence · 1 Windows PC</span>
+            </div>
+          </div>
+          <a
+            class="banner-buy-btn"
+            href="/software.html#purchase-mero-mandali"
+            aria-label="Buy Mero Mandali for NPR 5,000"
+          >Buy Now</a>
         </div>
-      </a>
+      </article>
 
-      <a
-        class="banner-slide combo-promo"
-        id="combo-offer-banner"
-        href="/software.html#purchase-software-combo"
-        data-offer-end="2026-10-10T18:14:59.000Z"
-        aria-label="Combo Pack Offer: Mero Mandali and Nepali Bible Quiz for NPR 7,500"
-      >
-        <div class="promo-copy">
-          <div>
-            <span class="promo-kicker">★ Special Combo Pack Offer ★</span>
-            <p class="promo-title">
-              Mero Mandali + Nepali Bible Quiz — NPR 7,500
-              <span class="promo-sub">
-                1 Customer Licence for Each Software
-              </span>
-            </p>
+      <article class="banner-slide software-promo product-ad">
+        <div class="product-ad-inner">
+          <div class="product-logo-box">
+            <img
+              class="product-logo quiz-logo"
+              src="/assets/images/software/nepali-bible-quiz-app-icon.png?v=1.0.2"
+              alt="Nepali Bible Quiz logo"
+            >
           </div>
-          <span class="promo-button">View Offer →</span>
+          <div class="product-info">
+            <p class="product-name">Nepali Bible Quiz</p>
+            <div class="product-price-row">
+              <span class="product-price">NPR 3,500</span>
+              <span class="product-note">1 Customer Licence · 1 Windows PC</span>
+            </div>
+          </div>
+          <a
+            class="banner-buy-btn"
+            href="/software.html#purchase-nepali-bible-quiz"
+            aria-label="Buy Nepali Bible Quiz for NPR 3,500"
+          >Buy Now</a>
         </div>
-      </a>
+      </article>
+
+      <article
+        class="banner-slide combo-promo product-ad"
+        id="combo-offer-banner"
+        data-offer-end="2026-10-10T18:14:59.000Z"
+      >
+        <div class="product-ad-inner">
+          <div class="combo-logo-box">
+            <img
+              class="product-logo"
+              src="/assets/images/software/mero-mandali-logo.png"
+              alt="Mero Mandali logo"
+            >
+            <img
+              class="product-logo quiz-logo"
+              src="/assets/images/software/nepali-bible-quiz-app-icon.png?v=1.0.2"
+              alt="Nepali Bible Quiz logo"
+            >
+          </div>
+          <div class="product-info">
+            <p class="product-name">Special Combo Pack Offer</p>
+            <div class="product-price-row">
+              <span class="product-price">NPR 7,500</span>
+              <span class="product-note">Mero Mandali + Nepali Bible Quiz · Save NPR 1,000</span>
+            </div>
+          </div>
+          <a
+            class="banner-buy-btn"
+            href="/software.html#purchase-software-combo"
+            aria-label="Buy Mero Mandali and Nepali Bible Quiz Combo Pack for NPR 7,500"
+          >Buy Now</a>
+        </div>
+      </article>
+
     </div>
   </section>
 
