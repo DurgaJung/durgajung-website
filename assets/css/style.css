@@ -2573,3 +2573,721 @@ html[lang="ne"] .brand-mini span {
     font-size: 11px;
   }
 }
+
+
+/* =========================================================
+   PREMIUM HOMEPAGE ARCHITECTURE — 2026
+   ========================================================= */
+.home-hero {
+  padding: 72px 0 66px;
+}
+
+.home-hero-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(300px, .8fr);
+  align-items: center;
+  gap: clamp(42px, 6vw, 82px);
+}
+
+.home-hero-copy {
+  min-width: 0;
+}
+
+.home-hero-copy .lead {
+  max-width: 760px;
+}
+
+.home-hero-copy > p.nepali {
+  max-width: 780px;
+  color: #536176;
+}
+
+.home-hero-visual {
+  position: relative;
+  width: min(100%, 390px);
+  justify-self: end;
+  padding: 18px 18px 54px;
+}
+
+.home-portrait-frame {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 4 / 5;
+  border: 1px solid rgba(185,133,37,.24);
+  border-radius: 30px;
+  background:
+    radial-gradient(circle at 50% 15%, rgba(215,174,82,.17), transparent 42%),
+    linear-gradient(145deg, #f8fafc, #eef3f8);
+  box-shadow:
+    0 28px 58px rgba(11,34,61,.16),
+    0 0 0 8px rgba(255,255,255,.72);
+}
+
+.home-portrait-frame::before {
+  content: "";
+  position: absolute;
+  inset: 14px;
+  z-index: 1;
+  border: 1px solid rgba(255,255,255,.55);
+  border-radius: 21px;
+  pointer-events: none;
+}
+
+.home-portrait-frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+}
+
+.home-portrait-card {
+  position: absolute;
+  left: -14px;
+  right: 0;
+  bottom: 7px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: max-content;
+  max-width: calc(100% - 8px);
+  padding: 12px 16px;
+  border: 1px solid rgba(255,255,255,.70);
+  border-radius: 18px;
+  background: rgba(255,255,255,.92);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  box-shadow: 0 16px 34px rgba(11,34,61,.14);
+}
+
+.home-portrait-mark {
+  width: 42px;
+  height: 42px;
+  flex: 0 0 42px;
+  display: grid;
+  place-items: center;
+  border-radius: 13px;
+  background: linear-gradient(135deg, var(--navy), var(--navy2));
+  color: #f1d791;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 16px;
+  font-weight: 800;
+}
+
+.home-portrait-card strong,
+.home-portrait-card span {
+  display: block;
+}
+
+.home-portrait-card strong {
+  color: var(--navy);
+  font-size: 14px;
+}
+
+.home-portrait-card div > span {
+  margin-top: 2px;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.home-section-heading-row {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 30px;
+}
+
+.home-section-heading-row .section-head {
+  margin-bottom: 0;
+}
+
+.home-text-link {
+  flex: 0 0 auto;
+  margin-bottom: 14px;
+  color: var(--navy2);
+  font-size: 14px;
+  font-weight: 850;
+  text-decoration: none;
+  transition: color .18s ease, transform .18s ease;
+}
+
+.home-text-link:hover,
+.home-text-link:focus-visible {
+  color: var(--gold);
+  transform: translateX(3px);
+  outline: none;
+}
+
+/* Featured Books */
+.home-book-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 22px;
+}
+
+.home-book-card {
+  overflow: hidden;
+  border: 1px solid #dfe5ec;
+  border-radius: 22px;
+  background: #fff;
+  box-shadow: 0 14px 34px rgba(11,34,61,.075);
+  transition:
+    transform .22s ease,
+    border-color .22s ease,
+    box-shadow .22s ease;
+}
+
+.home-book-cover {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 310px;
+  padding: 26px 22px;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 50% 18%, rgba(215,174,82,.12), transparent 34%),
+    linear-gradient(145deg, #f6f8fb, #edf1f5);
+}
+
+.home-book-cover::after {
+  content: "";
+  position: absolute;
+  inset: auto 12% 18px;
+  height: 20px;
+  border-radius: 50%;
+  background: rgba(11,34,61,.10);
+  filter: blur(14px);
+}
+
+.home-book-cover img {
+  position: relative;
+  z-index: 1;
+  width: auto;
+  max-width: 80%;
+  height: 250px;
+  object-fit: contain;
+  border-radius: 8px;
+  box-shadow: 0 15px 28px rgba(11,34,61,.20);
+  transition: transform .25s ease;
+}
+
+.home-book-body {
+  padding: 20px 20px 22px;
+}
+
+.home-book-body h3 {
+  margin: 10px 0 4px;
+  color: var(--navy);
+  font-family: "Noto Sans Devanagari", "Nirmala UI", Mangal, "Segoe UI", sans-serif;
+  font-size: 19px;
+  line-height: 1.35;
+}
+
+.home-book-body p {
+  min-height: 39px;
+  margin: 0 0 15px;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.home-book-body > a {
+  color: var(--navy2);
+  font-size: 13px;
+  font-weight: 850;
+  text-decoration: none;
+}
+
+.home-book-upcoming {
+  border-color: rgba(185,133,37,.40);
+  background:
+    linear-gradient(180deg, #fffef9, #fff);
+}
+
+.home-tag {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  padding: 5px 9px;
+  border: 1px solid #e2e8f0;
+  border-radius: 999px;
+  background: #f7f9fc;
+  color: #536176;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: .055em;
+  text-transform: uppercase;
+}
+
+.home-tag-gold {
+  border-color: rgba(185,133,37,.23);
+  background: #fbf2df;
+  color: #865b13;
+}
+
+@media (hover:hover) {
+  .home-book-card:hover {
+    transform: translateY(-7px);
+    border-color: rgba(185,133,37,.35);
+    box-shadow: 0 23px 46px rgba(11,34,61,.12);
+  }
+
+  .home-book-card:hover .home-book-cover img {
+    transform: translateY(-4px) scale(1.025);
+  }
+}
+
+/* Featured Software */
+.home-software-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+}
+
+.home-software-card {
+  display: grid;
+  grid-template-columns: 180px minmax(0, 1fr);
+  overflow: hidden;
+  border: 1px solid #dfe5ec;
+  border-radius: 24px;
+  background: #fff;
+  box-shadow: 0 16px 38px rgba(11,34,61,.08);
+  transition:
+    transform .22s ease,
+    border-color .22s ease,
+    box-shadow .22s ease;
+}
+
+.home-software-logo {
+  min-height: 290px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 28px;
+  border-right: 1px solid #e6ebf0;
+  background:
+    radial-gradient(circle at 50% 35%, rgba(215,174,82,.12), transparent 42%),
+    linear-gradient(145deg, #f8fafc, #eef3f8);
+}
+
+.home-software-logo img {
+  width: 100%;
+  height: auto;
+  max-height: 120px;
+  object-fit: contain;
+  filter: drop-shadow(0 9px 16px rgba(11,34,61,.13));
+}
+
+.home-software-logo-square img {
+  max-width: 94px;
+  max-height: 94px;
+}
+
+.home-software-content {
+  padding: 30px 28px;
+}
+
+.home-software-content h3 {
+  margin: 13px 0 10px;
+  color: var(--navy);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 27px;
+  line-height: 1.15;
+}
+
+.home-software-content p {
+  margin: 0 0 18px;
+  color: #5d6878;
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.home-software-price {
+  margin: 4px 0 20px;
+  color: #8d6218;
+  font-size: 23px;
+  font-weight: 900;
+}
+
+.home-card-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.home-card-actions .btn {
+  min-width: 126px;
+}
+
+.home-combo-strip {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 18px;
+  margin-top: 24px;
+  padding: 18px 22px;
+  overflow: hidden;
+  border: 1px solid rgba(215,174,82,.33);
+  border-radius: 18px;
+  background:
+    radial-gradient(circle at 88% 50%, rgba(215,174,82,.15), transparent 24%),
+    linear-gradient(105deg, #07182b, #0b2b4d 58%, #154d78);
+  color: #fff;
+  text-decoration: none;
+  box-shadow: 0 14px 32px rgba(11,34,61,.14);
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+
+.home-combo-badge {
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: #f1d791;
+  color: #07182b;
+  font-size: 10px;
+  font-weight: 950;
+  letter-spacing: .08em;
+}
+
+.home-combo-strip strong {
+  font-size: 16px;
+}
+
+.home-combo-strip > span:not(.home-combo-badge):not(.home-combo-arrow) {
+  color: #f1d791;
+  font-size: 14px;
+  font-weight: 850;
+}
+
+.home-combo-arrow {
+  font-size: 24px;
+  transition: transform .18s ease;
+}
+
+.home-combo-strip:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 19px 38px rgba(11,34,61,.19);
+}
+
+.home-combo-strip:hover .home-combo-arrow {
+  transform: translateX(4px);
+}
+
+@media (hover:hover) {
+  .home-software-card:hover {
+    transform: translateY(-6px);
+    border-color: rgba(185,133,37,.33);
+    box-shadow: 0 23px 48px rgba(11,34,61,.12);
+  }
+}
+
+/* Latest Sermons */
+.home-sermon-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 24px;
+}
+
+.home-sermon-card {
+  overflow: hidden;
+  border: 1px solid #dfe5ec;
+  border-radius: 22px;
+  background: #fff;
+  box-shadow: 0 14px 34px rgba(11,34,61,.07);
+  transition:
+    transform .22s ease,
+    border-color .22s ease,
+    box-shadow .22s ease;
+}
+
+.home-sermon-image {
+  display: block;
+  overflow: hidden;
+  aspect-ratio: 16 / 9;
+  background: #e8edf3;
+}
+
+.home-sermon-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform .3s ease;
+}
+
+.home-sermon-body {
+  padding: 20px 20px 22px;
+}
+
+.home-sermon-body h3 {
+  min-height: 54px;
+  margin: 12px 0 14px;
+  color: var(--navy);
+  font-family: "Noto Sans Devanagari", "Nirmala UI", Mangal, sans-serif;
+  font-size: 19px;
+  line-height: 1.45;
+}
+
+.home-sermon-body > a {
+  color: var(--navy2);
+  font-size: 13px;
+  font-weight: 850;
+  text-decoration: none;
+}
+
+@media (hover:hover) {
+  .home-sermon-card:hover {
+    transform: translateY(-6px);
+    border-color: rgba(185,133,37,.33);
+    box-shadow: 0 22px 44px rgba(11,34,61,.11);
+  }
+
+  .home-sermon-card:hover .home-sermon-image img {
+    transform: scale(1.035);
+  }
+}
+
+/* Upcoming Book Spotlight */
+.home-upcoming-section {
+  background:
+    radial-gradient(circle at 88% 12%, rgba(215,174,82,.12), transparent 22rem),
+    #fff;
+}
+
+.home-upcoming-card {
+  display: grid;
+  grid-template-columns: 280px minmax(0, 1fr);
+  align-items: center;
+  gap: clamp(34px, 5vw, 66px);
+  padding: clamp(30px, 5vw, 54px);
+  overflow: hidden;
+  border: 1px solid rgba(185,133,37,.25);
+  border-radius: 28px;
+  background:
+    radial-gradient(circle at 90% 14%, rgba(215,174,82,.14), transparent 24rem),
+    linear-gradient(145deg, #ffffff, #f8fafc);
+  box-shadow: 0 22px 52px rgba(11,34,61,.09);
+}
+
+.home-upcoming-cover {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.home-upcoming-cover img {
+  width: auto;
+  max-width: 220px;
+  height: 295px;
+  object-fit: contain;
+  border-radius: 9px;
+  box-shadow: 0 18px 34px rgba(11,34,61,.22);
+  transition: transform .22s ease;
+}
+
+.home-upcoming-cover a:hover img {
+  transform: translateY(-5px) rotate(-1deg);
+}
+
+.home-upcoming-copy h2 {
+  margin: 14px 0 4px;
+  color: var(--navy);
+  font-family: "Noto Sans Devanagari", "Nirmala UI", Mangal, sans-serif;
+  font-size: clamp(30px, 4vw, 46px);
+  line-height: 1.2;
+}
+
+.home-upcoming-copy h3 {
+  margin: 0 0 18px;
+  color: #9a6d1e;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(20px, 2.6vw, 29px);
+}
+
+.home-upcoming-copy p {
+  max-width: 720px;
+  margin: 0 0 24px;
+  color: #596579;
+  font-size: 16px;
+  line-height: 1.75;
+}
+
+/* Gentle reveal motion */
+.reveal-section {
+  opacity: 1;
+  transform: none;
+}
+
+html.js .reveal-section {
+  opacity: 0;
+  transform: translateY(18px);
+  transition:
+    opacity .65s ease,
+    transform .65s cubic-bezier(.22,.61,.36,1);
+}
+
+html.js .reveal-section.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (max-width: 1020px) {
+  .home-hero-grid {
+    grid-template-columns: minmax(0, 1fr) 310px;
+    gap: 38px;
+  }
+
+  .home-book-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .home-software-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .home-software-card {
+    grid-template-columns: 180px minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 760px) {
+  .home-hero {
+    padding: 44px 0 42px;
+  }
+
+  .home-hero-grid {
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
+
+  .home-hero-visual {
+    width: min(84%, 340px);
+    justify-self: center;
+    padding-bottom: 48px;
+  }
+
+  .home-portrait-card {
+    left: 50%;
+    right: auto;
+    transform: translateX(-50%);
+    width: max-content;
+    max-width: calc(100vw - 48px);
+  }
+
+  .home-hero .hero-actions {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .home-section-heading-row {
+    display: block;
+  }
+
+  .home-text-link {
+    display: inline-block;
+    margin: -12px 0 24px;
+  }
+
+  .home-book-grid,
+  .home-sermon-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .home-book-cover {
+    min-height: 280px;
+  }
+
+  .home-book-cover img {
+    height: 225px;
+  }
+
+  .home-software-card {
+    grid-template-columns: 1fr;
+  }
+
+  .home-software-logo {
+    min-height: 150px;
+    border-right: 0;
+    border-bottom: 1px solid #e6ebf0;
+  }
+
+  .home-software-logo img {
+    max-width: 190px;
+    max-height: 82px;
+  }
+
+  .home-software-logo-square img {
+    max-width: 76px;
+    max-height: 76px;
+  }
+
+  .home-software-content {
+    padding: 24px 22px;
+  }
+
+  .home-combo-strip {
+    grid-template-columns: 1fr auto;
+    gap: 8px 14px;
+  }
+
+  .home-combo-badge,
+  .home-combo-strip strong,
+  .home-combo-strip > span:not(.home-combo-arrow) {
+    grid-column: 1;
+  }
+
+  .home-combo-arrow {
+    grid-column: 2;
+    grid-row: 1 / 4;
+    align-self: center;
+  }
+
+  .home-upcoming-card {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+
+  .home-upcoming-copy .home-tag {
+    margin-inline: auto;
+  }
+
+  .home-upcoming-copy .home-card-actions {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .home-hero-visual {
+    width: min(90%, 320px);
+  }
+
+  .home-book-cover {
+    min-height: 250px;
+  }
+
+  .home-book-cover img {
+    height: 205px;
+  }
+
+  .home-upcoming-cover img {
+    height: 250px;
+  }
+
+  .home-card-actions {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .home-card-actions .btn {
+    width: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html.js .reveal-section,
+  html.js .reveal-section.is-visible {
+    opacity: 1;
+    transform: none;
+  }
+}
