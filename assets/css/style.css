@@ -2584,13 +2584,15 @@ html[lang="ne"] .brand-mini span {
 
 .home-hero-grid {
   display: grid;
-  grid-template-columns: minmax(0, 1.2fr) minmax(300px, .8fr);
+  grid-template-columns: 1fr;
   align-items: center;
-  gap: clamp(42px, 6vw, 82px);
+  gap: 0;
 }
 
 .home-hero-copy {
   min-width: 0;
+  max-width: 980px;
+  margin: 0 auto;
 }
 
 .home-hero-copy .lead {
@@ -3134,8 +3136,8 @@ html.js .reveal-section.is-visible {
 
 @media (max-width: 1020px) {
   .home-hero-grid {
-    grid-template-columns: minmax(0, 1fr) 310px;
-    gap: 38px;
+    grid-template-columns: 1fr;
+    gap: 0;
   }
 
   .home-book-grid {
