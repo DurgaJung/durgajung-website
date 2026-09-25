@@ -1,6 +1,8 @@
 (() => {
   "use strict";
 
+  document.documentElement.classList.add("js");
+
 
   /* =========================================================
      SITE LANGUAGE SWITCHER — English / Nepali
@@ -355,6 +357,19 @@
     }
   }
 
+  function translateDataLanguage(language) {
+    document.querySelectorAll("[data-en][data-np]").forEach((element) => {
+      const value =
+        language === "np"
+          ? element.getAttribute("data-np")
+          : element.getAttribute("data-en");
+
+      if (value !== null) {
+        element.textContent = value;
+      }
+    });
+  }
+
   function updateLanguageButtons(language) {
     document.querySelectorAll(".site-language-btn").forEach((button) => {
       const active = button.dataset.language === language;
@@ -376,6 +391,7 @@
     translateFooter(normalized);
     translateHomepage(normalized);
     translateEngagement(normalized);
+    translateDataLanguage(normalized);
     updateLanguageButtons(normalized);
 
     const file = currentPageFile();
@@ -444,6 +460,55 @@
   window.setTimeout(() => {
     applySiteLanguage(safeStoredLanguage());
   }, 0);
+
+  /* =========================================================
+     SUBTLE SCROLL REVEAL
+     ========================================================= */
+
+  function initializeRevealSections() {
+    const sections = document.querySelectorAll(".reveal-section");
+
+    if (!sections.length) {
+      return;
+    }
+
+    const reducedMotion =
+      window.matchMedia &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    if (
+      reducedMotion ||
+      !("IntersectionObserver" in window)
+    ) {
+      sections.forEach((section) => {
+        section.classList.add("is-visible");
+      });
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries, activeObserver) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) {
+            return;
+          }
+
+          entry.target.classList.add("is-visible");
+          activeObserver.unobserve(entry.target);
+        });
+      },
+      {
+        rootMargin: "0px 0px -8% 0px",
+        threshold: 0.08
+      }
+    );
+
+    sections.forEach((section) => {
+      observer.observe(section);
+    });
+  }
+
+  initializeRevealSections();
 
   /* =========================================================
      MOBILE NAVIGATION
