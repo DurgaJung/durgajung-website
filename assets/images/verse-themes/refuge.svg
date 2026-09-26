@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 420" role="img" aria-labelledby="t d">
+<title id="t">Mountain refuge</title><desc id="d">A peaceful mountain refuge under warm morning light.</desc>
+<defs>
+  <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#183f63"/><stop offset=".55" stop-color="#6f925c"/><stop offset="1" stop-color="#f1d791"/></linearGradient>
+  <linearGradient id="hill" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#17354d"/><stop offset="1" stop-color="#0b223d"/></linearGradient>
+  <filter id="glow"><feGaussianBlur stdDeviation="18"/></filter>
+</defs>
+<rect width="640" height="420" rx="28" fill="url(#sky)"/>
+<circle cx="475" cy="112" r="45" fill="#fff2b7" opacity=".95"/><circle cx="475" cy="112" r="72" fill="#ffe69a" opacity=".22" filter="url(#glow)"/>
+<path d="M0 300 132 150l91 105 92-130 151 175 69-86 105 104v102H0Z" fill="#274f5d"/>
+<path d="M0 343 117 237l92 82 114-137 121 145 83-72 113 88v77H0Z" fill="url(#hill)"/>
+<path d="M284 325h84v59h-84z" fill="#f5e8c4"/><path d="m270 326 56-47 56 47z" fill="#8a6517"/><rect x="319" y="343" width="18" height="41" rx="2" fill="#18334c"/>
+<path d="M327 292v-33m-11 11h22" stroke="#fff4c8" stroke-width="6" stroke-linecap="round"/>
+<path d="M0 375c108-20 178 16 277 0 126-21 238-2 363 15v30H0Z" fill="#0a1a2b" opacity=".56"/>
+</svg>
