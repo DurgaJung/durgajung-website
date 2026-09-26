@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 420" role="img" aria-labelledby="t d">
+<title id="t">Path of guidance</title><desc id="d">A winding path leading toward warm light.</desc>
+<defs><linearGradient id="s" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#102b48"/><stop offset=".63" stop-color="#607f69"/><stop offset="1" stop-color="#d6b46d"/></linearGradient></defs>
+<rect width="640" height="420" rx="28" fill="url(#s)"/>
+<circle cx="500" cy="88" r="42" fill="#fff0ad"/>
+<path d="M0 250 106 184l103 41 92-77 126 76 91-54 122 77v173H0Z" fill="#244c53"/>
+<path d="M0 306c128-43 226-35 340-7 111 27 191 24 300-2v123H0Z" fill="#16374a"/>
+<path d="M278 420c18-79 38-120 83-148 31-19 72-29 136-39-49 18-81 37-101 61-27 31-39 67-44 126Z" fill="#e8cc89" opacity=".94"/>
+<path d="M286 420c14-62 32-102 67-130" fill="none" stroke="#fff0bd" stroke-width="7" opacity=".42"/>
+</svg>
