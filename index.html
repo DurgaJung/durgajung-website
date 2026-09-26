@@ -329,6 +329,37 @@
       font-weight: 900;
     }
 
+    .home-rotating-banner .daily-verse-layout {
+      display: grid;
+      grid-template-columns: 154px minmax(0, 1fr);
+      align-items: center;
+      gap: 18px;
+      width: 100%;
+    }
+
+    .home-rotating-banner .daily-verse-image-wrap {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 0;
+    }
+
+    .home-rotating-banner .daily-verse-image {
+      display: block;
+      width: 154px;
+      height: 96px;
+      object-fit: cover;
+      border: 1px solid rgba(255,255,255,.42);
+      border-radius: 14px;
+      box-shadow:
+        0 8px 18px rgba(0,0,0,.20),
+        inset 0 0 0 1px rgba(255,255,255,.08);
+    }
+
+    .home-rotating-banner .daily-verse-copy {
+      min-width: 0;
+    }
+
     .home-rotating-banner .daily-verse-nepali,
     .home-rotating-banner .daily-verse-english {
       margin: 0;
@@ -734,6 +765,30 @@
         font-size: 10px;
       }
 
+      .home-rotating-banner .daily-verse-layout {
+        grid-template-columns: 76px minmax(0, 1fr);
+        gap: 9px;
+      }
+
+      .home-rotating-banner .daily-verse-image {
+        width: 76px;
+        height: 76px;
+        border-radius: 11px;
+      }
+
+      .home-rotating-banner .daily-verse-copy {
+        text-align: left;
+      }
+
+      .home-rotating-banner .daily-verse-reference {
+        justify-content: flex-start;
+      }
+
+      .home-rotating-banner .daily-verse-nepali,
+      .home-rotating-banner .daily-verse-english {
+        text-align: left;
+      }
+
       .home-rotating-banner .daily-verse-nepali {
         font-size: clamp(17px, 4.7vw, 21px);
         line-height: 1.3;
@@ -982,18 +1037,31 @@
         <div class="daily-verse-inner">
           <div class="daily-verse-title">Verse of the Day / आजको बाइबल पद</div>
 
-          <div class="daily-verse-reference">
-            <span>भजनसंग्रह ४६:१ · NNRV</span>
-            <span>Psalm 46:1 · NIV</span>
+          <div class="daily-verse-layout">
+            <div class="daily-verse-image-wrap">
+              <img
+                class="daily-verse-image"
+                id="daily-verse-image"
+                src="/assets/images/verse-themes/refuge.svg"
+                alt="Mountain refuge illustration for Psalm 46:1"
+              >
+            </div>
+
+            <div class="daily-verse-copy">
+              <div class="daily-verse-reference">
+                <span>भजनसंग्रह ४६:१ · NNRV</span>
+                <span>Psalm 46:1 · NIV</span>
+              </div>
+
+              <p class="daily-verse-nepali nepali">
+                परमेश्‍वर हाम्रा शरणस्‍थान र शक्ति हुनुहुन्‍छ, सङ्कष्‍टमा सधैँ हाजिर रहने सहायता।
+              </p>
+
+              <p class="daily-verse-english">
+                God is our refuge and strength, an ever-present help in trouble.
+              </p>
+            </div>
           </div>
-
-          <p class="daily-verse-nepali nepali">
-            परमेश्‍वर हाम्रा शरणस्‍थान र शक्ति हुनुहुन्‍छ, सङ्कष्‍टमा सधैँ हाजिर रहने सहायता।
-          </p>
-
-          <p class="daily-verse-english">
-            God is our refuge and strength, an ever-present help in trouble.
-          </p>
         </div>
       </article>
 
