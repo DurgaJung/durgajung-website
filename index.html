@@ -297,6 +297,35 @@
       white-space: nowrap;
     }
 
+    .home-rotating-banner .daily-verse-inner {
+      width: min(980px, 100%);
+      text-align: center;
+    }
+
+    .home-rotating-banner .daily-verse-title {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 8px;
+      padding: 5px 12px;
+      border: 1px solid rgba(255,255,255,.22);
+      border-radius: 999px;
+      background: rgba(8,28,18,.28);
+      color: #fff2ae;
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: .05em;
+      box-shadow: 0 4px 12px rgba(0,0,0,.12);
+    }
+
+    .home-rotating-banner .daily-verse-slide .banner-text {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      justify-content: center;
+      gap: 8px 10px;
+    }
+
     .home-rotating-banner .promo-copy {
       display: flex;
       align-items: center;
@@ -892,25 +921,21 @@
   
   <section
     class="home-rotating-banner-wrap"
-    aria-label="Bible verses, upcoming book, software offers and social links"
+    aria-label="Verse of the Day, upcoming book, software offers and social links"
   >
     <div
       class="home-rotating-banner"
       id="home-rotating-banner"
       aria-live="off"
     >
-      <article class="banner-slide verse-green is-active">
-        <p class="banner-text nepali">
-          <span class="verse-ref">मत्ती ६:३३</span>
-          तर पहिले उहाँको राज्‍य र उहाँका धार्मिकताको खोजी गर, र यी सबै थोक तिमीहरूका निम्‍ति थपिनेछन्‌ ।
-        </p>
-      </article>
-
-      <article class="banner-slide verse-red">
-        <p class="banner-text nepali">
-          <span class="verse-ref">हितोपदेश १:७</span>
-          परमप्रभुको भय नै ज्ञानको सुरु हो, तर मूर्खले बुद्धि र अनुशासनलाई तुच्‍छ ठान्‍दछ ।
-        </p>
+      <article class="banner-slide verse-green is-active daily-verse-slide">
+        <div class="daily-verse-inner">
+          <div class="daily-verse-title">Verse of the Day / आजको बाइबल पद</div>
+          <p class="banner-text nepali">
+            <span class="verse-ref" id="daily-verse-reference">फिलिप्पी ४:१३</span>
+            <span id="daily-verse-text">जसले मलाई शक्ति दिनुहुन्‍छ, उहाँमा नै म सब कुरा गर्न सक्‍छु।</span>
+          </p>
+        </div>
       </article>
 
       <article class="banner-slide book-promo upcoming-book-promo product-ad">
@@ -1797,6 +1822,34 @@
 
     var banner = document.getElementById("home-rotating-banner");
     if (!banner) return;
+
+    function loadDailyVerse() {
+      var reference = document.getElementById("daily-verse-reference");
+      var verseText = document.getElementById("daily-verse-text");
+
+      if (!reference || !verseText || !window.fetch) return;
+
+      fetch("/assets/data/verse-of-day.json?ts=" + Date.now(), {
+        cache: "no-store"
+      })
+        .then(function (response) {
+          if (!response.ok) {
+            throw new Error("Daily verse could not be loaded.");
+          }
+          return response.json();
+        })
+        .then(function (data) {
+          if (data && data.reference && data.verse) {
+            reference.textContent = data.reference;
+            verseText.textContent = data.verse;
+          }
+        })
+        .catch(function () {
+          // Keep the verified HTML fallback verse if loading fails.
+        });
+    }
+
+    loadDailyVerse();
 
     var comboOffer = document.getElementById("combo-offer-banner");
     if (comboOffer) {
