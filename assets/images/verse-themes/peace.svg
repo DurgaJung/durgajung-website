@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 420" role="img" aria-labelledby="t d">
+<title id="t">Still waters of peace</title><desc id="d">Quiet water reflecting soft hills and evening light.</desc>
+<defs><linearGradient id="s" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#153b5b"/><stop offset=".62" stop-color="#88a59a"/><stop offset="1" stop-color="#d9c997"/></linearGradient></defs>
+<rect width="640" height="420" rx="28" fill="url(#s)"/>
+<circle cx="480" cy="100" r="38" fill="#fff4c7" opacity=".88"/>
+<path d="M0 239 126 157l96 58 84-83 126 105 87-70 121 82v62H0Z" fill="#315d64"/>
+<path d="M0 273c112 20 217-4 330 4 99 8 195 36 310 9v134H0Z" fill="#17384f"/>
+<path d="M0 318c123-23 212 10 322 6 109-3 189-29 318-4" fill="none" stroke="#d7dfce" stroke-width="5" opacity=".44"/>
+<path d="M0 354c104-12 196 12 300 8 118-4 223-28 340-7" fill="none" stroke="#f0e6b6" stroke-width="4" opacity=".3"/>
+</svg>
