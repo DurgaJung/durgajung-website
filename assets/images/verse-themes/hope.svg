@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 420" role="img" aria-labelledby="t d">
+<title id="t">Sunrise of hope</title><desc id="d">Warm sunrise breaking over distant hills.</desc>
+<defs><linearGradient id="s" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#1a3654"/><stop offset=".58" stop-color="#d28b45"/><stop offset="1" stop-color="#f4d88d"/></linearGradient></defs>
+<rect width="640" height="420" rx="28" fill="url(#s)"/>
+<circle cx="320" cy="242" r="64" fill="#fff1a5"/>
+<g stroke="#fff3bd" stroke-width="7" stroke-linecap="round" opacity=".72"><path d="M320 112v52"/><path d="m227 147 37 37"/><path d="m413 147-37 37"/><path d="M169 242h53"/><path d="M418 242h53"/></g>
+<path d="M0 314c100-66 188-56 281-4 98-67 212-71 359 5v105H0Z" fill="#234c57"/>
+<path d="M0 351c132-49 244-35 338 10 92-39 194-39 302 1v58H0Z" fill="#0b223d"/>
+</svg>
