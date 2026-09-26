@@ -367,7 +367,30 @@
       if (value !== null) {
         element.textContent = value;
       }
+
+      if (
+        element.closest &&
+        element.closest(".daily-verse-dialog-explanation")
+      ) {
+        element.setAttribute(
+          "lang",
+          language === "np" ? "ne" : "en"
+        );
+      }
     });
+
+    const explanation =
+      document.querySelector(".daily-verse-dialog-explanation");
+
+    if (explanation) {
+      explanation.dataset.language = language;
+      explanation.setAttribute(
+        "aria-label",
+        language === "np"
+          ? "आजको बाइबल पदको व्याख्या"
+          : "Explanation of today's Bible verse"
+      );
+    }
   }
 
   function updateLanguageButtons(language) {
