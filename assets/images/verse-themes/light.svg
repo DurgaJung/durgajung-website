@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 420" role="img" aria-labelledby="t d">
+<title id="t">Light in darkness</title><desc id="d">A warm beam of light shining through a dark landscape.</desc>
+<defs>
+<linearGradient id="s" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#07182b"/><stop offset=".75" stop-color="#183f63"/><stop offset="1" stop-color="#7b6331"/></linearGradient>
+<linearGradient id="beam" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#fff4b9" stop-opacity=".9"/><stop offset="1" stop-color="#f0c85f" stop-opacity="0"/></linearGradient>
+</defs>
+<rect width="640" height="420" rx="28" fill="url(#s)"/>
+<path d="M0 315 126 211l105 70 103-113 118 104 84-72 104 101v119H0Z" fill="#0d2b43"/>
+<path d="M398 35 276 360h227Z" fill="url(#beam)" opacity=".67"/>
+<circle cx="400" cy="75" r="31" fill="#fff4bf"/>
+<path d="M0 360c127-26 215 4 317 1 105-3 195-26 323-3v62H0Z" fill="#07182b" opacity=".76"/>
+</svg>
