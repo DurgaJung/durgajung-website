@@ -1,0 +1,105 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 900" role="img" aria-labelledby="title desc">
+<title id="title">Psalm 46:1 — Refuge and Strength</title>
+<desc id="desc">A strong illuminated fortress stands on a rocky mountain while a storm rages outside, symbolizing refuge, strength, and help in trouble.</desc>
+<defs>
+  <linearGradient id="sky" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#07192d"/>
+    <stop offset=".56" stop-color="#173b58"/>
+    <stop offset="1" stop-color="#d69a35"/>
+  </linearGradient>
+  <linearGradient id="rock" x1="0" y1="0" x2=".8" y2="1">
+    <stop offset="0" stop-color="#27323c"/>
+    <stop offset="1" stop-color="#0c1219"/>
+  </linearGradient>
+  <linearGradient id="fortress" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#80683f"/>
+    <stop offset=".48" stop-color="#b89859"/>
+    <stop offset="1" stop-color="#5e4c32"/>
+  </linearGradient>
+  <radialGradient id="glow" cx=".56" cy=".38" r=".45">
+    <stop offset="0" stop-color="#fff4b4" stop-opacity=".98"/>
+    <stop offset=".35" stop-color="#f6bd4e" stop-opacity=".72"/>
+    <stop offset="1" stop-color="#f6bd4e" stop-opacity="0"/>
+  </radialGradient>
+  <filter id="blur"><feGaussianBlur stdDeviation="18"/></filter>
+  <filter id="soft"><feGaussianBlur stdDeviation="5"/></filter>
+</defs>
+
+<rect width="900" height="900" fill="url(#sky)"/>
+<ellipse cx="600" cy="300" rx="290" ry="260" fill="url(#glow)"/>
+
+<!-- storm clouds -->
+<g fill="#07111f" opacity=".92">
+  <ellipse cx="110" cy="120" rx="180" ry="88"/>
+  <ellipse cx="260" cy="95" rx="170" ry="88"/>
+  <ellipse cx="410" cy="120" rx="165" ry="74"/>
+</g>
+<g fill="#243849" opacity=".82">
+  <ellipse cx="80" cy="215" rx="150" ry="72"/>
+  <ellipse cx="250" cy="190" rx="175" ry="83"/>
+</g>
+
+<!-- lightning -->
+<path d="M180 150 130 265l58-23-52 115 105-153-58 18 45-72z" fill="#eef8ff" opacity=".92"/>
+<path d="M185 155 160 215" stroke="#b7dfff" stroke-width="10" opacity=".38" filter="url(#soft)"/>
+
+<!-- distant mountains -->
+<path d="M0 505 150 320 260 455 365 300 520 490 620 375 735 520 900 420 900 900 0 900Z" fill="#122235"/>
+<path d="M0 600 180 455 335 560 470 430 615 570 760 455 900 580 900 900 0 900Z" fill="#182c3d" opacity=".86"/>
+
+<!-- sea/mist -->
+<path d="M0 645 C120 590 210 705 330 650S540 590 660 655 800 710 900 660V900H0Z" fill="#355d70" opacity=".72"/>
+<path d="M0 682 C130 632 235 748 370 680S580 625 720 690 820 728 900 700" fill="none" stroke="#d4eef5" stroke-width="20" opacity=".55"/>
+<ellipse cx="210" cy="630" rx="220" ry="80" fill="#d9edf1" opacity=".15" filter="url(#blur)"/>
+
+<!-- rocky hill -->
+<path d="M210 900 300 720 365 675 415 560 500 520 585 420 650 470 720 590 790 720 900 845 900 900Z" fill="url(#rock)"/>
+<path d="M300 900 360 760 430 690 510 620 575 520 650 495" fill="none" stroke="#68563e" stroke-width="38" stroke-linecap="round"/>
+<path d="M315 900 370 770 440 702 515 632 584 535 652 505" fill="none" stroke="#d0a350" stroke-width="8" opacity=".64"/>
+
+<!-- fortress -->
+<g transform="translate(470 280)">
+  <rect x="0" y="125" width="290" height="190" rx="6" fill="url(#fortress)"/>
+  <rect x="28" y="70" width="70" height="245" fill="url(#fortress)"/>
+  <rect x="192" y="60" width="72" height="255" fill="url(#fortress)"/>
+  <rect x="105" y="22" width="82" height="293" fill="url(#fortress)"/>
+  <g fill="#c5a866">
+    <rect x="25" y="60" width="18" height="32"/>
+    <rect x="54" y="60" width="18" height="32"/>
+    <rect x="82" y="60" width="18" height="32"/>
+    <rect x="104" y="12" width="18" height="32"/>
+    <rect x="137" y="12" width="18" height="32"/>
+    <rect x="170" y="12" width="18" height="32"/>
+    <rect x="190" y="50" width="18" height="32"/>
+    <rect x="220" y="50" width="18" height="32"/>
+    <rect x="250" y="50" width="18" height="32"/>
+  </g>
+  <path d="M104 315V207c0-52 85-52 85 0v108Z" fill="#ffcc63"/>
+  <path d="M119 315V216c0-34 55-34 55 0v99Z" fill="#fff1a4"/>
+  <g fill="#ffda79">
+    <rect x="50" y="145" width="11" height="34" rx="5"/>
+    <rect x="235" y="140" width="11" height="34" rx="5"/>
+    <rect x="141" y="90" width="11" height="38" rx="5"/>
+  </g>
+</g>
+
+<!-- warm protective aura -->
+<ellipse cx="620" cy="500" rx="205" ry="205" fill="#ffcc54" opacity=".12" filter="url(#blur)"/>
+
+<!-- traveler -->
+<g transform="translate(300 665)">
+  <circle cx="0" cy="0" r="22" fill="#101820"/>
+  <path d="M-18 24 Q0 12 20 24 L35 105 -18 105Z" fill="#101820"/>
+  <rect x="-3" y="100" width="13" height="80" rx="6" fill="#101820" transform="rotate(10)"/>
+  <rect x="23" y="95" width="13" height="85" rx="6" fill="#101820" transform="rotate(-8)"/>
+  <path d="M-8 35 -46 85" stroke="#101820" stroke-width="13" stroke-linecap="round"/>
+  <path d="M18 37 56 76" stroke="#101820" stroke-width="13" stroke-linecap="round"/>
+  <path d="M-28 25 Q-56 50 -50 96 Q-18 115 18 86 L10 30Z" fill="#182632"/>
+  <path d="M56 70 70 175" stroke="#392b1d" stroke-width="7" stroke-linecap="round"/>
+</g>
+
+<!-- rain -->
+<g stroke="#b8d7e6" stroke-width="3" opacity=".28">
+  <path d="M40 250 0 330M120 260 80 340M200 275 160 355M280 245 240 325M355 275 315 355M425 245 385 325"/>
+</g>
+</svg>
