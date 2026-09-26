@@ -318,12 +318,39 @@
       box-shadow: 0 4px 12px rgba(0,0,0,.12);
     }
 
-    .home-rotating-banner .daily-verse-slide .banner-text {
+    .home-rotating-banner .daily-verse-reference {
       display: flex;
       flex-wrap: wrap;
-      align-items: baseline;
       justify-content: center;
-      gap: 8px 10px;
+      gap: 6px 14px;
+      margin-bottom: 7px;
+      color: #ffe36c;
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    .home-rotating-banner .daily-verse-nepali,
+    .home-rotating-banner .daily-verse-english {
+      margin: 0;
+      text-align: center;
+      color: #fff;
+      text-shadow: 0 2px 5px rgba(0,0,0,.27);
+    }
+
+    .home-rotating-banner .daily-verse-nepali {
+      font-family: "Noto Sans Devanagari", "Nirmala UI", Mangal, Arial, sans-serif;
+      font-size: clamp(20px, 2.1vw, 30px);
+      font-weight: 850;
+      line-height: 1.35;
+    }
+
+    .home-rotating-banner .daily-verse-english {
+      margin-top: 5px;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(15px, 1.45vw, 20px);
+      font-weight: 700;
+      line-height: 1.35;
+      color: rgba(255,255,255,.94);
     }
 
     .home-rotating-banner .promo-copy {
@@ -695,6 +722,29 @@
         line-height: 1.45;
       }
 
+      .home-rotating-banner .daily-verse-title {
+        margin-bottom: 6px;
+        padding: 4px 9px;
+        font-size: 9px;
+      }
+
+      .home-rotating-banner .daily-verse-reference {
+        gap: 3px 8px;
+        margin-bottom: 5px;
+        font-size: 10px;
+      }
+
+      .home-rotating-banner .daily-verse-nepali {
+        font-size: clamp(17px, 4.7vw, 21px);
+        line-height: 1.3;
+      }
+
+      .home-rotating-banner .daily-verse-english {
+        margin-top: 4px;
+        font-size: clamp(12px, 3.4vw, 15px);
+        line-height: 1.3;
+      }
+
       .home-rotating-banner .promo-copy {
         flex-direction: column;
         gap: 10px;
@@ -931,9 +981,18 @@
       <article class="banner-slide verse-green is-active daily-verse-slide">
         <div class="daily-verse-inner">
           <div class="daily-verse-title">Verse of the Day / आजको बाइबल पद</div>
-          <p class="banner-text nepali">
-            <span class="verse-ref" id="daily-verse-reference">फिलिप्पी ४:१३</span>
-            <span id="daily-verse-text">जसले मलाई शक्ति दिनुहुन्‍छ, उहाँमा नै म सब कुरा गर्न सक्‍छु।</span>
+
+          <div class="daily-verse-reference">
+            <span>भजनसंग्रह ४६:१ · NNRV</span>
+            <span>Psalm 46:1 · NIV</span>
+          </div>
+
+          <p class="daily-verse-nepali nepali">
+            परमेश्‍वर हाम्रा शरणस्‍थान र शक्ति हुनुहुन्‍छ, सङ्कष्‍टमा सधैँ हाजिर रहने सहायता।
+          </p>
+
+          <p class="daily-verse-english">
+            God is our refuge and strength, an ever-present help in trouble.
           </p>
         </div>
       </article>
