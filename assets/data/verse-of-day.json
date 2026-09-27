@@ -1,12 +1,19 @@
 {
-  "date": "2026-09-26",
+  "date": "2026-09-27",
   "title": "Verse of the Day / आजको बाइबल पद",
-  "reference": "फिलिप्पी ४:१३",
-  "verse": "जसले मलाई शक्ति दिनुहुन्‍छ, उहाँमा नै म सब कुरा गर्न सक्‍छु।",
+  "reference": "भजनसंग्रह ५६:३",
+  "verse": "जुन बेला मलाई डर लाग्‍छ, म तपाईंमा भरोसा राख्‍नेछु।",
   "version": "NNRV",
   "source": "Bible.com / Nepal Bible Society",
-  "source_url": "https://www.bible.com/ne/bible/1483/PHP.4.13.NNRV",
+  "source_url": "https://www.bible.com/bible/1483/PSA.56.NNRV",
+  "english_reference": "Psalm 56:3",
+  "english_verse": "When I am afraid, I put my trust in you.",
+  "english_version": "NIV",
+  "english_source_url": "https://www.bible.com/bible/111/PSA.56.3.NIV",
+  "image": "/assets/images/verse-daily/2026-09-27-psalm-56-3.webp",
   "history": [
-    "फिलिप्पी ४:१३"
+    "फिलिप्पी ४:१३",
+    "भजनसंग्रह ४६:१",
+    "भजनसंग्रह ५६:३"
   ]
 }
