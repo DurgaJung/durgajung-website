@@ -1,19 +1,20 @@
 {
-  "date": "2026-09-27",
+  "date": "2026-09-28",
   "title": "Verse of the Day / आजको बाइबल पद",
-  "reference": "भजनसंग्रह ५६:३",
-  "verse": "जुन बेला मलाई डर लाग्‍छ, म तपाईंमा भरोसा राख्‍नेछु।",
+  "reference": "भजनसंग्रह १२१:२",
+  "verse": "स्‍वर्ग र पृथ्‍वी सृजना गर्नुहुने परमप्रभुबाट मेरो गुहार आउँछ।",
   "version": "NNRV",
   "source": "Bible.com / Nepal Bible Society",
-  "source_url": "https://www.bible.com/bible/1483/PSA.56.NNRV",
-  "english_reference": "Psalm 56:3",
-  "english_verse": "When I am afraid, I put my trust in you.",
+  "source_url": "https://www.bible.com/bible/1483/PSA.121.NNRV",
+  "english_reference": "Psalm 121:2",
+  "english_verse": "My help comes from the LORD, the Maker of heaven and earth.",
   "english_version": "NIV",
-  "english_source_url": "https://www.bible.com/bible/111/PSA.56.3.NIV",
-  "image": "/assets/images/verse-daily/2026-09-27-psalm-56-3.webp",
+  "english_source_url": "https://www.bible.com/bible/111/PSA.121.2.NIV",
+  "image": "/assets/images/verse-daily/2026-09-28-psalm-121-2.webp",
   "history": [
     "फिलिप्पी ४:१३",
     "भजनसंग्रह ४६:१",
-    "भजनसंग्रह ५६:३"
+    "भजनसंग्रह ५६:३",
+    "भजनसंग्रह १२१:२"
   ]
 }
