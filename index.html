@@ -318,6 +318,44 @@
       box-shadow: 0 4px 12px rgba(0,0,0,.12);
     }
 
+    /* Both AD and BS dates remain visible in either language. */
+    .daily-verse-date {
+      display: inline-flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      gap: 5px 11px;
+      max-width: 100%;
+      margin: 3px auto 12px;
+      padding: 7px 13px;
+      border: 1px solid #f5d47e;
+      border-radius: 13px;
+      background: #fff0bc;
+      color: #172c43;
+      font-size: clamp(11px, 1.2vw, 14px);
+      line-height: 1.5;
+      font-weight: 900;
+      box-shadow: 0 4px 14px rgba(0,0,0,.13);
+      font-variant-numeric: tabular-nums;
+    }
+    .daily-verse-date strong { font-weight: 900; }
+    .daily-verse-date .daily-verse-date-ad { color: #173954; }
+    .daily-verse-date .daily-verse-date-bs { color: #744200; }
+    .daily-verse-date-divider { color: #ac802e; font-weight: 900; }
+    #daily-verse-dialog-verse .daily-verse-date {
+      display: flex;
+      width: fit-content;
+      margin: 0 0 17px;
+      border-color: #dfb951;
+      background: #fff1be;
+      font-size: clamp(12px, 1.6vw, 15px);
+    }
+    @media (max-width: 520px) {
+      .daily-verse-date { padding: 6px 9px; gap: 2px 7px; font-size: 11px; }
+      .daily-verse-date-divider { display: none; }
+      #daily-verse-dialog-verse .daily-verse-date { justify-content: flex-start; }
+    }
+
     .home-rotating-banner .daily-verse-reference {
       display: flex;
       flex-wrap: wrap;
@@ -1269,7 +1307,7 @@
       <article class="banner-slide verse-green is-active daily-verse-slide">
         <div class="daily-verse-inner">
           <div class="daily-verse-title">Verse of the Day / आजको बाइबल पद</div>
-          <div class="daily-verse-date" data-en="September 28, 2026 AD" data-np="१२ आश्विन २०८३ वि.सं.">September 28, 2026 AD / १२ आश्विन २०८३ वि.सं.</div>
+          <div class="daily-verse-date" aria-label="28 September 2026 AD; १२ आश्विन २०८३ वि.सं."><strong class="daily-verse-date-ad" lang="en">📅 28 September 2026 AD</strong><span class="daily-verse-date-divider" aria-hidden="true">│</span><strong class="daily-verse-date-bs" lang="ne">१२ आश्विन २०८३ वि.सं.</strong></div>
 
           <div class="daily-verse-layout">
             <div class="daily-verse-image-wrap">
@@ -2474,6 +2512,7 @@
       var slide = banner.querySelector(".daily-verse-slide");
       if (!slide || !dailyVerseDialogVerse) return;
 
+      var date = slide.querySelector(".daily-verse-date");
       var reference = slide.querySelector(".daily-verse-reference");
       var nepaliVerse = slide.querySelector(".daily-verse-nepali");
       var englishVerse = slide.querySelector(".daily-verse-english");
@@ -2481,7 +2520,7 @@
 
       dailyVerseDialogVerse.innerHTML = "";
 
-      [reference, nepaliVerse, englishVerse].forEach(function (node) {
+      [date, reference, nepaliVerse, englishVerse].forEach(function (node) {
         if (node) {
           dailyVerseDialogVerse.appendChild(node.cloneNode(true));
         }
