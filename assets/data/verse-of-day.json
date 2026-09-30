@@ -1,21 +1,22 @@
 {
-  "date": "2026-09-29",
+  "date": "2026-09-30",
   "title": "Verse of the Day / आजको बाइबल पद",
-  "reference": "भजनसंग्रह २३:१",
-  "verse": "परमप्रभु मेरा गोठाला हुनुहुन्‍छ, मलाई केही कुराको अभाव हुँदैन।",
+  "reference": "यशैया ४१:१०",
+  "verse": "यसैले नडरा, किनकि म तँसित छु। निरुत्‍साहित नहो, किनकि म तेरा परमेश्‍वर हुँ। म तँलाई बलियो पार्नेछु। म तँलाई सहायता गर्नेछु। मेरो धार्मिकताको दाहिने हातले म तँलाई सम्हाल्‍नेछु।",
   "version": "NNRV",
   "source": "Bible.com / Nepal Bible Society",
-  "source_url": "https://www.bible.com/bible/1483/PSA.23.NNRV",
-  "english_reference": "Psalm 23:1",
-  "english_verse": "The LORD is my shepherd, I lack nothing.",
+  "source_url": "https://www.bible.com/bible/1483/ISA.41.10.NNRV",
+  "english_reference": "Isaiah 41:10",
+  "english_verse": "So do not fear, for I am with you; do not be dismayed, for I am your God. I will strengthen you and help you; I will uphold you with my righteous right hand.",
   "english_version": "NIV",
-  "english_source_url": "https://www.bible.com/bible/111/PSA.23.1.NIV",
-  "image": "/assets/images/verse-daily/2026-09-29-psalm-23-1.webp",
+  "english_source_url": "https://www.bible.com/bible/111/ISA.41.10.NIV",
+  "image": "/assets/images/verse-daily/2026-09-30-isaiah-41-10.svg",
   "history": [
     "फिलिप्पी ४:१३",
     "भजनसंग्रह ४६:१",
     "भजनसंग्रह ५६:३",
     "भजनसंग्रह १२१:२",
-    "भजनसंग्रह २३:१"
+    "भजनसंग्रह २३:१",
+    "यशैया ४१:१०"
   ]
 }
