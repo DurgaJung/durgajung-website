@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1200" role="img" aria-labelledby="t d">
+<title id="t">Isaiah 41:10 — Strength and help</title>
+<desc id="d">A traveler on a mountain path at dawn beneath storm clouds and warm light, symbolizing God's presence, strength and help.</desc>
+<defs>
+  <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#17263d"/>
+    <stop offset=".55" stop-color="#6f6670"/>
+    <stop offset=".72" stop-color="#d29a63"/>
+    <stop offset="1" stop-color="#4a4d48"/>
+  </linearGradient>
+  <radialGradient id="sun" cx="72%" cy="30%" r="32%">
+    <stop offset="0" stop-color="#fff2c8" stop-opacity=".95"/>
+    <stop offset=".35" stop-color="#ffd88c" stop-opacity=".5"/>
+    <stop offset="1" stop-color="#ffd88c" stop-opacity="0"/>
+  </radialGradient>
+  <linearGradient id="path" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#d7ad70"/>
+    <stop offset="1" stop-color="#735742"/>
+  </linearGradient>
+  <filter id="blur"><feGaussianBlur stdDeviation="28"/></filter>
+  <filter id="soft"><feGaussianBlur stdDeviation="10"/></filter>
+</defs>
+<rect width="1200" height="1200" fill="url(#sky)"/>
+<rect width="1200" height="1200" fill="url(#sun)"/>
+<g opacity=".55" filter="url(#blur)" fill="#172236">
+  <ellipse cx="160" cy="205" rx="250" ry="85"/>
+  <ellipse cx="430" cy="170" rx="290" ry="95"/>
+  <ellipse cx="770" cy="190" rx="220" ry="75"/>
+</g>
+<path d="M0 770 180 570 350 730 520 515 720 730 910 545 1200 735 1200 1200 0 1200Z" fill="#303b42"/>
+<path d="M0 875 245 705 415 815 625 660 805 805 1040 665 1200 790 1200 1200 0 1200Z" fill="#3d4744"/>
+<path d="M500 1200 690 1200 635 970 690 830 640 705 585 770 555 900Z" fill="url(#path)"/>
+<path d="M585 1160 Q605 1000 595 910 T642 755" fill="none" stroke="#f0c483" stroke-opacity=".55" stroke-width="9"/>
+<g fill="#111821">
+  <circle cx="592" cy="690" r="24"/>
+  <path d="M570 714h43l18 121h-80Z"/>
+  <path d="M566 744 523 812" stroke="#111821" stroke-width="16" stroke-linecap="round"/>
+  <path d="M614 744 658 800" stroke="#111821" stroke-width="16" stroke-linecap="round"/>
+  <path d="M570 832 550 930" stroke="#111821" stroke-width="17" stroke-linecap="round"/>
+  <path d="M610 832 632 930" stroke="#111821" stroke-width="17" stroke-linecap="round"/>
+</g>
+<g fill="none" stroke="#ffe7b4" stroke-linecap="round">
+  <path d="M720 460 Q845 305 1030 405" stroke-width="24" opacity=".34" filter="url(#soft)"/>
+  <path d="M735 465 Q850 330 1015 420" stroke-width="12" opacity=".72"/>
+  <path d="M865 445 q55 35 104 8" stroke-width="10" opacity=".5"/>
+</g>
+<path d="M500 520 720 730 910 545" fill="none" stroke="#f5c77b" stroke-opacity=".45" stroke-width="6"/>
+</svg>
