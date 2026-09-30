@@ -393,6 +393,28 @@
     }
   }
 
+  function translateDailyVerse(language) {
+    const showNepali = language === "np";
+
+    document.querySelectorAll(".daily-verse-nepali").forEach((element) => {
+      element.hidden = !showNepali;
+      element.setAttribute("aria-hidden", String(!showNepali));
+    });
+
+    document.querySelectorAll(".daily-verse-english").forEach((element) => {
+      element.hidden = showNepali;
+      element.setAttribute("aria-hidden", String(showNepali));
+    });
+
+    document.querySelectorAll(".daily-verse-reference").forEach((reference) => {
+      const spans = reference.querySelectorAll("span");
+      if (spans.length >= 2) {
+        spans[0].hidden = !showNepali;
+        spans[1].hidden = showNepali;
+      }
+    });
+  }
+
   function updateLanguageButtons(language) {
     document.querySelectorAll(".site-language-btn").forEach((button) => {
       const active = button.dataset.language === language;
@@ -415,6 +437,7 @@
     translateHomepage(normalized);
     translateEngagement(normalized);
     translateDataLanguage(normalized);
+    translateDailyVerse(normalized);
     updateLanguageButtons(normalized);
 
     const file = currentPageFile();
