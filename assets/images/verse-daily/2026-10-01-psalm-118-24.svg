@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1200" role="img" aria-labelledby="t d">
+<title id="t">Psalm 118:24 — Rejoice in the day the Lord has made</title>
+<desc id="d">Warm sunrise over a quiet mountain valley and river, symbolizing gratitude, joy, and a new day.</desc>
+<defs>
+  <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#26364a"/>
+    <stop offset=".52" stop-color="#9b766f"/>
+    <stop offset=".78" stop-color="#e0ad70"/>
+    <stop offset="1" stop-color="#f0cc8a"/>
+  </linearGradient>
+  <radialGradient id="glow" cx="68%" cy="33%" r="36%">
+    <stop offset="0" stop-color="#fff7d6" stop-opacity=".98"/>
+    <stop offset=".32" stop-color="#ffd68a" stop-opacity=".65"/>
+    <stop offset="1" stop-color="#ffd68a" stop-opacity="0"/>
+  </radialGradient>
+  <linearGradient id="water" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#caa071"/>
+    <stop offset=".45" stop-color="#6d7e82"/>
+    <stop offset="1" stop-color="#31474b"/>
+  </linearGradient>
+</defs>
+<rect width="1200" height="1200" fill="url(#sky)"/>
+<rect width="1200" height="1200" fill="url(#glow)"/>
+<circle cx="820" cy="390" r="95" fill="#fff0bd" opacity=".85"/>
+<path d="M0 720 190 545 340 685 520 500 700 690 905 520 1200 700 1200 1200 0 1200Z" fill="#43535a"/>
+<path d="M0 820 220 675 390 800 610 640 820 785 1020 655 1200 770 1200 1200 0 1200Z" fill="#56665f"/>
+<path d="M0 875 Q300 820 510 885 T1200 840 L1200 1200 0 1200Z" fill="url(#water)"/>
+<path d="M570 1200 Q660 1040 760 910 Q830 825 920 745" fill="none" stroke="#f2c47f" stroke-opacity=".55" stroke-width="18"/>
+<path d="M505 955 Q690 910 865 920" fill="none" stroke="#fff0c7" stroke-opacity=".5" stroke-width="7"/>
+<g opacity=".7" fill="#263b32">
+  <path d="M100 940 180 770 260 940Z"/>
+  <path d="M170 930 240 790 310 930Z"/>
+  <path d="M980 930 1050 770 1125 930Z"/>
+</g>
+</svg>
