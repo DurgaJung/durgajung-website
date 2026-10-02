@@ -28,6 +28,29 @@
       border-radius:6px;
       box-shadow:0 3px 10px rgba(0,0,0,.16);
     }
+
+    .new-badge {
+      display:inline-block;
+      margin:0 0 12px 0;
+      padding:7px 14px;
+      border-radius:999px;
+      background:#d60000;
+      color:#ffffff;
+      font-weight:800;
+      font-size:14px;
+      letter-spacing:1px;
+      text-transform:uppercase;
+      box-shadow:0 0 0 rgba(214,0,0,.55);
+      animation:newHeartbeat 1.15s infinite;
+    }
+
+    @keyframes newHeartbeat {
+      0%, 100% { transform:scale(1); opacity:1; box-shadow:0 0 0 0 rgba(214,0,0,.45); }
+      14% { transform:scale(1.12); }
+      28% { transform:scale(1); }
+      42% { transform:scale(1.12); }
+      70% { transform:scale(1); opacity:.88; box-shadow:0 0 0 10px rgba(214,0,0,0); }
+    }
   </style>
 </head>
 
@@ -926,6 +949,8 @@
             </div>
 
             <div class="book-body">
+
+              <span class="new-badge">New</span>
 
               <h3>Lessons From the Lives of the Twelve Disciples</h3>
 
