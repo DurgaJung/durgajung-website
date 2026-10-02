@@ -55,15 +55,21 @@
 
     @keyframes booksNewHeartbeat {
       0%, 40%, 100% { transform:scale(1); opacity:1; }
-      12% { transform:scale(1.18); opacity:.7; }
+      12% { transform:scale(1.18); opacity:.35; }
       24% { transform:scale(1); opacity:1; }
-      32% { transform:scale(1.14); opacity:.75; }
+      32% { transform:scale(1.14); opacity:.45; }
+    }
+
+    @keyframes booksNewFade {
+      0%, 100% { opacity:1; }
+      50% { opacity:.35; }
     }
 
     @media (prefers-reduced-motion: reduce) {
       .new-badge,
       .book-body .book-new {
-        animation:none;
+        /* Keep a slow fade without scaling; override the global motion reset. */
+        animation:booksNewFade 2.4s ease-in-out infinite !important;
       }
     }
 
