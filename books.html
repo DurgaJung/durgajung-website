@@ -51,6 +51,48 @@
       42% { transform:scale(1.12); }
       70% { transform:scale(1); opacity:.88; box-shadow:0 0 0 10px rgba(214,0,0,0); }
     }
+
+    .book-language-filter {
+      display:flex;
+      flex-wrap:wrap;
+      gap:12px;
+      justify-content:center;
+      margin:28px 0 34px;
+    }
+
+    .book-language-filter button {
+      appearance:none;
+      border:2px solid #986719;
+      background:#ffffff;
+      color:#6f4a0f;
+      font:inherit;
+      font-weight:800;
+      padding:12px 22px;
+      border-radius:999px;
+      cursor:pointer;
+      transition:background .2s ease,color .2s ease,transform .2s ease,box-shadow .2s ease;
+    }
+
+    .book-language-filter button:hover {
+      transform:translateY(-1px);
+      box-shadow:0 6px 18px rgba(0,0,0,.12);
+    }
+
+    .book-language-filter button.is-active,
+    .book-language-filter button[aria-pressed="true"] {
+      background:#986719;
+      color:#ffffff;
+      box-shadow:0 6px 18px rgba(152,103,25,.24);
+    }
+
+    .book-language-filter button:focus-visible {
+      outline:3px solid rgba(152,103,25,.35);
+      outline-offset:3px;
+    }
+
+    [data-book-language][hidden] {
+      display:none !important;
+    }
   </style>
 </head>
 
@@ -154,11 +196,30 @@
         to apply.
       </div>
 
+
+      <div class="book-language-filter" role="group" aria-label="Filter books by language">
+        <button
+          class="is-active"
+          type="button"
+          data-book-filter="nepali"
+          aria-pressed="true"
+        >
+          Books in Nepali
+        </button>
+        <button
+          type="button"
+          data-book-filter="hindi"
+          aria-pressed="false"
+        >
+          Books in Hindi
+        </button>
+      </div>
+
       <!-- =====================================================
            BOOKS BY DURGA JUNG KUNWAR
            ===================================================== -->
 
-      <section class="book-section">
+      <section class="book-section" data-book-language="nepali">
 
         <h2>Books by Durga Jung Kunwar</h2>
 
@@ -222,7 +283,7 @@
            NEPALI BOOKS
            ===================================================== -->
 
-      <section class="book-section">
+      <section class="book-section" data-book-language="nepali">
 
         <h2>Nepali Books</h2>
 
@@ -1071,7 +1132,7 @@
            HINDI BOOKS
            ===================================================== -->
 
-      <section class="book-section">
+      <section class="book-section" data-book-language="hindi" hidden>
 
         <h2>Hindi Books</h2>
 
@@ -1932,6 +1993,34 @@
       </div>
     </div>
   </footer>
+
+
+<script>
+  (function () {
+    const filterButtons = document.querySelectorAll('[data-book-filter]');
+    const bookSections = document.querySelectorAll('[data-book-language]');
+
+    function showBooks(language) {
+      bookSections.forEach(function (section) {
+        section.hidden = section.dataset.bookLanguage !== language;
+      });
+
+      filterButtons.forEach(function (button) {
+        const active = button.dataset.bookFilter === language;
+        button.classList.toggle('is-active', active);
+        button.setAttribute('aria-pressed', active ? 'true' : 'false');
+      });
+    }
+
+    filterButtons.forEach(function (button) {
+      button.addEventListener('click', function () {
+        showBooks(button.dataset.bookFilter);
+      });
+    });
+
+    showBooks('nepali');
+  }());
+</script>
 
 <script src="assets/js/main.js"></script>
 
