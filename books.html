@@ -29,27 +29,42 @@
       box-shadow:0 3px 10px rgba(0,0,0,.16);
     }
 
-    .new-badge {
+    .new-badge,
+    .book-body .book-new {
       display:inline-block;
-      margin:0 0 12px 0;
-      padding:7px 14px;
+      align-self:flex-start;
+      width:fit-content;
+      flex:0 0 auto;
+      padding:3px 7px;
       border-radius:999px;
       background:#d60000;
       color:#ffffff;
       font-weight:800;
-      font-size:14px;
-      letter-spacing:1px;
+      line-height:1;
+      white-space:nowrap;
       text-transform:uppercase;
-      box-shadow:0 0 0 rgba(214,0,0,.55);
-      animation:newHeartbeat 1.15s infinite;
+      transform-origin:center;
+      animation:booksNewHeartbeat 1.4s ease-in-out infinite;
     }
 
-    @keyframes newHeartbeat {
-      0%, 100% { transform:scale(1); opacity:1; box-shadow:0 0 0 0 rgba(214,0,0,.45); }
-      14% { transform:scale(1.12); }
-      28% { transform:scale(1); }
-      42% { transform:scale(1.12); }
-      70% { transform:scale(1); opacity:.88; box-shadow:0 0 0 10px rgba(214,0,0,0); }
+    .new-badge {
+      margin:0 0 12px 0;
+      font-size:14px;
+      letter-spacing:.5px;
+    }
+
+    @keyframes booksNewHeartbeat {
+      0%, 40%, 100% { transform:scale(1); opacity:1; }
+      12% { transform:scale(1.18); opacity:.7; }
+      24% { transform:scale(1); opacity:1; }
+      32% { transform:scale(1.14); opacity:.75; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .new-badge,
+      .book-body .book-new {
+        animation:none;
+      }
     }
 
     .book-language-filter {
