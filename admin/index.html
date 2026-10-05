@@ -365,6 +365,57 @@
 
         </div>
 
+        <div class="admin-command-bar" aria-label="Quick admin actions">
+          <div class="admin-command-copy">
+            <span class="admin-command-kicker">QUICK ACTIONS</span>
+            <strong>Website Control Center</strong>
+            <span>Jump directly to the areas you use most.</span>
+          </div>
+
+          <div class="admin-command-actions">
+            <button class="admin-command-btn" type="button" data-open-section="orders">
+              <span aria-hidden="true">□</span> Orders
+            </button>
+            <button class="admin-command-btn" type="button" data-open-section="books">
+              <span aria-hidden="true">▤</span> Books
+            </button>
+            <button class="admin-command-btn" type="button" data-open-section="software">
+              <span aria-hidden="true">▣</span> Software
+            </button>
+            <button class="admin-command-btn" type="button" data-open-section="website">
+              <span aria-hidden="true">◉</span> Website
+            </button>
+            <a class="admin-command-btn primary" href="/" target="_blank" rel="noopener">
+              <span aria-hidden="true">↗</span> Open Site
+            </a>
+          </div>
+        </div>
+
+        <article class="daily-verse-admin-card" id="dailyVerseAdminCard">
+          <div class="daily-verse-admin-media">
+            <img id="adminVerseImage" src="/assets/images/favicon.webp" alt="" loading="lazy">
+          </div>
+
+          <div class="daily-verse-admin-copy">
+            <div class="daily-verse-admin-topline">
+              <div>
+                <span class="daily-verse-admin-kicker">VERSE OF THE DAY</span>
+                <h2>Daily publishing status</h2>
+              </div>
+              <span class="daily-verse-health checking" id="adminVerseHealth">Checking…</span>
+            </div>
+
+            <div class="daily-verse-admin-date" id="adminVerseDate">—</div>
+            <strong class="daily-verse-admin-reference" id="adminVerseReference">Loading today's verse…</strong>
+            <p class="daily-verse-admin-text nepali" id="adminVerseText"></p>
+
+            <div class="daily-verse-admin-meta">
+              <span id="adminVerseVersion">NNRV / NIV</span>
+              <a href="/" target="_blank" rel="noopener">View on website ↗</a>
+            </div>
+          </div>
+        </article>
+
 
         <!-- BUSINESS METRICS -->
 
