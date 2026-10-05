@@ -1848,6 +1848,24 @@
             </div>
             <span class="status-badge active">ENABLED</span>
           </article>
+
+          <article class="panel diagnostic-card" id="serviceWorkerDiagnostic">
+            <span class="diagnostic-icon">⌁</span>
+            <div>
+              <strong>Web Push Service Worker</strong>
+              <p id="serviceWorkerDiagnosticText">Checking push infrastructure…</p>
+            </div>
+            <span id="serviceWorkerDiagnosticBadge" class="status-badge pending">CHECKING</span>
+          </article>
+
+          <article class="panel diagnostic-card" id="notificationDiagnostic">
+            <span class="diagnostic-icon">◌</span>
+            <div>
+              <strong>Browser Notification Permission</strong>
+              <p id="notificationDiagnosticText">Checking this browser…</p>
+            </div>
+            <span id="notificationDiagnosticBadge" class="status-badge pending">CHECKING</span>
+          </article>
         </div>
 
       </section>
