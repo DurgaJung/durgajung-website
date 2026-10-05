@@ -1740,13 +1740,19 @@
 
         <aside class="home-hero-visual" aria-label="Durga Jung Kunwar profile">
           <div class="home-portrait-frame">
-            <img
-              src="/assets/images/portrait.webp"
-              alt="Durga Jung Kunwar"
-              width="720"
-              height="900"
-              loading="eager"
-            >
+            <picture>
+              <source
+                srcset="/assets/images/portrait.webp"
+                type="image/webp"
+              >
+              <img
+                src="/assets/images/portrait.jpg"
+                alt="Durga Jung Kunwar"
+                width="720"
+                height="900"
+                loading="eager"
+              >
+            </picture>
           </div>
 
           <div class="home-portrait-card">
