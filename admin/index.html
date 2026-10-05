@@ -23,6 +23,8 @@
     href="/assets/admin/admin.css"
   >
 
+  <script src="/assets/js/image-compat.js"></script>
+
   <script
     src="/assets/admin/admin.js"
     defer
@@ -175,6 +177,26 @@
       >
         <span>◉</span>
         Website
+      </button>
+
+
+      <button
+        class="nav-item"
+        type="button"
+        data-section="media"
+      >
+        <span>▧</span>
+        Media Library
+      </button>
+
+
+      <button
+        class="nav-item"
+        type="button"
+        data-section="revisions"
+      >
+        <span>↺</span>
+        Revisions
       </button>
 
 
@@ -1796,6 +1818,121 @@
 
         </article>
 
+        <div class="website-diagnostics-grid" id="ipadCompatibilityPanel">
+          <article class="panel diagnostic-card">
+            <span class="diagnostic-icon">▣</span>
+            <div>
+              <strong>iPad Image Compatibility</strong>
+              <p>WebP images automatically fall back to JPEG on older Safari/iPadOS.</p>
+            </div>
+            <span class="status-badge active">ENABLED</span>
+          </article>
+
+          <article class="panel diagnostic-card">
+            <span class="diagnostic-icon">▤</span>
+            <div>
+              <strong>Banner Fallback</strong>
+              <p><code>/assets/images/banner.jpg</code> is available when WebP cannot render.</p>
+            </div>
+            <span class="status-badge active">READY</span>
+          </article>
+
+          <article class="panel diagnostic-card">
+            <span class="diagnostic-icon">▦</span>
+            <div>
+              <strong>Safari Layout Fallback</strong>
+              <p>Legacy Safari receives non-<code>aspect-ratio</code> image-frame sizing rules.</p>
+            </div>
+            <span class="status-badge active">ENABLED</span>
+          </article>
+        </div>
+
+      </section>
+
+
+      <!-- =================================================
+           MEDIA LIBRARY
+      ================================================== -->
+
+      <section
+        id="section-media"
+        class="admin-section"
+      >
+
+        <div class="section-heading">
+
+          <div>
+            <p class="eyebrow">WEBSITE ASSETS</p>
+            <h1>Media Library</h1>
+            <p class="lead">
+              Browse website images, verify dimensions and formats,
+              and confirm JPEG compatibility fallbacks for older iPad Safari.
+            </p>
+          </div>
+
+          <button
+            id="refreshMedia"
+            class="secondary-btn"
+            type="button"
+          >
+            Refresh Media
+          </button>
+
+        </div>
+
+        <div class="metric-grid media-metrics">
+          <article class="metric-card">
+            <div class="metric-label">Media Files</div>
+            <div id="mediaMetricTotal" class="metric-value neutral">—</div>
+            <div class="metric-note">Indexed website images</div>
+          </article>
+
+          <article class="metric-card">
+            <div class="metric-label">WebP Images</div>
+            <div id="mediaMetricWebp" class="metric-value neutral">—</div>
+            <div class="metric-note">Optimized modern format</div>
+          </article>
+
+          <article class="metric-card">
+            <div class="metric-label">JPEG Fallbacks</div>
+            <div id="mediaMetricFallbacks" class="metric-value">—</div>
+            <div class="metric-note">Older Safari / iPad support</div>
+          </article>
+
+          <article class="metric-card">
+            <div class="metric-label">Index Updated</div>
+            <div id="mediaMetricUpdated" class="metric-value compact-value">—</div>
+            <div class="metric-note">Generated automatically</div>
+          </article>
+        </div>
+
+        <article class="panel">
+          <div class="media-toolbar">
+            <label>
+              <span>Search media</span>
+              <input
+                id="mediaSearch"
+                type="search"
+                placeholder="Search file name or path…"
+                autocomplete="off"
+              >
+            </label>
+
+            <label>
+              <span>Category</span>
+              <select id="mediaCategory">
+                <option value="">All categories</option>
+              </select>
+            </label>
+
+            <div class="media-result-count" id="mediaResultCount"></div>
+          </div>
+
+          <div id="mediaGrid" class="admin-media-grid">
+            <div class="table-empty">Loading media library…</div>
+          </div>
+        </article>
+
       </section>
 
 
@@ -2169,6 +2306,57 @@
 
         </article>
 
+      </section>
+
+
+      <!-- =================================================
+           REVISIONS
+      ================================================== -->
+
+      <section
+        id="section-revisions"
+        class="admin-section"
+      >
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">PRODUCTION HISTORY</p>
+            <h1>Revision History</h1>
+            <p class="lead">
+              Review recent production commits for the website and identify
+              the exact version to use if a rollback is ever required.
+            </p>
+          </div>
+
+          <div class="section-actions">
+            <button id="refreshRevisions" class="secondary-btn" type="button">
+              Refresh History
+            </button>
+            <a
+              class="secondary-btn"
+              href="https://github.com/DurgaJung/durgajung-website/commits/main"
+              target="_blank"
+              rel="noopener"
+            >
+              Open GitHub ↗
+            </a>
+          </div>
+        </div>
+
+        <div class="notice-box owner-notice revision-notice">
+          <strong>Safe rollback reference</strong>
+          <p>
+            A pre-redesign backup branch exists:
+            <code>backup/pre-professional-refresh-2026-10-05</code>.
+            Restore actions are intentionally not exposed to browser JavaScript,
+            because repository write credentials must never be placed in the admin page.
+          </p>
+        </div>
+
+        <article class="panel">
+          <div id="revisionList" class="revision-list">
+            <div class="table-empty">Loading revision history…</div>
+          </div>
+        </article>
       </section>
 
 
