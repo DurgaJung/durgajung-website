@@ -3752,3 +3752,28 @@ body{
     backface-visibility: hidden;
   }
 }
+
+
+/* NATIVE PICTURE FALLBACK WRAPPERS */
+.brand-picture{
+  display:block;
+  width:100%;
+}
+
+.brand-picture .brand-banner{
+  width:100%;
+  height:auto;
+}
+
+.home-portrait-frame picture{
+  display:block;
+  width:100%;
+  height:100%;
+}
+
+.home-portrait-frame picture img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  object-position:center top;
+}
