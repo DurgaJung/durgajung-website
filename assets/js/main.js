@@ -393,6 +393,19 @@
     }
   }
 
+  function translateLanguageBlocks(language) {
+    document.querySelectorAll("[data-lang-block]").forEach((element) => {
+      element.hidden = element.dataset.langBlock !== language;
+    });
+
+    document.querySelectorAll("[data-placeholder-en][data-placeholder-np]").forEach((element) => {
+      element.placeholder =
+        language === "np"
+          ? element.dataset.placeholderNp
+          : element.dataset.placeholderEn;
+    });
+  }
+
   function translateDailyVerse(language) {
     const showNepali = language === "np";
 
@@ -437,6 +450,7 @@
     translateHomepage(normalized);
     translateEngagement(normalized);
     translateDataLanguage(normalized);
+    translateLanguageBlocks(normalized);
     translateDailyVerse(normalized);
     updateLanguageButtons(normalized);
 
