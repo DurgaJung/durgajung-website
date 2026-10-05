@@ -96,12 +96,20 @@
       }
 
       const data = await response.json();
-      const today = new Intl.DateTimeFormat("en-CA", {
+      const dateParts = new Intl.DateTimeFormat("en-US", {
         timeZone: "Asia/Bahrain",
         year: "numeric",
         month: "2-digit",
         day: "2-digit"
-      }).format(new Date());
+      }).formatToParts(new Date());
+
+      const part = (type) =>
+        dateParts.find((item) => item.type === type)?.value || "";
+
+      const today =
+        part("year") + "-" +
+        part("month") + "-" +
+        part("day");
 
       const current = data.date === today;
 
