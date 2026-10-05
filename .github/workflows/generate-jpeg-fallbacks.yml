@@ -1,0 +1,61 @@
+name: Generate JPEG image fallbacks
+
+on:
+  push:
+    paths:
+      - ".github/workflows/generate-jpeg-fallbacks.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  generate:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Install Pillow
+        run: python -m pip install --upgrade pillow
+
+      - name: Generate JPEG fallbacks for WebP images
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          from PIL import Image
+
+          root = Path("assets/images")
+          converted = 0
+
+          for src in root.rglob("*.webp"):
+              dst = src.with_suffix(".jpg")
+              try:
+                  with Image.open(src) as im:
+                      if im.mode in ("RGBA", "LA"):
+                          bg = Image.new("RGB", im.size, "white")
+                          alpha = im.getchannel("A")
+                          bg.paste(im.convert("RGB"), mask=alpha)
+                          out = bg
+                      else:
+                          out = im.convert("RGB")
+                      out.save(dst, "JPEG", quality=91, optimize=True, progressive=True)
+                      converted += 1
+              except Exception as exc:
+                  print(f"Could not convert {src}: {exc}")
+
+          print(f"Generated {converted} JPEG fallbacks")
+          PY
+
+      - name: Commit generated fallbacks
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/images/**/*.jpg assets/images/*.jpg || true
+          if git diff --cached --quiet; then
+            echo "No fallback changes to commit."
+          else
+            git commit -m "Generate JPEG fallbacks for older Safari and iPad"
+            git push
+          fi
