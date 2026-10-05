@@ -117,6 +117,7 @@
 
       case "website":
         runHealthChecks();
+        runPublishingDiagnostics();
         break;
 
       case "media":
@@ -4165,6 +4166,129 @@
   }
 
 
+  function setDiagnosticStatus(
+    badgeId,
+    textId,
+    status,
+    label,
+    message
+  ) {
+    const badge = $(badgeId);
+    const text = $(textId);
+
+    if (badge) {
+      badge.className =
+        "status-badge " + status;
+      badge.textContent =
+        label;
+    }
+
+    if (text) {
+      text.textContent =
+        message;
+    }
+  }
+
+
+  async function runPublishingDiagnostics() {
+    let workerFound = false;
+    let workerPath = null;
+
+    for (const candidate of ["/sw.js", "/service-worker.js"]) {
+      try {
+        const response =
+          await fetch(
+            candidate + "?ts=" + Date.now(),
+            {
+              method: "GET",
+              cache: "no-store",
+              credentials: "same-origin"
+            }
+          );
+
+        const type =
+          response.headers.get(
+            "content-type"
+          ) || "";
+
+        if (
+          response.ok &&
+          (
+            type.includes("javascript") ||
+            type.includes("ecmascript")
+          )
+        ) {
+          workerFound = true;
+          workerPath = candidate;
+          break;
+        }
+      } catch {
+        // Continue to the other conventional service-worker filename.
+      }
+    }
+
+    if (workerFound) {
+      setDiagnosticStatus(
+        "serviceWorkerDiagnosticBadge",
+        "serviceWorkerDiagnosticText",
+        "active",
+        "CONFIGURED",
+        "A service-worker script is available at " +
+          workerPath +
+          "."
+      );
+    } else {
+      setDiagnosticStatus(
+        "serviceWorkerDiagnosticBadge",
+        "serviceWorkerDiagnosticText",
+        "disabled",
+        "NOT CONFIGURED",
+        "No Web Push service-worker script is currently published by this website."
+      );
+    }
+
+    if (!("Notification" in window)) {
+      setDiagnosticStatus(
+        "notificationDiagnosticBadge",
+        "notificationDiagnosticText",
+        "disabled",
+        "UNSUPPORTED",
+        "This browser does not expose the Web Notification API."
+      );
+      return;
+    }
+
+    const permission =
+      Notification.permission;
+
+    if (permission === "granted") {
+      setDiagnosticStatus(
+        "notificationDiagnosticBadge",
+        "notificationDiagnosticText",
+        "active",
+        "ALLOWED",
+        "This browser has granted notification permission."
+      );
+    } else if (permission === "denied") {
+      setDiagnosticStatus(
+        "notificationDiagnosticBadge",
+        "notificationDiagnosticText",
+        "disabled",
+        "BLOCKED",
+        "This browser has blocked notification permission."
+      );
+    } else {
+      setDiagnosticStatus(
+        "notificationDiagnosticBadge",
+        "notificationDiagnosticText",
+        "pending",
+        "NOT ASKED",
+        "Notification permission has not been granted in this browser."
+      );
+    }
+  }
+
+
   async function runHealthChecks() {
     const body =
       $("healthTableBody");
@@ -4474,5 +4598,7 @@
   loadComments();
 
   runHealthChecks();
+
+  runPublishingDiagnostics();
 
 })();
