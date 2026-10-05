@@ -57,5 +57,6 @@ jobs:
             echo "No fallback changes to commit."
           else
             git commit -m "Generate JPEG fallbacks for older Safari and iPad"
-            git push
+            git pull --rebase origin main
+            git push origin HEAD:main
           fi
