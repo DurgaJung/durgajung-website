@@ -7679,6 +7679,1024 @@ async function adminDeleteComment(request, env, commentId) {
   });
 }
 
+
+function salesReportLines(
+  text,
+  font,
+  fontSize,
+  maxWidth
+) {
+  const parts =
+    String(
+      text ?? ""
+    )
+      .split(/\r?\n/);
+
+  const lines = [];
+
+  for (const part of parts) {
+    const wrapped =
+      wrapPdfText(
+        part || "-",
+        font,
+        fontSize,
+        maxWidth
+      );
+
+    lines.push(
+      ...wrapped
+    );
+  }
+
+  return lines.length
+    ? lines
+    : ["-"];
+}
+
+
+function salesReportFulfilment(
+  sale
+) {
+  const type =
+    String(
+      sale.product_type || ""
+    ).toLowerCase();
+
+  if (type === "software") {
+    const key =
+      clean(
+        sale.licence_key
+      ) ||
+      "Not issued";
+
+    const status =
+      clean(
+        sale.licence_status
+      ) ||
+      "Not issued";
+
+    const device =
+      clean(
+        sale.device_label
+      ) ||
+      clean(
+        sale.device_id
+      ) ||
+      "Not installed";
+
+    return [
+      "Licence: " + key,
+      "Status: " + status,
+      "Device: " + device
+    ].join("\n");
+  }
+
+  return [
+    "Delivery: " +
+      (
+        clean(
+          sale.delivery_status
+        ) ||
+        "Pending"
+      ),
+    clean(
+      sale.delivery_method
+    ) ||
+      clean(
+        sale.delivery_format
+      ) ||
+      "Method not recorded",
+    clean(
+      sale.tracking_reference
+    )
+      ? "Tracking: " +
+        sale.tracking_reference
+      : "No tracking reference"
+  ].join("\n");
+}
+
+
+async function createSalesRegisterPdf(
+  sales
+) {
+  const pdfDoc =
+    await PDFDocument.create();
+
+  const font =
+    await pdfDoc.embedFont(
+      StandardFonts.Helvetica
+    );
+
+  const bold =
+    await pdfDoc.embedFont(
+      StandardFonts.HelveticaBold
+    );
+
+  addPdfMetadata(
+    pdfDoc,
+    "Sales Register " +
+      currentYear(),
+    "Official sales register for Durga Jung Kunwar website",
+    new Date()
+  );
+
+  const pageWidth =
+    841.89;
+
+  const pageHeight =
+    595.28;
+
+  const margin =
+    28;
+
+  const tableWidth =
+    pageWidth -
+    margin * 2;
+
+  const columns = [
+    {
+      label: "No.",
+      width: 24,
+      align: "center"
+    },
+    {
+      label: "Sale / Invoice",
+      width: 84
+    },
+    {
+      label: "Date",
+      width: 52
+    },
+    {
+      label: "Customer",
+      width: 132
+    },
+    {
+      label: "Product",
+      width: 118
+    },
+    {
+      label: "Payment",
+      width: 92
+    },
+    {
+      label: "Total",
+      width: 68,
+      align: "right"
+    },
+    {
+      label: "Fulfilment",
+      width: 144
+    },
+    {
+      label: "Approval",
+      width: 72
+    }
+  ];
+
+  const totalRevenue =
+    sales.reduce(
+      (
+        sum,
+        sale
+      ) =>
+        sum +
+        Number(
+          sale.total_paid_npr ||
+          0
+        ),
+      0
+    );
+
+  const softwareSales =
+    sales.filter(
+      (
+        sale
+      ) =>
+        String(
+          sale.product_type ||
+          ""
+        ).toLowerCase() ===
+        "software"
+    ).length;
+
+  const bookSales =
+    sales.length -
+    softwareSales;
+
+  const navy =
+    rgb(
+      0.045,
+      0.13,
+      0.235
+    );
+
+  const navySoft =
+    rgb(
+      0.10,
+      0.23,
+      0.37
+    );
+
+  const gold =
+    rgb(
+      0.72,
+      0.51,
+      0.16
+    );
+
+  const line =
+    rgb(
+      0.84,
+      0.87,
+      0.90
+    );
+
+  const stripe =
+    rgb(
+      0.975,
+      0.982,
+      0.989
+    );
+
+  const textColor =
+    rgb(
+      0.12,
+      0.17,
+      0.23
+    );
+
+  const muted =
+    rgb(
+      0.40,
+      0.46,
+      0.53
+    );
+
+  const pages = [];
+
+  function drawPageHeader(
+    page,
+    firstPage
+  ) {
+    page.drawRectangle({
+      x: 0,
+      y:
+        pageHeight -
+        (
+          firstPage
+            ? 78
+            : 54
+        ),
+      width:
+        pageWidth,
+      height:
+        firstPage
+          ? 78
+          : 54,
+      color:
+        navy
+    });
+
+    drawText(
+      page,
+      "DURGA JUNG KUNWAR",
+      margin,
+      pageHeight -
+        (
+          firstPage
+            ? 34
+            : 27
+        ),
+      {
+        font: bold,
+        size:
+          firstPage
+            ? 17
+            : 14,
+        color:
+          rgb(
+            1,
+            1,
+            1
+          )
+      }
+    );
+
+    drawText(
+      page,
+      "Official Sales Register",
+      margin,
+      pageHeight -
+        (
+          firstPage
+            ? 55
+            : 43
+        ),
+      {
+        font,
+        size:
+          firstPage
+            ? 10
+            : 8.5,
+        color:
+          rgb(
+            0.88,
+            0.91,
+            0.95
+          )
+      }
+    );
+
+    drawText(
+      page,
+      "Generated " +
+        normalDate(
+          new Date()
+            .toISOString()
+        ),
+      pageWidth -
+        150,
+      pageHeight -
+        (
+          firstPage
+            ? 45
+            : 34
+        ),
+      {
+        font,
+        size: 8,
+        color:
+          rgb(
+            0.88,
+            0.91,
+            0.95
+          )
+      }
+    );
+
+    if (!firstPage) {
+      return (
+        pageHeight -
+        68
+      );
+    }
+
+    const cards = [
+      [
+        "TOTAL SALES",
+        String(
+          sales.length
+        )
+      ],
+      [
+        "TOTAL REVENUE",
+        npr(
+          totalRevenue
+        )
+      ],
+      [
+        "SOFTWARE SALES",
+        String(
+          softwareSales
+        )
+      ],
+      [
+        "BOOK SALES",
+        String(
+          bookSales
+        )
+      ]
+    ];
+
+    const gap =
+      10;
+
+    const cardWidth =
+      (
+        tableWidth -
+        gap * 3
+      ) /
+      4;
+
+    const cardY =
+      pageHeight -
+      138;
+
+    cards.forEach(
+      (
+        item,
+        index
+      ) => {
+        const x =
+          margin +
+          index *
+            (
+              cardWidth +
+              gap
+            );
+
+        page.drawRectangle({
+          x,
+          y:
+            cardY,
+          width:
+            cardWidth,
+          height: 42,
+          color:
+            rgb(
+              0.955,
+              0.965,
+              0.975
+            ),
+          borderWidth:
+            0.6,
+          borderColor:
+            line
+        });
+
+        drawText(
+          page,
+          item[0],
+          x + 10,
+          cardY + 27,
+          {
+            font: bold,
+            size: 6.5,
+            color:
+              muted
+          }
+        );
+
+        drawText(
+          page,
+          item[1],
+          x + 10,
+          cardY + 10,
+          {
+            font: bold,
+            size:
+              index === 1
+                ? 10
+                : 12,
+            color:
+              index === 1
+                ? navySoft
+                : navy
+          }
+        );
+      }
+    );
+
+    return (
+      cardY -
+      18
+    );
+  }
+
+
+  function drawTableHeader(
+    page,
+    topY
+  ) {
+    const height =
+      24;
+
+    page.drawRectangle({
+      x:
+        margin,
+      y:
+        topY -
+        height,
+      width:
+        tableWidth,
+      height,
+      color:
+        navySoft
+    });
+
+    let x =
+      margin;
+
+    columns.forEach(
+      (
+        column
+      ) => {
+        const label =
+          pdfText(
+            column.label
+          );
+
+        let textX =
+          x + 5;
+
+        if (
+          column.align ===
+          "right"
+        ) {
+          textX =
+            x +
+            column.width -
+            5 -
+            bold.widthOfTextAtSize(
+              label,
+              6.5
+            );
+        } else if (
+          column.align ===
+          "center"
+        ) {
+          textX =
+            x +
+            (
+              column.width -
+              bold.widthOfTextAtSize(
+                label,
+                6.5
+              )
+            ) /
+            2;
+        }
+
+        drawText(
+          page,
+          label,
+          textX,
+          topY - 15,
+          {
+            font: bold,
+            size: 6.5,
+            color:
+              rgb(
+                1,
+                1,
+                1
+              )
+          }
+        );
+
+        x +=
+          column.width;
+      }
+    );
+
+    return (
+      topY -
+      height
+    );
+  }
+
+
+  function newReportPage(
+    firstPage = false
+  ) {
+    const page =
+      pdfDoc.addPage([
+        pageWidth,
+        pageHeight
+      ]);
+
+    pages.push(
+      page
+    );
+
+    const headerBottom =
+      drawPageHeader(
+        page,
+        firstPage
+      );
+
+    return {
+      page,
+      y:
+        drawTableHeader(
+          page,
+          headerBottom
+        )
+    };
+  }
+
+
+  function drawRow(
+    page,
+    y,
+    cells,
+    rowIndex
+  ) {
+    const fontSize =
+      6.35;
+
+    const lineHeight =
+      7.8;
+
+    const paddingX =
+      5;
+
+    const paddingY =
+      5;
+
+    const prepared =
+      cells.map(
+        (
+          value,
+          index
+        ) =>
+          salesReportLines(
+            value,
+            font,
+            fontSize,
+            columns[index].width -
+              paddingX * 2
+          )
+            .slice(
+              0,
+              5
+            )
+      );
+
+    const maxLines =
+      Math.max(
+        1,
+        ...prepared.map(
+          (
+            cellLines
+          ) =>
+            cellLines.length
+        )
+      );
+
+    const rowHeight =
+      Math.max(
+        30,
+        maxLines *
+          lineHeight +
+          paddingY *
+          2
+      );
+
+    const bottom =
+      y -
+      rowHeight;
+
+    page.drawRectangle({
+      x:
+        margin,
+      y:
+        bottom,
+      width:
+        tableWidth,
+      height:
+        rowHeight,
+      color:
+        rowIndex % 2
+          ? stripe
+          : rgb(
+              1,
+              1,
+              1
+            )
+    });
+
+    let x =
+      margin;
+
+    prepared.forEach(
+      (
+        cellLines,
+        index
+      ) => {
+        const column =
+          columns[index];
+
+        page.drawRectangle({
+          x,
+          y:
+            bottom,
+          width:
+            column.width,
+          height:
+            rowHeight,
+          borderWidth:
+            0.35,
+          borderColor:
+            line
+        });
+
+        let lineY =
+          y -
+          paddingY -
+          fontSize;
+
+        cellLines.forEach(
+          (
+            rawLine
+          ) => {
+            const value =
+              pdfText(
+                rawLine
+              );
+
+            const rowFont =
+              index === 6
+                ? bold
+                : font;
+
+            let textX =
+              x +
+              paddingX;
+
+            if (
+              column.align ===
+              "right"
+            ) {
+              textX =
+                x +
+                column.width -
+                paddingX -
+                rowFont.widthOfTextAtSize(
+                  value,
+                  fontSize
+                );
+            } else if (
+              column.align ===
+              "center"
+            ) {
+              textX =
+                x +
+                (
+                  column.width -
+                  rowFont.widthOfTextAtSize(
+                    value,
+                    fontSize
+                  )
+                ) /
+                2;
+            }
+
+            drawText(
+              page,
+              value,
+              textX,
+              lineY,
+              {
+                font:
+                  rowFont,
+                size:
+                  fontSize,
+                color:
+                  index === 6
+                    ? navySoft
+                    : textColor
+              }
+            );
+
+            lineY -=
+              lineHeight;
+          }
+        );
+
+        x +=
+          column.width;
+      }
+    );
+
+    return {
+      bottom,
+      height:
+        rowHeight
+    };
+  }
+
+
+  let state =
+    newReportPage(
+      true
+    );
+
+  sales.forEach(
+    (
+      sale,
+      index
+    ) => {
+      const cells = [
+        String(
+          index + 1
+        ),
+        [
+          sale.sale_number ||
+            "-",
+          sale.invoice_number
+            ? "Inv: " +
+              sale.invoice_number
+            : "No invoice"
+        ].join("\n"),
+        normalDate(
+          sale.payment_date
+        ),
+        [
+          sale.customer_name ||
+            "-",
+          sale.customer_email ||
+            "-",
+          sale.customer_phone ||
+            "-"
+        ].join("\n"),
+        [
+          sale.product_name ||
+            sale.product_code ||
+            "-",
+          sale.product_code ||
+            "-",
+          "Qty: " +
+            (
+              sale.quantity ||
+              1
+            )
+        ].join("\n"),
+        [
+          sale.payment_method ||
+            "-",
+          sale.transaction_reference ||
+            "No reference"
+        ].join("\n"),
+        npr(
+          sale.total_paid_npr
+        ),
+        salesReportFulfilment(
+          sale
+        ),
+        [
+          normalDate(
+            sale.approved_at
+          ),
+          Number(
+            sale.invoice_sent ||
+            0
+          ) === 1
+            ? "Invoice sent"
+            : "Invoice pending"
+        ].join("\n")
+      ];
+
+      const preparedHeights =
+        cells.map(
+          (
+            value,
+            cellIndex
+          ) =>
+            salesReportLines(
+              value,
+              font,
+              6.35,
+              columns[cellIndex].width -
+                10
+            )
+              .slice(
+                0,
+                5
+              )
+              .length
+        );
+
+      const expectedHeight =
+        Math.max(
+          30,
+          Math.max(
+            ...preparedHeights
+          ) *
+            7.8 +
+            10
+        );
+
+      if (
+        state.y -
+        expectedHeight <
+        42
+      ) {
+        state =
+          newReportPage(
+            false
+          );
+      }
+
+      const drawn =
+        drawRow(
+          state.page,
+          state.y,
+          cells,
+          index
+        );
+
+      state.y =
+        drawn.bottom;
+    }
+  );
+
+  pages.forEach(
+    (
+      page,
+      index
+    ) => {
+      drawText(
+        page,
+        "Durga Jung Kunwar  |  durgajung.com.np",
+        margin,
+        18,
+        {
+          font,
+          size: 6.8,
+          color:
+            muted
+        }
+      );
+
+      const pageText =
+        "Page " +
+        (
+          index + 1
+        ) +
+        " of " +
+        pages.length;
+
+      drawText(
+        page,
+        pageText,
+        pageWidth -
+          margin -
+          font.widthOfTextAtSize(
+            pageText,
+            6.8
+          ),
+        18,
+        {
+          font,
+          size: 6.8,
+          color:
+            muted
+        }
+      );
+
+      page.drawRectangle({
+        x:
+          margin,
+        y:
+          31,
+        width:
+          tableWidth,
+        height:
+          1.2,
+        color:
+          gold
+      });
+    }
+  );
+
+  return await pdfDoc.save();
+}
+
+
+async function exportSalesPdf(
+  env
+) {
+  const result =
+    await env.ADMIN_DB
+      .prepare(
+        "SELECT * FROM sales ORDER BY id ASC"
+      )
+      .all();
+
+  const sales =
+    await attachDeviceBindings(
+      env,
+      result.results ||
+      []
+    );
+
+  const bytes =
+    await createSalesRegisterPdf(
+      sales
+    );
+
+  return new Response(
+    bytes,
+    {
+      headers: {
+        "content-type":
+          "application/pdf",
+
+        "content-disposition":
+          "attachment; filename=\"Durga-Jung-Sales-Register-" +
+          currentYear() +
+          ".pdf\"",
+
+        "cache-control":
+          "no-store"
+      }
+    }
+  );
+}
+
+
 async function exportSales(
   env
 ) {
@@ -8218,6 +9236,17 @@ export default {
           )
         );
       }
+
+      if (
+        path ===
+          "/api/admin/export-sales-pdf" &&
+        method === "GET"
+      ) {
+        return exportSalesPdf(
+          env
+        );
+      }
+
 
       if (
         path ===
