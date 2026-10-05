@@ -173,14 +173,14 @@
 
       <div class="book-intro">
 
-        <p>
+        <p data-lang-block="en">
           I am involved in translating Christian books and theological
           resources into Nepali and Hindi. My aim is to make sound biblical
           teaching accessible to readers who may not otherwise have such
           resources available in their own language.
         </p>
 
-        <p>
+        <p data-lang-block="en">
           The books and resources available through this website may be
           downloaded and used for personal reading, theological education,
           discipleship, and ministry purposes. However, printing,
@@ -191,14 +191,14 @@
           publication.
         </p>
 
-        <p>
+        <p data-lang-block="np">
           म ख्रीष्टियन पुस्तकहरू तथा धर्मशास्त्रीय सामग्रीहरूलाई नेपाली र
           हिन्दी भाषामा अनुवाद गर्ने कार्यमा संलग्न छु। आफ्नो भाषामा यस्ता
           स्रोतसामग्री सहज रूपमा प्राप्त गर्न नसक्ने पाठकहरूका लागि स्वस्थ
           बाइबलीय शिक्षा उपलब्ध गराउनु मेरो उद्देश्य हो।
         </p>
 
-        <p>
+        <p data-lang-block="np">
           यस वेबसाइटमार्फत उपलब्ध गराइएका पुस्तक तथा सामग्रीहरू व्यक्तिगत
           अध्ययन, धर्मशास्त्रीय शिक्षा, चेलापन तथा सेवकाईका प्रयोजनका लागि
           डाउनलोड गरी प्रयोग गर्न सकिन्छ। तर प्रतिलिपि अधिकारधारकको
@@ -217,6 +217,24 @@
         to apply.
       </div>
 
+
+      <div class="catalog-toolbar">
+        <label class="catalog-search" for="book-catalog-search">
+          <span data-en="Search books" data-np="पुस्तक खोज्नुहोस्">Search books</span>
+          <span class="catalog-search-box">
+            <span aria-hidden="true">⌕</span>
+            <input
+              id="book-catalog-search"
+              type="search"
+              autocomplete="off"
+              placeholder="Search by title, author or topic…"
+              data-placeholder-en="Search by title, author or topic…"
+              data-placeholder-np="शीर्षक, लेखक वा विषयबाट खोज्नुहोस्…"
+            >
+          </span>
+        </label>
+        <div class="catalog-result-count" id="book-search-count" aria-live="polite"></div>
+      </div>
 
       <div class="book-language-filter" role="group" aria-label="Filter books by language">
         <button
@@ -2022,26 +2040,60 @@
   (function () {
     const filterButtons = document.querySelectorAll('[data-book-filter]');
     const bookSections = document.querySelectorAll('[data-book-language]');
+    const searchInput = document.getElementById('book-catalog-search');
+    const resultCount = document.getElementById('book-search-count');
+    let activeLanguage = 'nepali';
 
-    function showBooks(language) {
+    function applyBookFilters() {
+      const query = (searchInput ? searchInput.value : '').trim().toLocaleLowerCase();
+      let visibleCards = 0;
+
       bookSections.forEach(function (section) {
-        section.hidden = section.dataset.bookLanguage !== language;
+        const languageMatches = section.dataset.bookLanguage === activeLanguage;
+        section.hidden = !languageMatches;
+
+        if (!languageMatches) return;
+
+        const cards = section.querySelectorAll('.book-card');
+        let sectionMatches = 0;
+
+        cards.forEach(function (card) {
+          const matches = !query || card.textContent.toLocaleLowerCase().includes(query);
+          card.hidden = !matches;
+          if (matches) {
+            visibleCards += 1;
+            sectionMatches += 1;
+          }
+        });
+
+        section.classList.toggle('catalog-section-empty', sectionMatches === 0);
       });
 
       filterButtons.forEach(function (button) {
-        const active = button.dataset.bookFilter === language;
+        const active = button.dataset.bookFilter === activeLanguage;
         button.classList.toggle('is-active', active);
         button.setAttribute('aria-pressed', active ? 'true' : 'false');
       });
+
+      if (resultCount) {
+        resultCount.textContent = query
+          ? visibleCards + (visibleCards === 1 ? ' result' : ' results')
+          : '';
+      }
     }
 
     filterButtons.forEach(function (button) {
       button.addEventListener('click', function () {
-        showBooks(button.dataset.bookFilter);
+        activeLanguage = button.dataset.bookFilter;
+        applyBookFilters();
       });
     });
 
-    showBooks('nepali');
+    if (searchInput) {
+      searchInput.addEventListener('input', applyBookFilters);
+    }
+
+    applyBookFilters();
   }());
 </script>
 
