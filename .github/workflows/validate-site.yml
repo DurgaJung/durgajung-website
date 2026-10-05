@@ -1,0 +1,100 @@
+name: Validate website
+
+on:
+  push:
+    paths:
+      - "**/*.html"
+      - "assets/**/*.js"
+      - "assets/**/*.css"
+      - "assets/data/*.json"
+      - ".github/workflows/validate-site.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Check JavaScript syntax
+        run: |
+          node --check assets/js/main.js
+          node --check assets/js/image-compat.js
+          node --check assets/admin/admin.js
+          node --check assets/admin/admin-core.js
+          node --check src/index.js
+
+      - name: Validate JSON files
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import json
+
+          for path in Path("assets/data").glob("*.json"):
+              with path.open("r", encoding="utf-8") as handle:
+                  json.load(handle)
+              print("OK", path)
+          PY
+
+      - name: Check HTML IDs and banner fallback
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+          import sys
+
+          failed = False
+
+          for path in sorted(Path(".").glob("*.html")):
+              text = path.read_text(encoding="utf-8")
+
+              ids = re.findall(r'\bid=["\']([^"\']+)["\']', text)
+              duplicates = sorted({value for value in ids if ids.count(value) > 1})
+
+              if duplicates:
+                  print(f"Duplicate IDs in {path}: {duplicates}")
+                  failed = True
+
+              if "banner.webp" in text:
+                  if "banner.jpg" not in text or 'class="brand-picture"' not in text:
+                      print(f"Missing native JPEG banner fallback in {path}")
+                      failed = True
+
+          if failed:
+              sys.exit(1)
+          PY
+
+      - name: Check WebP compatibility fallbacks
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import sys
+
+          root = Path("assets/images")
+          exceptions = {
+              "assets/images/lessons-from-the-lives-of-the-twelve-disciples-hi-hd.webp":
+                  Path("assets/images/lessons-from-the-lives-of-the-twelve-disciples-hi.jpg"),
+              "assets/images/verse-themes/psalm-46-1-refuge.webp":
+                  Path("assets/images/verse-themes/refuge.svg"),
+          }
+
+          missing = []
+
+          for webp in root.rglob("*.webp"):
+              rel = webp.as_posix()
+              fallback = exceptions.get(rel, webp.with_suffix(".jpg"))
+
+              if not fallback.exists():
+                  missing.append((rel, fallback.as_posix()))
+
+          if missing:
+              for src, fallback in missing:
+                  print(f"Missing fallback: {src} -> {fallback}")
+              sys.exit(1)
+
+          print("All WebP images have compatible fallbacks.")
+          PY
