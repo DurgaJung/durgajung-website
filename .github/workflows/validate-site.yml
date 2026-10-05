@@ -5,6 +5,7 @@ on:
     paths:
       - "**/*.html"
       - "assets/**/*.js"
+      - "src/**/*.js"
       - "assets/**/*.css"
       - "assets/data/*.json"
       - ".github/workflows/validate-site.yml"
