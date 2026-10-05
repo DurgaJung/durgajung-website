@@ -3685,3 +3685,70 @@ body{
     text-align:left;
   }
 }
+
+
+/* IPAD / LEGACY SAFARI IMAGE LAYOUT COMPATIBILITY */
+@supports not (aspect-ratio: 1 / 1) {
+  .gallery-grid figure,
+  .media-card .photo-frame,
+  .book-cover,
+  .home-portrait-frame,
+  .home-sermon-image {
+    position: relative;
+    height: 0;
+    overflow: hidden;
+  }
+
+  .gallery-grid figure,
+  .media-card .photo-frame {
+    padding-top: 75%;
+  }
+
+  .media-card.portrait .photo-frame,
+  .book-cover,
+  .home-portrait-frame {
+    padding-top: 125%;
+  }
+
+  .home-sermon-image {
+    padding-top: 56.25%;
+  }
+
+  .gallery-grid figure > img,
+  .media-card .photo-frame > img,
+  .book-cover > img,
+  .home-portrait-frame > img,
+  .home-sermon-image > img {
+    position: absolute !important;
+    inset: 0;
+    width: 100% !important;
+    height: 100% !important;
+  }
+
+  .book-cover > img {
+    object-fit: contain !important;
+    padding: 20px;
+  }
+}
+
+/* Avoid older Safari compositing glitches around image cards. */
+@supports (-webkit-touch-callout: none) {
+  .brand-banner,
+  .home-portrait-frame img,
+  .home-book-cover img,
+  .home-sermon-image img,
+  .media-card img,
+  .gallery-grid img {
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+  }
+
+  .site-header,
+  .home-portrait-frame,
+  .home-book-card,
+  .home-sermon-card,
+  .media-card {
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+  }
+}
