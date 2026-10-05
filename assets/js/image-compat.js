@@ -5,7 +5,24 @@
 
   function jpegFallbackUrl(value) {
     if (!value) return null;
-    const match = String(value).match(/^(.*)\.webp([?#].*)?$/i);
+
+    const source = String(value);
+
+    if (/lessons-from-the-lives-of-the-twelve-disciples-hi-hd\.webp([?#].*)?$/i.test(source)) {
+      return source.replace(
+        /lessons-from-the-lives-of-the-twelve-disciples-hi-hd\.webp/i,
+        "lessons-from-the-lives-of-the-twelve-disciples-hi.jpg"
+      );
+    }
+
+    if (/verse-themes\/psalm-46-1-refuge\.webp([?#].*)?$/i.test(source)) {
+      return source.replace(
+        /psalm-46-1-refuge\.webp/i,
+        "refuge.svg"
+      );
+    }
+
+    const match = source.match(/^(.*)\.webp([?#].*)?$/i);
     if (!match) return null;
     return match[1] + ".jpg" + (match[2] || "");
   }
