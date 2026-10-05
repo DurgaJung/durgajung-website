@@ -1942,3 +1942,244 @@ h1{
     grid-column:1;
   }
 }
+
+
+/* PROFESSIONAL SALES REGISTER */
+.sales-metrics{
+  margin-bottom:18px;
+}
+
+.sales-register-panel{
+  padding:0;
+  overflow:hidden;
+}
+
+.sales-toolbar{
+  display:grid;
+  grid-template-columns:minmax(280px,1fr) minmax(170px,230px) auto;
+  align-items:end;
+  gap:14px;
+  padding:18px 18px 16px;
+  border-bottom:1px solid #e7ebf0;
+  background:#fbfcfd;
+}
+
+.sales-toolbar label{
+  display:grid;
+  gap:6px;
+  color:#56677a;
+  font-size:10px;
+  font-weight:850;
+  letter-spacing:.045em;
+  text-transform:uppercase;
+}
+
+.sales-toolbar input,
+.sales-toolbar select{
+  width:100%;
+  min-height:42px;
+  border:1px solid #d5dde6;
+  border-radius:10px;
+  background:#fff;
+  color:#172537;
+  padding:9px 11px;
+  font-size:13px;
+  text-transform:none;
+  letter-spacing:normal;
+  outline:none;
+}
+
+.sales-toolbar input:focus,
+.sales-toolbar select:focus{
+  border-color:#b98525;
+  box-shadow:0 0 0 3px rgba(185,133,37,.11);
+}
+
+.sales-result-count{
+  min-height:42px;
+  display:flex;
+  align-items:center;
+  justify-content:flex-end;
+  color:#7b8796;
+  font-size:11px;
+  font-weight:800;
+}
+
+.sales-table-wrap{
+  max-height:68vh;
+  overflow:auto;
+}
+
+.sales-register-table{
+  width:100%;
+  min-width:1380px;
+  border-collapse:separate;
+  border-spacing:0;
+}
+
+.sales-register-table thead th{
+  position:sticky;
+  top:0;
+  z-index:2;
+  padding:12px 11px;
+  border-bottom:1px solid #dfe5eb;
+  background:#f1f5f8;
+  color:#41546a;
+  font-size:10px;
+  font-weight:900;
+  letter-spacing:.035em;
+  text-transform:uppercase;
+  white-space:nowrap;
+}
+
+.sales-register-table tbody td{
+  padding:14px 11px;
+  border-bottom:1px solid #edf0f3;
+  color:#26384c;
+  font-size:11px;
+  line-height:1.45;
+  vertical-align:top;
+}
+
+.sales-register-table tbody tr:nth-child(even){
+  background:#fbfcfd;
+}
+
+.sales-register-table tbody tr:hover{
+  background:#f7fafc;
+}
+
+.sales-register-table strong{
+  color:#172b43;
+  font-size:11px;
+  font-weight:850;
+}
+
+.sales-register-table small{
+  display:block;
+  margin-top:3px;
+  color:#788697;
+  font-size:9.5px;
+  line-height:1.45;
+}
+
+.sales-number-cell{
+  width:44px;
+  text-align:center;
+  color:#8794a2!important;
+  font-weight:850;
+}
+
+.sales-id-cell{
+  min-width:155px;
+}
+
+.sales-date-cell{
+  min-width:105px;
+}
+
+.sales-customer-cell{
+  min-width:210px;
+}
+
+.sales-product-cell{
+  min-width:185px;
+}
+
+.sales-payment-cell{
+  min-width:160px;
+}
+
+.sales-amount-cell{
+  min-width:120px;
+  text-align:right;
+  white-space:nowrap;
+}
+
+.sales-amount-cell strong{
+  color:#17633e;
+  font-size:12px;
+}
+
+.sales-fulfilment-cell{
+  min-width:260px;
+}
+
+.sales-approval-cell{
+  min-width:155px;
+}
+
+.sales-license-line{
+  display:flex;
+  align-items:center;
+  gap:7px;
+  margin-bottom:5px;
+}
+
+.sales-license-line > span{
+  min-width:30px;
+  color:#936315;
+  font-size:9px;
+  font-weight:900;
+}
+
+.sales-license-line code{
+  display:inline-block;
+  max-width:210px;
+  overflow:hidden;
+  padding:3px 6px;
+  border-radius:6px;
+  background:#eef2f6;
+  color:#2c4057;
+  font-size:9px;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+
+.sales-status-row{
+  margin-top:7px;
+}
+
+.sales-device-lines{
+  margin-top:6px;
+}
+
+.sales-device-lines small{
+  margin-top:1px;
+}
+
+.sales-fulfilment > strong{
+  display:block;
+}
+
+.sales-fulfilment > .status-badge{
+  margin-top:7px;
+}
+
+.amount-column{
+  text-align:right!important;
+}
+
+#exportSalesPdf{
+  box-shadow:0 8px 18px rgba(15,45,78,.14);
+}
+
+@media(max-width:900px){
+  .sales-toolbar{
+    grid-template-columns:1fr 1fr;
+  }
+
+  .sales-result-count{
+    justify-content:flex-start;
+  }
+}
+
+@media(max-width:620px){
+  .sales-toolbar{
+    grid-template-columns:1fr;
+  }
+
+  .sales-result-count{
+    min-height:auto;
+  }
+}
