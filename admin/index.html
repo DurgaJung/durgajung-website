@@ -1263,8 +1263,8 @@
             </h1>
 
             <p class="lead">
-              Permanent sales register for all approved
-              software and book purchases.
+              Standard sales register for completed software
+              and book purchases, with payment, fulfilment and approval details.
             </p>
 
           </div>
@@ -1280,13 +1280,20 @@
               Refresh
             </button>
 
+            <a
+              id="exportSalesPdf"
+              class="primary-btn"
+              href="/api/admin/export-sales-pdf"
+            >
+              Export PDF
+            </a>
 
             <a
-              id="exportSales"
-              class="primary-btn"
+              id="exportSalesCsv"
+              class="secondary-btn"
               href="/api/admin/export-sales"
             >
-              Export Sales
+              Export CSV
             </a>
 
           </div>
@@ -1294,33 +1301,83 @@
         </div>
 
 
-        <article class="panel">
+        <div class="metric-grid sales-metrics">
 
-          <div class="table-wrap">
+          <article class="metric-card">
+            <div class="metric-label">Total Sales</div>
+            <div id="salesMetricCount" class="metric-value neutral">—</div>
+            <div class="metric-note">Completed transactions</div>
+          </article>
 
-            <table class="admin-table sales-table">
+          <article class="metric-card">
+            <div class="metric-label">Total Revenue</div>
+            <div id="salesMetricRevenue" class="metric-value">—</div>
+            <div class="metric-note">NPR received</div>
+          </article>
+
+          <article class="metric-card">
+            <div class="metric-label">Software Sales</div>
+            <div id="salesMetricSoftware" class="metric-value neutral">—</div>
+            <div class="metric-note">Software purchases</div>
+          </article>
+
+          <article class="metric-card">
+            <div class="metric-label">Book Sales</div>
+            <div id="salesMetricBooks" class="metric-value neutral">—</div>
+            <div class="metric-note">Book purchases</div>
+          </article>
+
+        </div>
+
+
+        <article class="panel sales-register-panel">
+
+          <div class="sales-toolbar">
+
+            <label>
+              <span>Search sales</span>
+              <input
+                id="salesSearch"
+                type="search"
+                placeholder="Sale, invoice, customer, product…"
+                autocomplete="off"
+              >
+            </label>
+
+            <label>
+              <span>Type</span>
+              <select id="salesTypeFilter">
+                <option value="">All sales</option>
+                <option value="software">Software</option>
+                <option value="book">Books</option>
+              </select>
+            </label>
+
+            <div
+              id="salesResultCount"
+              class="sales-result-count"
+            >
+            </div>
+
+          </div>
+
+
+          <div class="table-wrap sales-table-wrap">
+
+            <table class="admin-table sales-table sales-register-table">
 
               <thead>
 
                 <tr>
-                  <th>S.N.</th>
-                  <th>Sale No.</th>
-                  <th>Invoice No.</th>
+                  <th>No.</th>
+                  <th>Sale / Invoice</th>
+                  <th>Date</th>
                   <th>Customer</th>
-                  <th>Email</th>
-                  <th>Phone</th>
-                  <th>Payment Date</th>
-                  <th>Payment Method</th>
-                  <th>Reference</th>
-                  <th>Total Paid</th>
-                  <th>Licence Key</th>
-                  <th>Licence Status</th>
-                  <th>Install status</th>
-                  <th>Reset</th>
-                  <th>Invoice Sent</th>
-                  <th>Licence Sent</th>
-                  <th>Approved</th>
-                  <th>Notes</th>
+                  <th>Product</th>
+                  <th>Payment</th>
+                  <th class="amount-column">Total</th>
+                  <th>Fulfilment</th>
+                  <th>Approval</th>
                 </tr>
 
               </thead>
@@ -1330,7 +1387,7 @@
 
                 <tr>
 
-                  <td colspan="18">
+                  <td colspan="9">
                     Loading sales…
                   </td>
 
