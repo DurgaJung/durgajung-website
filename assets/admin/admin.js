@@ -69,3 +69,66 @@
 
   document.head.appendChild(core);
 })();
+
+
+/* ADMIN DAILY VERSE HEALTH */
+(() => {
+  "use strict";
+
+  async function loadAdminDailyVerse() {
+    const card = document.getElementById("dailyVerseAdminCard");
+    if (!card) return;
+
+    const health = document.getElementById("adminVerseHealth");
+    const date = document.getElementById("adminVerseDate");
+    const reference = document.getElementById("adminVerseReference");
+    const text = document.getElementById("adminVerseText");
+    const version = document.getElementById("adminVerseVersion");
+    const image = document.getElementById("adminVerseImage");
+
+    try {
+      const response = await fetch("/assets/data/verse-of-day.json?ts=" + Date.now(), {
+        cache: "no-store"
+      });
+
+      if (!response.ok) {
+        throw new Error("Verse data returned HTTP " + response.status);
+      }
+
+      const data = await response.json();
+      const today = new Intl.DateTimeFormat("en-CA", {
+        timeZone: "Asia/Bahrain",
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit"
+      }).format(new Date());
+
+      const current = data.date === today;
+
+      date.textContent = [data.ad_date, data.bs_date].filter(Boolean).join(" · ");
+      reference.textContent = [data.reference, data.english_reference].filter(Boolean).join(" / ");
+      text.textContent = data.verse || data.english_verse || "";
+      version.textContent = [data.version, data.english_version].filter(Boolean).join(" / ");
+
+      if (data.image) {
+        image.src = data.image;
+        image.alt = "Today's Verse of the Day image";
+      }
+
+      health.textContent = current ? "Published today" : "Needs update";
+      health.className = "daily-verse-health " + (current ? "ok" : "stale");
+    } catch (error) {
+      console.error("Verse status check failed:", error);
+      health.textContent = "Check failed";
+      health.className = "daily-verse-health error";
+      reference.textContent = "Could not read Verse of the Day data.";
+      text.textContent = "";
+    }
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", loadAdminDailyVerse, { once: true });
+  } else {
+    loadAdminDailyVerse();
+  }
+})();
