@@ -3434,3 +3434,156 @@ html.js .reveal-section.is-visible {
     margin-top: 7px;
   }
 }
+
+
+/* PROFESSIONAL REFRESH 2026-10-05 */
+:root{
+  --pro-navy:#0b223d;
+  --pro-navy-2:#12385f;
+  --pro-gold:#b98525;
+  --pro-gold-soft:#f6ead2;
+  --pro-surface:#ffffff;
+  --pro-border:#e3e8ee;
+  --pro-shadow:0 18px 48px rgba(11,34,61,.09);
+}
+
+body{
+  background:#fff;
+  color:#182433;
+}
+
+.site-header{
+  overflow:hidden;
+  background:#0b1728;
+}
+
+.brand-banner{
+  max-height:220px;
+  object-fit:cover;
+}
+
+.nav-wrap{
+  background:rgba(255,255,255,.96);
+  -webkit-backdrop-filter:blur(16px);
+  backdrop-filter:blur(16px);
+  box-shadow:0 8px 28px rgba(11,34,61,.055);
+}
+
+.nav-links a{
+  font-weight:750;
+}
+
+.home-hero{
+  padding:76px 0 72px;
+  background:
+    radial-gradient(circle at 82% 16%, rgba(185,133,37,.13), transparent 29%),
+    radial-gradient(circle at 3% 100%, rgba(18,56,95,.07), transparent 28%),
+    linear-gradient(180deg,#fff 0%,#fbfcfe 100%);
+}
+
+.home-hero-grid{
+  grid-template-columns:minmax(0,1.18fr) minmax(280px,.72fr);
+  gap:64px;
+}
+
+.home-hero-copy{
+  max-width:760px;
+  margin:0;
+}
+
+.home-hero-copy h1{
+  max-width:760px;
+  font-size:clamp(44px,5.4vw,72px);
+  letter-spacing:-.035em;
+}
+
+.home-hero-copy h2{
+  color:#9b6c1d;
+}
+
+.home-hero-visual{
+  display:block;
+}
+
+.home-portrait-frame{
+  border-radius:34px;
+  box-shadow:
+    0 34px 72px rgba(11,34,61,.18),
+    0 0 0 10px rgba(255,255,255,.72);
+}
+
+.home-focus-pill{
+  border-color:#e1e7ee;
+  background:#fff;
+  box-shadow:0 6px 18px rgba(11,34,61,.045);
+}
+
+.section{
+  padding:70px 0;
+}
+
+.feature-card,
+.home-book-card,
+.home-software-card,
+.home-sermon-card,
+.home-upcoming-card,
+.panel{
+  border-color:var(--pro-border);
+}
+
+.feature-card,
+.update-card{
+  border-radius:20px;
+}
+
+.home-book-card,
+.home-software-card,
+.home-sermon-card{
+  box-shadow:var(--pro-shadow);
+}
+
+.page-hero{
+  padding:62px 0 44px;
+  background:
+    radial-gradient(circle at 82% 10%,rgba(185,133,37,.10),transparent 31%),
+    linear-gradient(180deg,#fbfcfe,#f7f9fb);
+}
+
+.page-hero h1{
+  font-size:clamp(40px,5vw,64px);
+  letter-spacing:-.03em;
+}
+
+/* Keep engagement on content pages, but make the homepage a cleaner landing page. */
+[data-engagement-root][data-content-key="home"]{
+  display:none;
+}
+
+@media(max-width:1020px){
+  .home-hero-grid{
+    grid-template-columns:1fr;
+    gap:46px;
+  }
+  .home-hero-copy{
+    max-width:880px;
+  }
+  .home-hero-visual{
+    width:min(78%,390px);
+    justify-self:center;
+  }
+}
+
+@media(max-width:760px){
+  .brand-banner{
+    max-height:none;
+  }
+  .home-hero{
+    padding:48px 0 50px;
+  }
+  .home-hero-copy h1{
+    font-size:clamp(36px,10vw,48px);
+  }
+  .section{
+    padding:54px 0;
+  }
+}
