@@ -57,6 +57,12 @@ jobs:
             echo "No fallback changes to commit."
           else
             git commit -m "Generate JPEG fallbacks for older Safari and iPad"
-            git pull --rebase origin main
-            git push origin HEAD:main
+            git fetch origin main
+            git rebase origin/main
+            if ! git push origin HEAD:main; then
+              echo "Main changed during conversion; rebasing once more."
+              git fetch origin main
+              git rebase origin/main
+              git push origin HEAD:main
+            fi
           fi
