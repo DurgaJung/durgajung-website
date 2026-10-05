@@ -7686,33 +7686,135 @@ function salesReportLines(
   fontSize,
   maxWidth
 ) {
-  const parts =
+  const source =
     String(
       text ?? ""
-    )
-      .split(/\r?\n/);
+    );
+
+  const paragraphs =
+    source.split(
+      /\r?\n/
+    );
 
   const lines = [];
 
-  for (const part of parts) {
-    const wrapped =
-      wrapPdfText(
-        part || "-",
-        font,
-        fontSize,
-        maxWidth
+  function splitLongToken(
+    token
+  ) {
+    const chunks = [];
+    let chunk = "";
+
+    for (
+      const char of token
+    ) {
+      const next =
+        chunk + char;
+
+      if (
+        chunk &&
+        font.widthOfTextAtSize(
+          pdfText(next),
+          fontSize
+        ) >
+          maxWidth
+      ) {
+        chunks.push(
+          chunk
+        );
+
+        chunk =
+          char;
+      } else {
+        chunk =
+          next;
+      }
+    }
+
+    if (chunk) {
+      chunks.push(
+        chunk
+      );
+    }
+
+    return chunks;
+  }
+
+  for (
+    const paragraph of
+      paragraphs
+  ) {
+    const words =
+      String(
+        paragraph || "-"
+      )
+        .split(/\s+/)
+        .filter(Boolean);
+
+    let line = "";
+
+    for (
+      const rawWord of words
+    ) {
+      const pieces =
+        font.widthOfTextAtSize(
+          pdfText(rawWord),
+          fontSize
+        ) >
+          maxWidth
+          ? splitLongToken(
+              rawWord
+            )
+          : [
+              rawWord
+            ];
+
+      for (
+        const piece of pieces
+      ) {
+        const candidate =
+          line
+            ? line +
+              " " +
+              piece
+            : piece;
+
+        if (
+          font.widthOfTextAtSize(
+            pdfText(
+              candidate
+            ),
+            fontSize
+          ) <=
+          maxWidth
+        ) {
+          line =
+            candidate;
+        } else {
+          if (line) {
+            lines.push(
+              line
+            );
+          }
+
+          line =
+            piece;
+        }
+      }
+    }
+
+    if (line) {
+      lines.push(
+        line
       );
 
-    lines.push(
-      ...wrapped
-    );
+      line = "";
+    }
   }
 
   return lines.length
     ? lines
     : ["-"];
 }
-
 
 function salesReportFulfilment(
   sale
@@ -7722,33 +7824,107 @@ function salesReportFulfilment(
       sale.product_type || ""
     ).toLowerCase();
 
-  if (type === "software") {
-    const key =
-      clean(
-        sale.licence_key
-      ) ||
-      "Not issued";
+  const approved =
+    normalDate(
+      sale.approved_at
+    );
 
+  const invoiceState =
+    Number(
+      sale.invoice_sent || 0
+    ) === 1
+      ? "Invoice: Sent"
+      : "Invoice: Pending";
+
+  if (
+    type ===
+    "software"
+  ) {
     const status =
-      clean(
-        sale.licence_status
-      ) ||
-      "Not issued";
+      String(
+        clean(
+          sale.licence_status
+        ) ||
+        "not issued"
+      )
+        .replaceAll(
+          "_",
+          " "
+        )
+        .replace(
+          /\b\w/g,
+          (
+            char
+          ) =>
+            char.toUpperCase()
+        );
 
-    const device =
-      clean(
-        sale.device_label
-      ) ||
-      clean(
-        sale.device_id
-      ) ||
-      "Not installed";
+    const bindings =
+      Array.isArray(
+        sale.device_bindings
+      )
+        ? sale.device_bindings
+        : [];
+
+    const installLines =
+      bindings.length
+        ? bindings.map(
+            (
+              binding
+            ) => {
+              const name =
+                binding.product ===
+                "Nepali Bible Quiz"
+                  ? "NBQ"
+                  : binding.product ===
+                      "Mero Mandali"
+                    ? "MM"
+                    : "Software";
+
+              const installed =
+                binding.install_status ===
+                "installed" ||
+                Boolean(
+                  binding.device_id
+                );
+
+              return (
+                name +
+                ": " +
+                (
+                  installed
+                    ? "Installed"
+                    : "Not installed"
+                )
+              );
+            }
+          )
+        : [
+            "Install: " +
+              (
+                String(
+                  sale.device_id ||
+                  ""
+                )
+                  .toLowerCase()
+                  .includes(
+                    "installed"
+                  )
+                  ? "Installed"
+                  : "Not installed"
+              )
+          ];
 
     return [
-      "Licence: " + key,
-      "Status: " + status,
-      "Device: " + device
-    ].join("\n");
+      "Licence: " +
+        status,
+      ...installLines,
+      invoiceState,
+      "Approved: " +
+        approved
+    ].join(
+      "\n"
+    );
   }
 
   return [
@@ -7771,10 +7947,14 @@ function salesReportFulfilment(
     )
       ? "Tracking: " +
         sale.tracking_reference
-      : "No tracking reference"
-  ].join("\n");
+      : "No tracking reference",
+    invoiceState,
+    "Approved: " +
+      approved
+  ].join(
+    "\n"
+  );
 }
-
 
 async function createSalesRegisterPdf(
   sales
@@ -7821,36 +8001,32 @@ async function createSalesRegisterPdf(
     },
     {
       label: "Sale / Invoice",
-      width: 84
+      width: 90
     },
     {
       label: "Date",
-      width: 52
+      width: 55
     },
     {
       label: "Customer",
-      width: 132
+      width: 150
     },
     {
       label: "Product",
-      width: 118
+      width: 135
     },
     {
       label: "Payment",
-      width: 92
+      width: 95
     },
     {
       label: "Total",
-      width: 68,
+      width: 70,
       align: "right"
     },
     {
-      label: "Fulfilment",
-      width: 144
-    },
-    {
-      label: "Approval",
-      width: 72
+      label: "Status / Delivery",
+      width: 166
     }
   ];
 
@@ -8310,7 +8486,7 @@ async function createSalesRegisterPdf(
           )
             .slice(
               0,
-              5
+              7
             )
       );
 
@@ -8524,18 +8700,7 @@ async function createSalesRegisterPdf(
         ),
         salesReportFulfilment(
           sale
-        ),
-        [
-          normalDate(
-            sale.approved_at
-          ),
-          Number(
-            sale.invoice_sent ||
-            0
-          ) === 1
-            ? "Invoice sent"
-            : "Invoice pending"
-        ].join("\n")
+        )
       ];
 
       const preparedHeights =
