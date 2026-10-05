@@ -3587,3 +3587,101 @@ body{
     padding:54px 0;
   }
 }
+
+
+/* PROFESSIONAL CATALOG SEARCH */
+.catalog-toolbar{
+  display:flex;
+  align-items:flex-end;
+  justify-content:space-between;
+  gap:22px;
+  margin:26px 0 18px;
+  padding:18px;
+  border:1px solid #e1e7ee;
+  border-radius:18px;
+  background:linear-gradient(180deg,#fff,#f9fbfd);
+  box-shadow:0 12px 32px rgba(11,34,61,.055);
+}
+
+.catalog-search{
+  width:min(100%,680px);
+  display:grid;
+  gap:7px;
+  color:#39485a;
+  font-size:12px;
+  font-weight:850;
+}
+
+.catalog-search-box{
+  min-height:46px;
+  display:flex;
+  align-items:center;
+  gap:9px;
+  padding:0 13px;
+  border:1px solid #d8e0e8;
+  border-radius:12px;
+  background:#fff;
+  transition:border-color .18s ease,box-shadow .18s ease;
+}
+
+.catalog-search-box:focus-within{
+  border-color:#b98525;
+  box-shadow:0 0 0 3px rgba(185,133,37,.12);
+}
+
+.catalog-search-box>span{
+  color:#9a6a18;
+  font-size:19px;
+}
+
+.catalog-search input{
+  width:100%;
+  min-width:0;
+  border:0;
+  outline:0;
+  background:transparent;
+  color:#172537;
+  font:inherit;
+  font-size:14px;
+  font-weight:600;
+}
+
+.catalog-search input::placeholder{
+  color:#8b96a5;
+  font-weight:550;
+}
+
+.catalog-result-count{
+  min-width:72px;
+  padding-bottom:10px;
+  color:#718094;
+  font-size:12px;
+  font-weight:800;
+  text-align:right;
+}
+
+.catalog-section-empty{
+  display:none;
+}
+
+.book-language-filter{
+  margin-top:18px!important;
+}
+
+.book-language-filter button{
+  min-height:44px;
+  border-width:1px!important;
+  box-shadow:0 6px 18px rgba(11,34,61,.045);
+}
+
+@media(max-width:700px){
+  .catalog-toolbar{
+    display:block;
+    padding:14px;
+  }
+  .catalog-result-count{
+    min-height:0;
+    padding:8px 2px 0;
+    text-align:left;
+  }
+}
