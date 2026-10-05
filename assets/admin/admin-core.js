@@ -19,6 +19,7 @@
   let allOrders = [];
   let allSales = [];
   let allComments = [];
+  let allMedia = [];
 
   const healthTargets = [
     ["Home", "/"],
@@ -116,6 +117,14 @@
 
       case "website":
         runHealthChecks();
+        break;
+
+      case "media":
+        loadMediaLibrary();
+        break;
+
+      case "revisions":
+        loadRevisions();
         break;
 
       case "engagement":
@@ -3517,6 +3526,462 @@
 
 
   /* =====================================================
+     MEDIA LIBRARY
+  ====================================================== */
+
+  function formatBytes(value) {
+    const bytes = Number(value || 0);
+
+    if (!Number.isFinite(bytes) || bytes <= 0) {
+      return "—";
+    }
+
+    const units = ["B", "KB", "MB", "GB"];
+    let amount = bytes;
+    let unit = 0;
+
+    while (amount >= 1024 && unit < units.length - 1) {
+      amount /= 1024;
+      unit += 1;
+    }
+
+    return (
+      amount.toLocaleString(
+        undefined,
+        {
+          maximumFractionDigits:
+            unit === 0 ? 0 : 1
+        }
+      ) +
+      " " +
+      units[unit]
+    );
+  }
+
+
+  function mediaSourceItems() {
+    const paths =
+      new Set(
+        allMedia.map(
+          (item) => item.path
+        )
+      );
+
+    return allMedia.filter((item) => {
+      if (item.format !== "JPG") {
+        return true;
+      }
+
+      const possibleWebp =
+        item.path.replace(
+          /\.jpg$/i,
+          ".webp"
+        );
+
+      return !paths.has(possibleWebp);
+    });
+  }
+
+
+  function renderMediaLibrary() {
+    const grid = $("mediaGrid");
+
+    if (!grid) {
+      return;
+    }
+
+    const query =
+      String(
+        $("mediaSearch")?.value || ""
+      )
+        .trim()
+        .toLocaleLowerCase();
+
+    const category =
+      String(
+        $("mediaCategory")?.value || ""
+      );
+
+    const items =
+      mediaSourceItems()
+        .filter((item) => {
+          const matchesCategory =
+            !category ||
+            item.category === category;
+
+          const haystack =
+            [
+              item.name,
+              item.path,
+              item.format,
+              item.category
+            ]
+              .join(" ")
+              .toLocaleLowerCase();
+
+          const matchesSearch =
+            !query ||
+            haystack.includes(query);
+
+          return (
+            matchesCategory &&
+            matchesSearch
+          );
+        });
+
+    if ($("mediaResultCount")) {
+      $("mediaResultCount").textContent =
+        items.length +
+        (items.length === 1
+          ? " item"
+          : " items");
+    }
+
+    if (!items.length) {
+      grid.innerHTML = `
+        <div class="table-empty">
+          No media matches this filter.
+        </div>
+      `;
+      return;
+    }
+
+    grid.innerHTML =
+      items.map((item) => {
+        const preview =
+          item.jpeg_fallback ||
+          item.path;
+
+        const dimensions =
+          item.width && item.height
+            ? item.width + " × " + item.height
+            : "Vector / unknown size";
+
+        return `
+          <article class="admin-media-card">
+            <div class="admin-media-preview">
+              <img
+                src="${escapeHtml(preview)}"
+                alt=""
+                loading="lazy"
+              >
+            </div>
+
+            <div class="admin-media-body">
+              <strong
+                class="admin-media-name"
+                title="${escapeHtml(item.name)}"
+              >
+                ${escapeHtml(item.name)}
+              </strong>
+
+              <code
+                class="admin-media-path"
+                title="${escapeHtml(item.path)}"
+              >
+                ${escapeHtml(item.path)}
+              </code>
+
+              <div class="admin-media-meta">
+                <span class="media-chip">
+                  ${escapeHtml(item.format)}
+                </span>
+                <span class="media-chip">
+                  ${escapeHtml(dimensions)}
+                </span>
+                <span class="media-chip">
+                  ${escapeHtml(formatBytes(item.bytes))}
+                </span>
+                ${
+                  item.jpeg_fallback
+                    ? '<span class="media-chip compat">iPad JPEG fallback</span>'
+                    : ""
+                }
+              </div>
+
+              <div class="admin-media-actions">
+                <a
+                  href="${escapeHtml(preview)}"
+                  target="_blank"
+                  rel="noopener"
+                >
+                  Preview
+                </a>
+                <button
+                  type="button"
+                  data-copy-media="${escapeHtml(item.path)}"
+                >
+                  Copy Path
+                </button>
+              </div>
+            </div>
+          </article>
+        `;
+      }).join("");
+  }
+
+
+  async function loadMediaLibrary() {
+    const grid = $("mediaGrid");
+
+    if (grid) {
+      grid.innerHTML = `
+        <div class="table-empty">
+          Loading media library…
+        </div>
+      `;
+    }
+
+    try {
+      const response =
+        await fetch(
+          "/assets/data/media-index.json?ts=" +
+          Date.now(),
+          {
+            cache: "no-store",
+            credentials: "same-origin"
+          }
+        );
+
+      if (!response.ok) {
+        throw new Error(
+          "Media index returned HTTP " +
+          response.status
+        );
+      }
+
+      const data =
+        await response.json();
+
+      allMedia =
+        Array.isArray(data.items)
+          ? data.items
+          : [];
+
+      const webpCount =
+        allMedia.filter(
+          (item) =>
+            item.format === "WEBP"
+        ).length;
+
+      const fallbackCount =
+        allMedia.filter(
+          (item) =>
+            Boolean(item.jpeg_fallback)
+        ).length;
+
+      if ($("mediaMetricTotal")) {
+        $("mediaMetricTotal").textContent =
+          String(data.count || allMedia.length);
+      }
+
+      if ($("mediaMetricWebp")) {
+        $("mediaMetricWebp").textContent =
+          String(webpCount);
+      }
+
+      if ($("mediaMetricFallbacks")) {
+        $("mediaMetricFallbacks").textContent =
+          String(fallbackCount);
+      }
+
+      if ($("mediaMetricUpdated")) {
+        const updated =
+          data.generated_at
+            ? new Date(data.generated_at)
+            : null;
+
+        $("mediaMetricUpdated").textContent =
+          updated &&
+          !Number.isNaN(updated.getTime())
+            ? new Intl.DateTimeFormat(
+                undefined,
+                {
+                  month: "short",
+                  day: "2-digit",
+                  hour: "2-digit",
+                  minute: "2-digit"
+                }
+              ).format(updated)
+            : "—";
+      }
+
+      const select =
+        $("mediaCategory");
+
+      if (select) {
+        const current =
+          select.value;
+
+        const categories =
+          [...new Set(
+            allMedia
+              .map((item) => item.category)
+              .filter(Boolean)
+          )].sort();
+
+        select.innerHTML =
+          '<option value="">All categories</option>' +
+          categories.map(
+            (value) =>
+              '<option value="' +
+              escapeHtml(value) +
+              '">' +
+              escapeHtml(value) +
+              "</option>"
+          ).join("");
+
+        if (
+          current &&
+          categories.includes(current)
+        ) {
+          select.value = current;
+        }
+      }
+
+      renderMediaLibrary();
+
+    } catch (error) {
+      console.error(
+        "Media library failed:",
+        error
+      );
+
+      if (grid) {
+        grid.innerHTML = `
+          <div class="error-box">
+            Media inventory could not be loaded.
+          </div>
+        `;
+      }
+
+      toast(
+        "Could not load media library.",
+        "error"
+      );
+    }
+  }
+
+
+  /* =====================================================
+     REVISION HISTORY
+  ====================================================== */
+
+  async function loadRevisions() {
+    const list =
+      $("revisionList");
+
+    if (!list) {
+      return;
+    }
+
+    list.innerHTML = `
+      <div class="table-empty">
+        Loading revision history…
+      </div>
+    `;
+
+    try {
+      const response =
+        await fetch(
+          "https://api.github.com/repos/DurgaJung/durgajung-website/commits?sha=main&per_page=30",
+          {
+            headers: {
+              Accept:
+                "application/vnd.github+json"
+            }
+          }
+        );
+
+      if (!response.ok) {
+        throw new Error(
+          "GitHub returned HTTP " +
+          response.status
+        );
+      }
+
+      const commits =
+        await response.json();
+
+      if (!Array.isArray(commits) || !commits.length) {
+        list.innerHTML = `
+          <div class="table-empty">
+            No revisions were returned.
+          </div>
+        `;
+        return;
+      }
+
+      list.innerHTML =
+        commits.map((item) => {
+          const sha =
+            String(item.sha || "");
+
+          const shortSha =
+            sha.slice(0, 7);
+
+          const message =
+            String(
+              item.commit?.message ||
+              "Website update"
+            ).split("\n")[0];
+
+          const author =
+            item.commit?.author?.name ||
+            item.author?.login ||
+            "Unknown";
+
+          const date =
+            item.commit?.committer?.date ||
+            item.commit?.author?.date;
+
+          return `
+            <div class="revision-row">
+              <code class="revision-sha">
+                ${escapeHtml(shortSha)}
+              </code>
+
+              <div class="revision-message">
+                <strong title="${escapeHtml(message)}">
+                  ${escapeHtml(message)}
+                </strong>
+                <span>
+                  ${escapeHtml(author)}
+                </span>
+              </div>
+
+              <div class="revision-date">
+                ${escapeHtml(formatDate(date))}
+              </div>
+
+              <a
+                class="revision-open"
+                href="${escapeHtml(item.html_url || "#")}"
+                target="_blank"
+                rel="noopener"
+              >
+                View ↗
+              </a>
+            </div>
+          `;
+        }).join("");
+
+    } catch (error) {
+      console.error(
+        "Revision history failed:",
+        error
+      );
+
+      list.innerHTML = `
+        <div class="error-box">
+          Revision history could not be loaded. Open GitHub directly if the public API rate limit has been reached.
+        </div>
+      `;
+    }
+  }
+
+
+  /* =====================================================
      ADMIN ACTIVITY
   ====================================================== */
 
@@ -3924,6 +4389,64 @@
         !$("orderModal").hidden
       ) {
         closeOrderModal();
+      }
+    }
+  );
+
+
+  $("refreshMedia")
+    ?.addEventListener(
+      "click",
+      loadMediaLibrary
+    );
+
+  $("mediaSearch")
+    ?.addEventListener(
+      "input",
+      renderMediaLibrary
+    );
+
+  $("mediaCategory")
+    ?.addEventListener(
+      "change",
+      renderMediaLibrary
+    );
+
+  $("refreshRevisions")
+    ?.addEventListener(
+      "click",
+      loadRevisions
+    );
+
+  document.addEventListener(
+    "click",
+    async (event) => {
+      const button =
+        event.target.closest(
+          "[data-copy-media]"
+        );
+
+      if (!button) {
+        return;
+      }
+
+      const value =
+        button.dataset.copyMedia || "";
+
+      try {
+        await navigator.clipboard.writeText(
+          value
+        );
+
+        toast(
+          "Media path copied.",
+          "success"
+        );
+      } catch {
+        toast(
+          "Could not copy media path.",
+          "error"
+        );
       }
     }
   );
