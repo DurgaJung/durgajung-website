@@ -1,0 +1,1366 @@
+{
+  "generated_at": "2026-10-05T11:47:27.024567+00:00",
+  "count": 136,
+  "items": [
+    {
+      "path": "/assets/images/Durga_Jung_Kunwar_Signature_Transparent.png",
+      "name": "Durga_Jung_Kunwar_Signature_Transparent.png",
+      "format": "PNG",
+      "category": "general",
+      "bytes": 148299,
+      "width": 1350,
+      "height": 674,
+      "jpeg_fallback": null
+    },
+    {
+      "path": "/assets/images/a-brighter-light-hi.jpg",
+      "name": "a-brighter-light-hi.jpg",
+      "format": "JPG",
+      "category": "general",
+      "bytes": 109759,
+      "width": 689,
+      "height": 1000,
+      "jpeg_fallback": null
+    },
+    {
+      "path": "/assets/images/a-brighter-light-hi.webp",
+      "name": "a-brighter-light-hi.webp",
+      "format": "WEBP",
+      "category": "general",
+      "bytes": 56530,
+      "width": 689,
+      "height": 1000,
+      "jpeg_fallback": "/assets/images/a-brighter-light-hi.jpg"
+    },
+    {
+      "path": "/assets/images/a-brighter-light-np.jpg",
+      "name": "a-brighter-light-np.jpg",
+      "format": "JPG",
+      "category": "general",
+      "bytes": 110220,
+      "width": 689,
+      "height": 1000,
+      "jpeg_fallback": null
+    },
+    {
+      "path": "/assets/images/a-brighter-light-np.webp",
+      "name": "a-brighter-light-np.webp",
+      "format": "WEBP",
+      "category": "general",
+      "bytes": 55958,
+      "width": 689,
+      "height": 1000,
+      "jpeg_fallback": "/assets/images/a-brighter-light-np.jpg"
+    },
+    {
+      "path": "/assets/images/about-community.jpg",
+      "name": "about-community.jpg",
+      "format": "JPG",
+      "category": "general",
+      "bytes": 283811,
+      "width": 1168,
+      "height": 657,
+      "jpeg_fallback": null
+    },
+    {
+      "path": "/assets/images/about-community.webp",
+      "name": "about-community.webp",
+      "format": "WEBP",
+      "category": "general",
+      "bytes": 209932,
+      "width": 1168,
+      "height": 657,
+      "jpeg_fallback": "/assets/images/about-community.jpg"
+    },
+    {
+      "path": "/assets/images/about-early-ministry.jpg",
+      "name": "about-early-ministry.jpg",
+      "format": "JPG",
+      "category": "general",
+      "bytes": 69623,
+      "width": 720,
+      "height": 540,
+      "jpeg_fallback": null
+    },
+    {
+      "path": "/assets/images/about-early-ministry.webp",
+      "name": "about-early-ministry.webp",
+      "format": "WEBP",
+      "category": "general",
+      "bytes": 40666,
+      "width": 720,
+      "height": 540,
+      "jpeg_fallback": "/assets/images/about-early-ministry.jpg"
+    },
+    {
+      "path": "/assets/images/about-fgt-biratnagar.jpg",
+      "name": "about-fgt-biratnagar.jpg",
+      "format": "JPG",
+      "category": "general",
+      "bytes": 235385,
+      "width": 1400,
+      "height": 901,
+      "jpeg_fallback": null
+    },
+    {
+      "path": "/assets/images/about-fgt-biratnagar.webp",
+      "name": "about-fgt-biratnagar.webp",
+      "format": "WEBP",
+      "category": "general",
+      "bytes": 125568,
+      "width": 1400,
+      "height": 901,
+      "jpeg_fallback": "/assets/images/about-fgt-biratnagar.jpg"
+    },
+    {
+      "path": "/assets/images/about-ordination.jpg",
+      "name": "about-ordination.jpg",
+      "format": "JPG",
+      "category": "general",
+      "bytes": 127259,
+      "width": 901,
+      "height": 600,
+      "jpeg_fallback": null
+    },
+    {
+      "path": "/assets/images/about-ordination.webp",
+      "name": "about-ordination.webp",
+      "format": "WEBP",
+      "category": "general",
+      "bytes": 72560,
+      "width": 901,
+      "height": 600,
+      "jpeg_fallback": "/assets/images/about-ordination.jpg"
+    },
+    {
+      "path": "/assets/images/about-teaching.jpg",
+      "name": "about-teaching.jpg",
+      "format": "JPG",
+      "category": "general",
+      "bytes": 130495,
+      "width": 720,
+      "height": 1280,
+      "jpeg_fallback": null
+    },
+    {
+      "path": "/assets/images/about-teaching.webp",
+      "name": "about-teaching.webp",
+      "format": "WEBP",
+      "category": "general",
+      "bytes": 60740,
+      "width": 720,
+      "height": 1280,
+      "jpeg_fallback": "/assets/images/about-teaching.jpg"
+    },
+    {
+      "path": "/assets/images/banner.jpg",
+      "name": "banner.jpg",
+      "format": "JPG",
+      "category": "general",
+      "bytes": 136711,
+      "width": 2064,
+      "height": 512,
+      "jpeg_fallback": null
+    },
+    {
+      "path": "/assets/images/banner.webp",
+      "name": "banner.webp",
+      "format": "WEBP",
+      "category": "general",
+      "bytes": 65900,
+      "width": 2064,
+      "height": 512,
+      "jpeg_fallback": "/assets/images/banner.jpg"
+    },
+    {
+      "path": "/assets/images/discovering-the-bible-hi.jpg",
+      "name": "discovering-the-bible-hi.jpg",
+      "format": "JPG",
+      "category": "general",
+      "bytes": 133065,
+      "width": 718,
+      "height": 999,
+      "jpeg_fallback": null
+    },
+    {
+      "path": "/assets/images/discovering-the-bible-hi.webp",
+      "name": "discovering-the-bible-hi.webp",
+      "format": "WEBP",
+      "category": "general",
+      "bytes": 67292,
+      "width": 718,
+      "height": 999,
+      "jpeg_fallback": "/assets/images/discovering-the-bible-hi.jpg"
+    },
+    {
+      "path": "/assets/images/discovering-the-bible-np.jpg",
+      "name": "discovering-the-bible-np.jpg",
+      "format": "JPG",
+      "category": "general",
+      "bytes": 134745,
+      "width": 718,
+      "height": 1000,
+      "jpeg_fallback": null
+    },
+    {
+      "path": "/assets/images/discovering-the-bible-np.webp",
+      "name": "discovering-the-bible-np.webp",
+      "format": "WEBP",
+      "category": "general",
+      "bytes": 67810,
+      "width": 718,
+      "height": 1000,
+      "jpeg_fallback": "/assets/images/discovering-the-bible-np.jpg"
+    },
+    {
+      "path": "/assets/images/favicon.jpg",
+      "name": "favicon.jpg",
+      "format": "JPG",
+      "category": "general",
+      "bytes": 28299,
+      "width": 512,
+      "height": 512,
+      "jpeg_fallback": null
+    },
+    {
+      "path": "/assets/images/favicon.webp",
+      "name": "favicon.webp",
+      "format": "WEBP",
+      "category": "general",
+      "bytes": 14946,
+      "width": 512,
+      "height": 512,
+      "jpeg_fallback": "/assets/images/favicon.jpg"
+    },
+    {
+      "path": "/assets/images/gallery/bible-teaching-visual-presentation.jpg",
+      "name": "bible-teaching-visual-presentation.jpg",
+      "format": "JPG",
+      "category": "gallery",
+      "bytes": 223971,
+      "width": 1400,
+      "height": 901,
+      "jpeg_fallback": null
+    },
+    {
+      "path": "/assets/images/gallery/bible-teaching-visual-presentation.webp",
+      "name": "bible-teaching-visual-presentation.webp",
+      "format": "WEBP",
+      "category": "gallery",
+      "bytes": 91648,
+      "width": 1400,
+      "height": 901,
+      "jpeg_fallback": "/assets/images/gallery/bible-teaching-visual-presentation.jpg"
+    },
+    {
+      "path": "/assets/images/gallery/christmas-church-fellowship.jpg",
+      "name": "christmas-church-fellowship.jpg",
+      "format": "JPG",
+      "category": "gallery",
+      "bytes": 116921,
+      "width": 800,
+      "height": 600,
+      "jpeg_fallback": null
+    },
+    {
+      "path": "/assets/images/gallery/christmas-church-fellowship.webp",
+      "name": "christmas-church-fellowship.webp",
+      "format": "WEBP",
+      "category": "gallery",
+      "bytes": 54104,
+      "width": 800,
+      "height": 600,
+      "jpeg_fallback": "/assets/images/gallery/christmas-church-fellowship.jpg"
+    },
+    {
+      "path": "/assets/images/gallery/church-service-preaching.jpg",
+      "name": "church-service-preaching.jpg",
+      "format": "JPG",
+      "category": "gallery",
+      "bytes": 182047,
+      "width": 1400,
+      "height": 884,
+      "jpeg_fallback": null
+    },
+    {
+      "path": "/assets/images/gallery/church-service-preaching.webp",
+      "name": "church-service-preaching.webp",
+      "format": "WEBP",
+      "category": "gallery",
+      "bytes": 74466,
+      "width": 1400,
+      "height": 884,
+      "jpeg_fallback": "/assets/images/gallery/church-service-preaching.jpg"
+    },
+    {
+      "path": "/assets/images/gallery/congregational-prayer-ministry.jpg",
+      "name": "congregational-prayer-ministry.jpg",
+      "format": "JPG",
+      "category": "gallery",
+      "bytes": 82587,
+      "width": 720,
+      "height": 431,
+      "jpeg_fallback": null
+    },
+    {
+      "path": "/assets/images/gallery/congregational-prayer-ministry.webp",
+      "name": "congregational-prayer-ministry.webp",
+      "format": "WEBP",
+      "category": "gallery",
+      "bytes": 44194,
+      "width": 720,
+      "height": 431,
+      "jpeg_fallback": "/assets/images/gallery/congregational-prayer-ministry.jpg"
+    },
+    {
+      "path": "/assets/images/gallery/ministry-fellowship.jpg",
+      "name": "ministry-fellowship.jpg",
+      "format": "JPG",
+      "category": "gallery",
+      "bytes": 482530,
+      "width": 1400,
+      "height": 1013,
+      "jpeg_fallback": null
+    },
+    {
+      "path": "/assets/images/gallery/ministry-fellowship.webp",
+      "name": "ministry-fellowship.webp",
+      "format": "WEBP",
+      "category": "gallery",
+      "bytes": 272260,
+      "width": 1400,
+      "height": 1013,
+      "jpeg_fallback": "/assets/images/gallery/ministry-fellowship.jpg"
+    },
+    {
+      "path": "/assets/images/gallery/prayer-congregational-ministry.jpg",
+      "name": "prayer-congregational-ministry.jpg",
+      "format": "JPG",
+      "category": "gallery",
+      "bytes": 100335,
+      "width": 720,
+      "height": 545,
+      "jpeg_fallback": null
+    },
+    {
+      "path": "/assets/images/gallery/prayer-congregational-ministry.webp",
+      "name": "prayer-congregational-ministry.webp",
+      "format": "WEBP",
+      "category": "gallery",
+      "bytes": 51898,
+      "width": 720,
+      "height": 545,
+      "jpeg_fallback": "/assets/images/gallery/prayer-congregational-ministry.jpg"
+    },
+    {
+      "path": "/assets/images/gallery/preaching-bahrain-nepali-church.jpg",
+      "name": "preaching-bahrain-nepali-church.jpg",
+      "format": "JPG",
+      "category": "gallery",
+      "bytes": 194530,
+      "width": 788,
+      "height": 1400,
+      "jpeg_fallback": null
+    },
+    {
+      "path": "/assets/images/gallery/preaching-bahrain-nepali-church.webp",
+      "name": "preaching-bahrain-nepali-church.webp",
+      "format": "WEBP",
+      "category": "gallery",
+      "bytes": 79912,
+      "width": 788,
+      "height": 1400,
+      "jpeg_fallback": "/assets/images/gallery/preaching-bahrain-nepali-church.jpg"
+    },
+    {
+      "path": "/assets/images/gallery/preaching-biblical-teaching.jpg",
+      "name": "preaching-biblical-teaching.jpg",
+      "format": "JPG",
+      "category": "gallery",
+      "bytes": 174838,
+      "width": 788,
+      "height": 1400,
+      "jpeg_fallback": null
+    },
+    {
+      "path": "/assets/images/gallery/preaching-biblical-teaching.webp",
+      "name": "preaching-biblical-teaching.webp",
+      "format": "WEBP",
+      "category": "gallery",
+      "bytes": 69088,
+      "width": 788,
+      "height": 1400,
+      "jpeg_fallback": "/assets/images/gallery/preaching-biblical-teaching.jpg"
+    },
+    {
+      "path": "/assets/images/gallery/teaching-word-of-god.jpg",
+      "name": "teaching-word-of-god.jpg",
+      "format": "JPG",
+      "category": "gallery",
+      "bytes": 171672,
+      "width": 1050,
+      "height": 1400,
+      "jpeg_fallback": null
+    },
+    {
+      "path": "/assets/images/gallery/teaching-word-of-god.webp",
+      "name": "teaching-word-of-god.webp",
+      "format": "WEBP",
+      "category": "gallery",
+      "bytes": 58334,
+      "width": 1050,
+      "height": 1400,
+      "jpeg_fallback": "/assets/images/gallery/teaching-word-of-god.jpg"
+    },
+    {
+      "path": "/assets/images/gallery/worship-prayer-fellowship.jpg",
+      "name": "worship-prayer-fellowship.jpg",
+      "format": "JPG",
+      "category": "gallery",
+      "bytes": 144556,
+      "width": 797,
+      "height": 600,
+      "jpeg_fallback": null
+    },
+    {
+      "path": "/assets/images/gallery/worship-prayer-fellowship.webp",
+      "name": "worship-prayer-fellowship.webp",
+      "format": "WEBP",
+      "category": "gallery",
+      "bytes": 78968,
+      "width": 797,
+      "height": 600,
+      "jpeg_fallback": "/assets/images/gallery/worship-prayer-fellowship.jpg"
+    },
+    {
+      "path": "/assets/images/gallery-1.jpg",
+      "name": "gallery-1.jpg",
+      "format": "JPG",
+      "category": "general",
+      "bytes": 70934,
+      "width": 1200,
+      "height": 552,
+      "jpeg_fallback": null
+    },
+    {
+      "path": "/assets/images/gallery-1.webp",
+      "name": "gallery-1.webp",
+      "format": "WEBP",
+      "category": "general",
+      "bytes": 33626,
+      "width": 1200,
+      "height": 552,
+      "jpeg_fallback": "/assets/images/gallery-1.jpg"
+    },
+    {
+      "path": "/assets/images/gallery-2.jpg",
+      "name": "gallery-2.jpg",
+      "format": "JPG",
+      "category": "general",
+      "bytes": 70934,
+      "width": 1200,
+      "height": 552,
+      "jpeg_fallback": null
+    },
+    {
+      "path": "/assets/images/gallery-2.webp",
+      "name": "gallery-2.webp",
+      "format": "WEBP",
+      "category": "general",
+      "bytes": 33626,
+      "width": 1200,
+      "height": 552,
+      "jpeg_fallback": "/assets/images/gallery-2.jpg"
+    },
+    {
+      "path": "/assets/images/gallery-3.jpg",
+      "name": "gallery-3.jpg",
+      "format": "JPG",
+      "category": "general",
+      "bytes": 70934,
+      "width": 1200,
+      "height": 552,
+      "jpeg_fallback": null
+    },
+    {
+      "path": "/assets/images/gallery-3.webp",
+      "name": "gallery-3.webp",
+      "format": "WEBP",
+      "category": "general",
+      "bytes": 33626,
+      "width": 1200,
+      "height": 552,
+      "jpeg_fallback": "/assets/images/gallery-3.jpg"
+    },
+    {
+      "path": "/assets/images/getting-christianity-right-np.jpg",
+      "name": "getting-christianity-right-np.jpg",
+      "format": "JPG",
+      "category": "general",
+      "bytes": 154992,
+      "width": 666,
+      "height": 1000,
+      "jpeg_fallback": null
+    },
+    {
+      "path": "/assets/images/getting-christianity-right-np.webp",
+      "name": "getting-christianity-right-np.webp",
+      "format": "WEBP",
+      "category": "general",
+      "bytes": 92736,
+      "width": 666,
+      "height": 1000,
+      "jpeg_fallback": "/assets/images/getting-christianity-right-np.jpg"
+    },
+    {
+      "path": "/assets/images/how-to-forgive-np.jpg",
+      "name": "how-to-forgive-np.jpg",
+      "format": "JPG",
+      "category": "general",
+      "bytes": 294307,
+      "width": 666,
+      "height": 999,
+      "jpeg_fallback": null
+    },
+    {
+      "path": "/assets/images/how-to-forgive-np.webp",
+      "name": "how-to-forgive-np.webp",
+      "format": "WEBP",
+      "category": "general",
+      "bytes": 230258,
+      "width": 666,
+      "height": 999,
+      "jpeg_fallback": "/assets/images/how-to-forgive-np.jpg"
+    },
+    {
+      "path": "/assets/images/inside-the-four-gospels-np.jpg",
+      "name": "inside-the-four-gospels-np.jpg",
+      "format": "JPG",
+      "category": "general",
+      "bytes": 215537,
+      "width": 667,
+      "height": 1000,
+      "jpeg_fallback": null
+    },
+    {
+      "path": "/assets/images/inside-the-four-gospels-np.webp",
+      "name": "inside-the-four-gospels-np.webp",
+      "format": "WEBP",
+      "category": "general",
+      "bytes": 140690,
+      "width": 667,
+      "height": 1000,
+      "jpeg_fallback": "/assets/images/inside-the-four-gospels-np.jpg"
+    },
+    {
+      "path": "/assets/images/job-answering-the-question-of-suffering-hi.jpg",
+      "name": "job-answering-the-question-of-suffering-hi.jpg",
+      "format": "JPG",
+      "category": "general",
+      "bytes": 71284,
+      "width": 434,
+      "height": 648,
+      "jpeg_fallback": null
+    },
+    {
+      "path": "/assets/images/job-answering-the-question-of-suffering-hi.webp",
+      "name": "job-answering-the-question-of-suffering-hi.webp",
+      "format": "WEBP",
+      "category": "general",
+      "bytes": 40542,
+      "width": 434,
+      "height": 648,
+      "jpeg_fallback": "/assets/images/job-answering-the-question-of-suffering-hi.jpg"
+    },
+    {
+      "path": "/assets/images/job-nepali.png",
+      "name": "job-nepali.png",
+      "format": "PNG",
+      "category": "general",
+      "bytes": 2076721,
+      "width": 1086,
+      "height": 1448,
+      "jpeg_fallback": null
+    },
+    {
+      "path": "/assets/images/lessons-from-the-lives-of-the-twelve-disciples-hi-hd.webp",
+      "name": "lessons-from-the-lives-of-the-twelve-disciples-hi-hd.webp",
+      "format": "WEBP",
+      "category": "general",
+      "bytes": 27014,
+      "width": 499,
+      "height": 699,
+      "jpeg_fallback": null
+    },
+    {
+      "path": "/assets/images/lessons-from-the-lives-of-the-twelve-disciples-hi.jpg",
+      "name": "lessons-from-the-lives-of-the-twelve-disciples-hi.jpg",
+      "format": "JPG",
+      "category": "general",
+      "bytes": 9376,
+      "width": 220,
+      "height": 308,
+      "jpeg_fallback": null
+    },
+    {
+      "path": "/assets/images/lessons-from-the-lives-of-the-twelve-disciples-hi.png",
+      "name": "lessons-from-the-lives-of-the-twelve-disciples-hi.png",
+      "format": "PNG",
+      "category": "general",
+      "bytes": 2065488,
+      "width": 1798,
+      "height": 2520,
+      "jpeg_fallback": null
+    },
+    {
+      "path": "/assets/images/lessons-from-the-lives-of-the-twelve-disciples-np.jpg",
+      "name": "lessons-from-the-lives-of-the-twelve-disciples-np.jpg",
+      "format": "JPG",
+      "category": "general",
+      "bytes": 134486,
+      "width": 713,
+      "height": 1000,
+      "jpeg_fallback": null
+    },
+    {
+      "path": "/assets/images/lessons-from-the-lives-of-the-twelve-disciples-np.webp",
+      "name": "lessons-from-the-lives-of-the-twelve-disciples-np.webp",
+      "format": "WEBP",
+      "category": "general",
+      "bytes": 78762,
+      "width": 713,
+      "height": 1000,
+      "jpeg_fallback": "/assets/images/lessons-from-the-lives-of-the-twelve-disciples-np.jpg"
+    },
+    {
+      "path": "/assets/images/living-thanks-hi.jpg",
+      "name": "living-thanks-hi.jpg",
+      "format": "JPG",
+      "category": "general",
+      "bytes": 184809,
+      "width": 664,
+      "height": 1000,
+      "jpeg_fallback": null
+    },
+    {
+      "path": "/assets/images/living-thanks-hi.webp",
+      "name": "living-thanks-hi.webp",
+      "format": "WEBP",
+      "category": "general",
+      "bytes": 117944,
+      "width": 664,
+      "height": 1000,
+      "jpeg_fallback": "/assets/images/living-thanks-hi.jpg"
+    },
+    {
+      "path": "/assets/images/living-thanks-np.jpg",
+      "name": "living-thanks-np.jpg",
+      "format": "JPG",
+      "category": "general",
+      "bytes": 184726,
+      "width": 664,
+      "height": 1000,
+      "jpeg_fallback": null
+    },
+    {
+      "path": "/assets/images/living-thanks-np.webp",
+      "name": "living-thanks-np.webp",
+      "format": "WEBP",
+      "category": "general",
+      "bytes": 117006,
+      "width": 664,
+      "height": 1000,
+      "jpeg_fallback": "/assets/images/living-thanks-np.jpg"
+    },
+    {
+      "path": "/assets/images/making-biblical-decisions.png",
+      "name": "making-biblical-decisions.png",
+      "format": "PNG",
+      "category": "general",
+      "bytes": 1677712,
+      "width": 816,
+      "height": 1304,
+      "jpeg_fallback": null
+    },
+    {
+      "path": "/assets/images/ministry-photo.jpg",
+      "name": "ministry-photo.jpg",
+      "format": "JPG",
+      "category": "general",
+      "bytes": 39079,
+      "width": 630,
+      "height": 418,
+      "jpeg_fallback": null
+    },
+    {
+      "path": "/assets/images/ministry-photo.webp",
+      "name": "ministry-photo.webp",
+      "format": "WEBP",
+      "category": "general",
+      "bytes": 19444,
+      "width": 630,
+      "height": 418,
+      "jpeg_fallback": "/assets/images/ministry-photo.jpg"
+    },
+    {
+      "path": "/assets/images/payments/esewa-qr.jpeg",
+      "name": "esewa-qr.jpeg",
+      "format": "JPEG",
+      "category": "payments",
+      "bytes": 86079,
+      "width": 1296,
+      "height": 2022,
+      "jpeg_fallback": null
+    },
+    {
+      "path": "/assets/images/payments/global-ime-bank-qr.jpeg",
+      "name": "global-ime-bank-qr.jpeg",
+      "format": "JPEG",
+      "category": "payments",
+      "bytes": 50364,
+      "width": 720,
+      "height": 1241,
+      "jpeg_fallback": null
+    },
+    {
+      "path": "/assets/images/payments/khalti-qr.jpeg",
+      "name": "khalti-qr.jpeg",
+      "format": "JPEG",
+      "category": "payments",
+      "bytes": 20248,
+      "width": 360,
+      "height": 576,
+      "jpeg_fallback": null
+    },
+    {
+      "path": "/assets/images/portrait.jpg",
+      "name": "portrait.jpg",
+      "format": "JPG",
+      "category": "general",
+      "bytes": 82243,
+      "width": 1200,
+      "height": 800,
+      "jpeg_fallback": null
+    },
+    {
+      "path": "/assets/images/portrait.webp",
+      "name": "portrait.webp",
+      "format": "WEBP",
+      "category": "general",
+      "bytes": 38274,
+      "width": 1200,
+      "height": 800,
+      "jpeg_fallback": "/assets/images/portrait.jpg"
+    },
+    {
+      "path": "/assets/images/project-photo.jpg",
+      "name": "project-photo.jpg",
+      "format": "JPG",
+      "category": "general",
+      "bytes": 50846,
+      "width": 1200,
+      "height": 800,
+      "jpeg_fallback": null
+    },
+    {
+      "path": "/assets/images/project-photo.webp",
+      "name": "project-photo.webp",
+      "format": "WEBP",
+      "category": "general",
+      "bytes": 25554,
+      "width": 1200,
+      "height": 800,
+      "jpeg_fallback": "/assets/images/project-photo.jpg"
+    },
+    {
+      "path": "/assets/images/sermons/good-for-evil.jpg",
+      "name": "good-for-evil.jpg",
+      "format": "JPG",
+      "category": "sermons",
+      "bytes": 65101,
+      "width": 1200,
+      "height": 675,
+      "jpeg_fallback": null
+    },
+    {
+      "path": "/assets/images/sermons/good-for-evil.webp",
+      "name": "good-for-evil.webp",
+      "format": "WEBP",
+      "category": "sermons",
+      "bytes": 38612,
+      "width": 1200,
+      "height": 675,
+      "jpeg_fallback": "/assets/images/sermons/good-for-evil.jpg"
+    },
+    {
+      "path": "/assets/images/sermons/life-without-compromise.jpg",
+      "name": "life-without-compromise.jpg",
+      "format": "JPG",
+      "category": "sermons",
+      "bytes": 50160,
+      "width": 1280,
+      "height": 720,
+      "jpeg_fallback": null
+    },
+    {
+      "path": "/assets/images/sermons/life-without-compromise.webp",
+      "name": "life-without-compromise.webp",
+      "format": "WEBP",
+      "category": "sermons",
+      "bytes": 27986,
+      "width": 1280,
+      "height": 720,
+      "jpeg_fallback": "/assets/images/sermons/life-without-compromise.jpg"
+    },
+    {
+      "path": "/assets/images/sermons/need-for-good-leadership.jpg",
+      "name": "need-for-good-leadership.jpg",
+      "format": "JPG",
+      "category": "sermons",
+      "bytes": 242355,
+      "width": 1200,
+      "height": 800,
+      "jpeg_fallback": null
+    },
+    {
+      "path": "/assets/images/sermons/need-for-good-leadership.webp",
+      "name": "need-for-good-leadership.webp",
+      "format": "WEBP",
+      "category": "sermons",
+      "bytes": 173766,
+      "width": 1200,
+      "height": 800,
+      "jpeg_fallback": "/assets/images/sermons/need-for-good-leadership.jpg"
+    },
+    {
+      "path": "/assets/images/sermons/running-the-race.jpg",
+      "name": "running-the-race.jpg",
+      "format": "JPG",
+      "category": "sermons",
+      "bytes": 78975,
+      "width": 1200,
+      "height": 675,
+      "jpeg_fallback": null
+    },
+    {
+      "path": "/assets/images/sermons/running-the-race.webp",
+      "name": "running-the-race.webp",
+      "format": "WEBP",
+      "category": "sermons",
+      "bytes": 35142,
+      "width": 1200,
+      "height": 675,
+      "jpeg_fallback": "/assets/images/sermons/running-the-race.jpg"
+    },
+    {
+      "path": "/assets/images/sermons/unity-in-the-church.jpg",
+      "name": "unity-in-the-church.jpg",
+      "format": "JPG",
+      "category": "sermons",
+      "bytes": 205399,
+      "width": 1200,
+      "height": 800,
+      "jpeg_fallback": null
+    },
+    {
+      "path": "/assets/images/sermons/unity-in-the-church.webp",
+      "name": "unity-in-the-church.webp",
+      "format": "WEBP",
+      "category": "sermons",
+      "bytes": 143074,
+      "width": 1200,
+      "height": 800,
+      "jpeg_fallback": "/assets/images/sermons/unity-in-the-church.jpg"
+    },
+    {
+      "path": "/assets/images/sermons/walk-worthy-of-our-calling.jpg",
+      "name": "walk-worthy-of-our-calling.jpg",
+      "format": "JPG",
+      "category": "sermons",
+      "bytes": 166381,
+      "width": 1200,
+      "height": 800,
+      "jpeg_fallback": null
+    },
+    {
+      "path": "/assets/images/sermons/walk-worthy-of-our-calling.webp",
+      "name": "walk-worthy-of-our-calling.webp",
+      "format": "WEBP",
+      "category": "sermons",
+      "bytes": 106914,
+      "width": 1200,
+      "height": 800,
+      "jpeg_fallback": "/assets/images/sermons/walk-worthy-of-our-calling.jpg"
+    },
+    {
+      "path": "/assets/images/seven-promises-from-the-words-of-jesus-hi.jpg",
+      "name": "seven-promises-from-the-words-of-jesus-hi.jpg",
+      "format": "JPG",
+      "category": "general",
+      "bytes": 178162,
+      "width": 700,
+      "height": 1000,
+      "jpeg_fallback": null
+    },
+    {
+      "path": "/assets/images/seven-promises-from-the-words-of-jesus-hi.webp",
+      "name": "seven-promises-from-the-words-of-jesus-hi.webp",
+      "format": "WEBP",
+      "category": "general",
+      "bytes": 105462,
+      "width": 700,
+      "height": 1000,
+      "jpeg_fallback": "/assets/images/seven-promises-from-the-words-of-jesus-hi.jpg"
+    },
+    {
+      "path": "/assets/images/seven-promises-from-the-words-of-jesus-np.jpg",
+      "name": "seven-promises-from-the-words-of-jesus-np.jpg",
+      "format": "JPG",
+      "category": "general",
+      "bytes": 179894,
+      "width": 700,
+      "height": 1000,
+      "jpeg_fallback": null
+    },
+    {
+      "path": "/assets/images/seven-promises-from-the-words-of-jesus-np.webp",
+      "name": "seven-promises-from-the-words-of-jesus-np.webp",
+      "format": "WEBP",
+      "category": "general",
+      "bytes": 106290,
+      "width": 700,
+      "height": 1000,
+      "jpeg_fallback": "/assets/images/seven-promises-from-the-words-of-jesus-np.jpg"
+    },
+    {
+      "path": "/assets/images/software/mero-mandali-logo.png",
+      "name": "mero-mandali-logo.png",
+      "format": "PNG",
+      "category": "software",
+      "bytes": 917012,
+      "width": 1254,
+      "height": 1254,
+      "jpeg_fallback": null
+    },
+    {
+      "path": "/assets/images/software/nepali-bible-quiz-app-icon.png",
+      "name": "nepali-bible-quiz-app-icon.png",
+      "format": "PNG",
+      "category": "software",
+      "bytes": 1422782,
+      "width": 1254,
+      "height": 1254,
+      "jpeg_fallback": null
+    },
+    {
+      "path": "/assets/images/software/nepali-bible-quiz-logo.png",
+      "name": "nepali-bible-quiz-logo.png",
+      "format": "PNG",
+      "category": "software",
+      "bytes": 1422782,
+      "width": 1254,
+      "height": 1254,
+      "jpeg_fallback": null
+    },
+    {
+      "path": "/assets/images/some-days-we-soar-np.jpg",
+      "name": "some-days-we-soar-np.jpg",
+      "format": "JPG",
+      "category": "general",
+      "bytes": 191333,
+      "width": 730,
+      "height": 1000,
+      "jpeg_fallback": null
+    },
+    {
+      "path": "/assets/images/some-days-we-soar-np.webp",
+      "name": "some-days-we-soar-np.webp",
+      "format": "WEBP",
+      "category": "general",
+      "bytes": 122744,
+      "width": 730,
+      "height": 1000,
+      "jpeg_fallback": "/assets/images/some-days-we-soar-np.jpg"
+    },
+    {
+      "path": "/assets/images/take-courage-hi.jpg",
+      "name": "take-courage-hi.jpg",
+      "format": "JPG",
+      "category": "general",
+      "bytes": 133183,
+      "width": 656,
+      "height": 1000,
+      "jpeg_fallback": null
+    },
+    {
+      "path": "/assets/images/take-courage-hi.webp",
+      "name": "take-courage-hi.webp",
+      "format": "WEBP",
+      "category": "general",
+      "bytes": 74742,
+      "width": 656,
+      "height": 1000,
+      "jpeg_fallback": "/assets/images/take-courage-hi.jpg"
+    },
+    {
+      "path": "/assets/images/take-courage-np.jpg",
+      "name": "take-courage-np.jpg",
+      "format": "JPG",
+      "category": "general",
+      "bytes": 134776,
+      "width": 656,
+      "height": 1000,
+      "jpeg_fallback": null
+    },
+    {
+      "path": "/assets/images/take-courage-np.webp",
+      "name": "take-courage-np.webp",
+      "format": "WEBP",
+      "category": "general",
+      "bytes": 75748,
+      "width": 656,
+      "height": 1000,
+      "jpeg_fallback": "/assets/images/take-courage-np.jpg"
+    },
+    {
+      "path": "/assets/images/the-city-on-a-hill-np.jpg",
+      "name": "the-city-on-a-hill-np.jpg",
+      "format": "JPG",
+      "category": "general",
+      "bytes": 88105,
+      "width": 595,
+      "height": 842,
+      "jpeg_fallback": null
+    },
+    {
+      "path": "/assets/images/the-city-on-a-hill-np.webp",
+      "name": "the-city-on-a-hill-np.webp",
+      "format": "WEBP",
+      "category": "general",
+      "bytes": 43174,
+      "width": 595,
+      "height": 842,
+      "jpeg_fallback": "/assets/images/the-city-on-a-hill-np.jpg"
+    },
+    {
+      "path": "/assets/images/the-power-of-speech-hi.jpg",
+      "name": "the-power-of-speech-hi.jpg",
+      "format": "JPG",
+      "category": "general",
+      "bytes": 84938,
+      "width": 639,
+      "height": 999,
+      "jpeg_fallback": null
+    },
+    {
+      "path": "/assets/images/the-power-of-speech-hi.webp",
+      "name": "the-power-of-speech-hi.webp",
+      "format": "WEBP",
+      "category": "general",
+      "bytes": 41578,
+      "width": 639,
+      "height": 999,
+      "jpeg_fallback": "/assets/images/the-power-of-speech-hi.jpg"
+    },
+    {
+      "path": "/assets/images/the-power-of-speech-np.jpg",
+      "name": "the-power-of-speech-np.jpg",
+      "format": "JPG",
+      "category": "general",
+      "bytes": 84907,
+      "width": 639,
+      "height": 999,
+      "jpeg_fallback": null
+    },
+    {
+      "path": "/assets/images/the-power-of-speech-np.webp",
+      "name": "the-power-of-speech-np.webp",
+      "format": "WEBP",
+      "category": "general",
+      "bytes": 40298,
+      "width": 639,
+      "height": 999,
+      "jpeg_fallback": "/assets/images/the-power-of-speech-np.jpg"
+    },
+    {
+      "path": "/assets/images/verse-daily/2026-09-26-psalm-46-1.svg",
+      "name": "2026-09-26-psalm-46-1.svg",
+      "format": "SVG",
+      "category": "verse-daily",
+      "bytes": 5136,
+      "width": null,
+      "height": null,
+      "jpeg_fallback": null
+    },
+    {
+      "path": "/assets/images/verse-daily/2026-09-27-psalm-56-3.jpg",
+      "name": "2026-09-27-psalm-56-3.jpg",
+      "format": "JPG",
+      "category": "verse-daily",
+      "bytes": 252418,
+      "width": 1024,
+      "height": 1024,
+      "jpeg_fallback": null
+    },
+    {
+      "path": "/assets/images/verse-daily/2026-09-27-psalm-56-3.webp",
+      "name": "2026-09-27-psalm-56-3.webp",
+      "format": "WEBP",
+      "category": "verse-daily",
+      "bytes": 145104,
+      "width": 1024,
+      "height": 1024,
+      "jpeg_fallback": "/assets/images/verse-daily/2026-09-27-psalm-56-3.jpg"
+    },
+    {
+      "path": "/assets/images/verse-daily/2026-09-28-psalm-121-2.jpg",
+      "name": "2026-09-28-psalm-121-2.jpg",
+      "format": "JPG",
+      "category": "verse-daily",
+      "bytes": 416012,
+      "width": 1024,
+      "height": 1024,
+      "jpeg_fallback": null
+    },
+    {
+      "path": "/assets/images/verse-daily/2026-09-28-psalm-121-2.webp",
+      "name": "2026-09-28-psalm-121-2.webp",
+      "format": "WEBP",
+      "category": "verse-daily",
+      "bytes": 291260,
+      "width": 1024,
+      "height": 1024,
+      "jpeg_fallback": "/assets/images/verse-daily/2026-09-28-psalm-121-2.jpg"
+    },
+    {
+      "path": "/assets/images/verse-daily/2026-09-29-psalm-23-1.jpg",
+      "name": "2026-09-29-psalm-23-1.jpg",
+      "format": "JPG",
+      "category": "verse-daily",
+      "bytes": 370131,
+      "width": 1024,
+      "height": 1024,
+      "jpeg_fallback": null
+    },
+    {
+      "path": "/assets/images/verse-daily/2026-09-29-psalm-23-1.webp",
+      "name": "2026-09-29-psalm-23-1.webp",
+      "format": "WEBP",
+      "category": "verse-daily",
+      "bytes": 231124,
+      "width": 1024,
+      "height": 1024,
+      "jpeg_fallback": "/assets/images/verse-daily/2026-09-29-psalm-23-1.jpg"
+    },
+    {
+      "path": "/assets/images/verse-daily/2026-09-30-isaiah-41-10.svg",
+      "name": "2026-09-30-isaiah-41-10.svg",
+      "format": "SVG",
+      "category": "verse-daily",
+      "bytes": 2699,
+      "width": null,
+      "height": null,
+      "jpeg_fallback": null
+    },
+    {
+      "path": "/assets/images/verse-daily/2026-10-01-psalm-118-24.jpg",
+      "name": "2026-10-01-psalm-118-24.jpg",
+      "format": "JPG",
+      "category": "verse-daily",
+      "bytes": 450669,
+      "width": 1024,
+      "height": 1024,
+      "jpeg_fallback": null
+    },
+    {
+      "path": "/assets/images/verse-daily/2026-10-01-psalm-118-24.svg",
+      "name": "2026-10-01-psalm-118-24.svg",
+      "format": "SVG",
+      "category": "verse-daily",
+      "bytes": 1887,
+      "width": null,
+      "height": null,
+      "jpeg_fallback": null
+    },
+    {
+      "path": "/assets/images/verse-daily/2026-10-01-psalm-118-24.webp",
+      "name": "2026-10-01-psalm-118-24.webp",
+      "format": "WEBP",
+      "category": "verse-daily",
+      "bytes": 302126,
+      "width": 1024,
+      "height": 1024,
+      "jpeg_fallback": "/assets/images/verse-daily/2026-10-01-psalm-118-24.jpg"
+    },
+    {
+      "path": "/assets/images/verse-daily/2026-10-01-psalm-46-1.svg",
+      "name": "2026-10-01-psalm-46-1.svg",
+      "format": "SVG",
+      "category": "verse-daily",
+      "bytes": 928,
+      "width": null,
+      "height": null,
+      "jpeg_fallback": null
+    },
+    {
+      "path": "/assets/images/verse-daily/2026-10-02-isaiah-40-31.jpg",
+      "name": "2026-10-02-isaiah-40-31.jpg",
+      "format": "JPG",
+      "category": "verse-daily",
+      "bytes": 32352,
+      "width": 320,
+      "height": 320,
+      "jpeg_fallback": null
+    },
+    {
+      "path": "/assets/images/verse-daily/2026-10-02-isaiah-40-31.webp",
+      "name": "2026-10-02-isaiah-40-31.webp",
+      "format": "WEBP",
+      "category": "verse-daily",
+      "bytes": 10736,
+      "width": 320,
+      "height": 320,
+      "jpeg_fallback": "/assets/images/verse-daily/2026-10-02-isaiah-40-31.jpg"
+    },
+    {
+      "path": "/assets/images/verse-daily/2026-10-03-psalm-34-8.svg",
+      "name": "2026-10-03-psalm-34-8.svg",
+      "format": "SVG",
+      "category": "verse-daily",
+      "bytes": 2235,
+      "width": null,
+      "height": null,
+      "jpeg_fallback": null
+    },
+    {
+      "path": "/assets/images/verse-daily/2026-10-04-psalm-18-1.jpg",
+      "name": "2026-10-04-psalm-18-1.jpg",
+      "format": "JPG",
+      "category": "verse-daily",
+      "bytes": 349891,
+      "width": 1024,
+      "height": 1024,
+      "jpeg_fallback": null
+    },
+    {
+      "path": "/assets/images/verse-daily/2026-10-04-psalm-18-1.webp",
+      "name": "2026-10-04-psalm-18-1.webp",
+      "format": "WEBP",
+      "category": "verse-daily",
+      "bytes": 215240,
+      "width": 1024,
+      "height": 1024,
+      "jpeg_fallback": "/assets/images/verse-daily/2026-10-04-psalm-18-1.jpg"
+    },
+    {
+      "path": "/assets/images/verse-daily/2026-10-05-proverbs-3-5.svg",
+      "name": "2026-10-05-proverbs-3-5.svg",
+      "format": "SVG",
+      "category": "verse-daily",
+      "bytes": 1403,
+      "width": null,
+      "height": null,
+      "jpeg_fallback": null
+    },
+    {
+      "path": "/assets/images/verse-themes/guidance.svg",
+      "name": "guidance.svg",
+      "format": "SVG",
+      "category": "verse-themes",
+      "bytes": 889,
+      "width": null,
+      "height": null,
+      "jpeg_fallback": null
+    },
+    {
+      "path": "/assets/images/verse-themes/hope.svg",
+      "name": "hope.svg",
+      "format": "SVG",
+      "category": "verse-themes",
+      "bytes": 857,
+      "width": null,
+      "height": null,
+      "jpeg_fallback": null
+    },
+    {
+      "path": "/assets/images/verse-themes/light.svg",
+      "name": "light.svg",
+      "format": "SVG",
+      "category": "verse-themes",
+      "bytes": 930,
+      "width": null,
+      "height": null,
+      "jpeg_fallback": null
+    },
+    {
+      "path": "/assets/images/verse-themes/peace.svg",
+      "name": "peace.svg",
+      "format": "SVG",
+      "category": "verse-themes",
+      "bytes": 922,
+      "width": null,
+      "height": null,
+      "jpeg_fallback": null
+    },
+    {
+      "path": "/assets/images/verse-themes/psalm-46-1-refuge.webp",
+      "name": "psalm-46-1-refuge.webp",
+      "format": "WEBP",
+      "category": "verse-themes",
+      "bytes": 7509,
+      "width": null,
+      "height": null,
+      "jpeg_fallback": null
+    },
+    {
+      "path": "/assets/images/verse-themes/refuge.svg",
+      "name": "refuge.svg",
+      "format": "SVG",
+      "category": "verse-themes",
+      "bytes": 1339,
+      "width": null,
+      "height": null,
+      "jpeg_fallback": null
+    },
+    {
+      "path": "/assets/images/your-call-hi.jpg",
+      "name": "your-call-hi.jpg",
+      "format": "JPG",
+      "category": "general",
+      "bytes": 91180,
+      "width": 705,
+      "height": 1000,
+      "jpeg_fallback": null
+    },
+    {
+      "path": "/assets/images/your-call-hi.webp",
+      "name": "your-call-hi.webp",
+      "format": "WEBP",
+      "category": "general",
+      "bytes": 47194,
+      "width": 705,
+      "height": 1000,
+      "jpeg_fallback": "/assets/images/your-call-hi.jpg"
+    },
+    {
+      "path": "/assets/images/your-call-np.jpg",
+      "name": "your-call-np.jpg",
+      "format": "JPG",
+      "category": "general",
+      "bytes": 91616,
+      "width": 705,
+      "height": 1000,
+      "jpeg_fallback": null
+    },
+    {
+      "path": "/assets/images/your-call-np.webp",
+      "name": "your-call-np.webp",
+      "format": "WEBP",
+      "category": "general",
+      "bytes": 47280,
+      "width": 705,
+      "height": 1000,
+      "jpeg_fallback": "/assets/images/your-call-np.jpg"
+    }
+  ]
+}
