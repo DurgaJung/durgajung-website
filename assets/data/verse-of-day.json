@@ -1,28 +1,27 @@
 {
-  "date": "2026-10-04",
-  "ad_date": "October 4, 2026",
-  "bs_date": "१८ असोज २०८३",
+  "date": "2026-10-05",
+  "ad_date": "October 5, 2026",
+  "bs_date": "१९ असोज २०८३",
   "title": "Verse of the Day / आजको बाइबल पद",
-  "reference": "भजनसंग्रह १८:१",
-  "verse": "हे परमप्रभु, मेरो शक्ति, म तपाईंलाई प्रेम गर्दछु।",
+  "reference": "हितोपदेश ३:५",
+  "verse": "आफ्‍नो सारा हृदयले परमेश्‍वरमा भरोसा राख्, र तेरो आफ्‍नै समझशक्तिमा भर नपर्‌",
   "version": "NNRV",
   "source": "Bible.com / Nepal Bible Society",
-  "source_url": "https://www.bible.com/bible/1483/PSA.18.1.NNRV",
-  "english_reference": "Psalm 18:1",
-  "english_verse": "I love you, LORD, my strength.",
+  "source_url": "https://www.bible.com/bible/1483/PRO.3.5.NNRV",
+  "english_reference": "Proverbs 3:5",
+  "english_verse": "Trust in the LORD with all your heart and lean not on your own understanding;",
   "english_version": "NIV",
-  "english_source_url": "https://www.bible.com/bible/111/PSA.18.1.NIV",
-  "image": "/assets/images/verse-daily/2026-10-04-psalm-18-1.webp",
+  "english_source_url": "https://www.bible.com/bible/111/PRO.3.5.NIV",
+  "image": "/assets/images/verse-daily/2026-10-05-proverbs-3-5.svg",
   "know_more_nepali": [
-    "भजनसंग्रह १८ परमप्रभुप्रतिको व्यक्तिगत प्रेमको अभिव्यक्तिबाट सुरु हुन्छ। धन्यवादको यस गीतमा दाऊदले परमेश्वर नै आफ्नो शक्तिको स्रोत हुनुहुन्छ भनी स्वीकार गर्छन्। परमेश्वरको सहायता सम्झँदा कृतज्ञता आराधनामा परिणत हुन्छ र हामीले आफ्नै सामर्थ्यमा मात्र भर पर्नुपर्दैन भन्ने कुरा सम्झाउँछ।",
-    "आजको दिन परमप्रभुलाई आफ्नो प्रेम व्यक्त गर्दै र आफ्ना जिम्मेवारीहरू विश्वासयोग्य रूपमा पूरा गर्न शक्ति माग्दै सुरु गर्नुहोस्। परमेश्वरमा भरोसा गर्नुको अर्थ सबै कठिनाइ हट्छन् भन्ने होइन; आफ्ना आवश्यकताहरू उहाँकहाँ ल्याउनु र कृतज्ञता, धैर्य र साहससाथ अर्को कदम चाल्नु हो।"
+    "हितोपदेश ३ ले परमेश्वरको बुद्धिमा भरोसा राख्ने जीवनको मार्ग सिकाउँछ। पद ५ को आह्वान आफ्नै बुद्धि वा जिम्मेवारी त्याग्नु होइन; आफ्नो सीमित समझलाई अन्तिम अधिकार नठानी सम्पूर्ण हृदयले परमेश्वरमा भरोसा राख्नु हो। बाइबलीय भरोसा निष्क्रियता होइन, परमेश्वरको वचनले निर्देशित विवेकपूर्ण आज्ञाकारिता हो।",
+    "आज कुनै निर्णय वा अनिश्चित परिस्थितिको सामना गर्दा आफूले बुझेको कुरालाई इमानदारीपूर्वक जाँच्नुहोस्, प्रार्थना गर्नुहोस् र धर्मशास्त्रीय सिद्धान्तअनुसार जिम्मेवार कदम चाल्नुहोस्। तत्काल परिणामलाई परमेश्वरको निर्देशनको प्रमाण नठानी उहाँको चरित्र र प्रकट वचनमा भरोसा राख्नुहोस्।"
   ],
   "know_more_english": [
-    "Psalm 18 begins with a personal expression of love for the LORD. In this song of thanksgiving, David acknowledges that God is the source of his strength. Remembering God's help turns gratitude into worship and reminds us that we do not have to rely only on our own resources.",
-    "Begin today by telling the LORD that you love him and asking for strength to carry out your responsibilities faithfully. Trusting God does not mean that every difficulty disappears; it means bringing your needs to him and taking the next step with gratitude, patience, and courage."
+    "Proverbs 3 teaches a life shaped by trust in God's wisdom. Verse 5 does not tell us to abandon careful thinking or personal responsibility; it warns against treating our limited understanding as the final authority. Biblical trust is not passivity but thoughtful obedience directed by God's revealed word.",
+    "When facing a decision or uncertainty today, examine what you know honestly, pray, and take responsible action consistent with biblical principles. Do not treat an immediate outcome as proof of God's guidance; place your confidence in his character and revealed word."
   ],
   "history": [
-    "भजनसंग्रह ४६:१",
     "भजनसंग्रह ५६:३",
     "भजनसंग्रह १२१:२",
     "भजनसंग्रह २३:१",
@@ -30,6 +29,7 @@
     "भजनसंग्रह ११८:२४",
     "यशैया ४०:३१",
     "भजनसंग्रह ३४:८",
-    "भजनसंग्रह १८:१"
+    "भजनसंग्रह १८:१",
+    "हितोपदेश ३:५"
   ]
 }
