@@ -4,6 +4,11 @@ on:
   push:
     paths:
       - ".github/workflows/generate-jpeg-fallbacks.yml"
+      - "assets/images/**/*.webp"
+      - "assets/images/**/*.png"
+      - "assets/images/**/*.jpg"
+      - "assets/images/**/*.jpeg"
+      - "assets/images/**/*.svg"
   workflow_dispatch:
 
 permissions:
@@ -48,11 +53,68 @@ jobs:
           print(f"Generated {converted} JPEG fallbacks")
           PY
 
+      - name: Generate media inventory
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          from PIL import Image
+          from datetime import datetime, timezone
+          import json
+
+          root = Path("assets/images")
+          extensions = {".webp", ".jpg", ".jpeg", ".png", ".svg"}
+          items = []
+
+          for path in sorted(p for p in root.rglob("*") if p.is_file() and p.suffix.lower() in extensions):
+              rel = path.as_posix()
+              suffix = path.suffix.lower()
+              width = None
+              height = None
+
+              if suffix != ".svg":
+                  try:
+                      with Image.open(path) as image:
+                          width, height = image.size
+                  except Exception:
+                      pass
+
+              fallback = None
+              if suffix == ".webp":
+                  candidate = path.with_suffix(".jpg")
+                  if candidate.exists():
+                      fallback = candidate.as_posix()
+
+              parts = path.relative_to(root).parts
+              category = parts[0] if len(parts) > 1 else "general"
+
+              items.append({
+                  "path": "/" + rel,
+                  "name": path.name,
+                  "format": suffix.lstrip(".").upper(),
+                  "category": category,
+                  "bytes": path.stat().st_size,
+                  "width": width,
+                  "height": height,
+                  "jpeg_fallback": ("/" + fallback) if fallback else None
+              })
+
+          payload = {
+              "generated_at": datetime.now(timezone.utc).isoformat(),
+              "count": len(items),
+              "items": items
+          }
+
+          out = Path("assets/data/media-index.json")
+          out.parent.mkdir(parents=True, exist_ok=True)
+          out.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+          print(f"Indexed {len(items)} media files")
+          PY
+
       - name: Commit generated fallbacks
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add assets/images/**/*.jpg assets/images/*.jpg || true
+          git add assets/images/**/*.jpg assets/images/*.jpg assets/data/media-index.json || true
           if git diff --cached --quiet; then
             echo "No fallback changes to commit."
           else
