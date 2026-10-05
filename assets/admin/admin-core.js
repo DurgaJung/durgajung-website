@@ -2171,6 +2171,400 @@
   }
 
 
+  function comboQuizKey(sale) {
+    const match =
+      String(
+        sale.notes || ""
+      ).match(
+        /COMBO_NBQ_KEY=(\S+)/
+      );
+
+    return match
+      ? match[1]
+      : "";
+  }
+
+
+  function updateSalesMetrics() {
+    const totalRevenue =
+      allSales.reduce(
+        (sum, sale) =>
+          sum +
+          numberValue(
+            sale.total_paid_npr
+          ),
+        0
+      );
+
+    const softwareCount =
+      allSales.filter(
+        (sale) =>
+          String(
+            sale.product_type || ""
+          ).toLowerCase() ===
+          "software"
+      ).length;
+
+    const bookCount =
+      allSales.length -
+      softwareCount;
+
+    if ($("salesMetricCount")) {
+      $("salesMetricCount").textContent =
+        String(allSales.length);
+    }
+
+    if ($("salesMetricRevenue")) {
+      $("salesMetricRevenue").textContent =
+        "NPR " +
+        money(totalRevenue);
+    }
+
+    if ($("salesMetricSoftware")) {
+      $("salesMetricSoftware").textContent =
+        String(softwareCount);
+    }
+
+    if ($("salesMetricBooks")) {
+      $("salesMetricBooks").textContent =
+        String(bookCount);
+    }
+  }
+
+
+  function saleFulfilmentHtml(sale) {
+    const type =
+      String(
+        sale.product_type || ""
+      ).toLowerCase();
+
+    if (type === "software") {
+      const combo =
+        sale.product_code ===
+        "SOFTWARE-COMBO-7500";
+
+      const quizKey =
+        combo
+          ? comboQuizKey(sale)
+          : "";
+
+      const primaryKey =
+        sale.licence_key ||
+        (
+          sale.product_code ===
+          "NEPALI-BIBLE-QUIZ"
+            ? "Quiz Worker"
+            : "Not issued"
+        );
+
+      const licenceText =
+        combo
+          ? `
+              <div class="sales-license-line">
+                <span>MM</span>
+                <code>${escapeHtml(primaryKey)}</code>
+              </div>
+              <div class="sales-license-line">
+                <span>NBQ</span>
+                <code>${escapeHtml(quizKey || "Pending")}</code>
+              </div>
+            `
+          : `
+              <div class="sales-license-line">
+                <code>${escapeHtml(primaryKey)}</code>
+              </div>
+            `;
+
+      return `
+        <div class="sales-fulfilment">
+          ${licenceText}
+          <div class="sales-status-row">
+            ${statusBadge(
+              sale.licence_status ||
+              "not_issued"
+            )}
+          </div>
+          <div class="sales-device-lines">
+            ${deviceLines(sale)}
+          </div>
+        </div>
+      `;
+    }
+
+    return `
+      <div class="sales-fulfilment">
+        <strong>
+          ${escapeHtml(
+            sale.delivery_method ||
+            sale.delivery_format ||
+            "Book delivery"
+          )}
+        </strong>
+        <small>
+          ${escapeHtml(
+            sale.tracking_reference ||
+            "No tracking reference"
+          )}
+        </small>
+        ${
+          sale.delivery_status
+            ? statusBadge(
+                sale.delivery_status
+              )
+            : ""
+        }
+      </div>
+    `;
+  }
+
+
+  function renderSales() {
+    const body =
+      $("salesTableBody");
+
+    if (!body) {
+      return;
+    }
+
+    const query =
+      String(
+        $("salesSearch")?.value ||
+        ""
+      )
+        .trim()
+        .toLocaleLowerCase();
+
+    const type =
+      String(
+        $("salesTypeFilter")?.value ||
+        ""
+      ).toLowerCase();
+
+    const filtered =
+      allSales.filter((sale) => {
+        const saleType =
+          String(
+            sale.product_type || ""
+          ).toLowerCase();
+
+        const typeMatches =
+          !type ||
+          saleType === type;
+
+        const haystack =
+          [
+            sale.sale_number,
+            sale.invoice_number,
+            sale.customer_name,
+            sale.customer_email,
+            sale.customer_phone,
+            sale.product_name,
+            sale.product_code,
+            sale.payment_method,
+            sale.transaction_reference,
+            sale.licence_key,
+            sale.delivery_status
+          ]
+            .filter(Boolean)
+            .join(" ")
+            .toLocaleLowerCase();
+
+        return (
+          typeMatches &&
+          (
+            !query ||
+            haystack.includes(query)
+          )
+        );
+      });
+
+    if ($("salesResultCount")) {
+      $("salesResultCount").textContent =
+        filtered.length +
+        (
+          filtered.length === 1
+            ? " sale"
+            : " sales"
+        );
+    }
+
+    if (!filtered.length) {
+      body.innerHTML = `
+        <tr>
+          <td
+            colspan="9"
+            class="table-empty"
+          >
+            No sales match this filter.
+          </td>
+        </tr>
+      `;
+
+      return;
+    }
+
+    body.innerHTML =
+      filtered.map(
+        (sale, index) => {
+          const quantity =
+            Number(
+              sale.quantity || 1
+            );
+
+          const typeLabel =
+            String(
+              sale.product_type || ""
+            ).toLowerCase() ===
+            "software"
+              ? "Software"
+              : "Book";
+
+          const approvalDate =
+            formatDate(
+              sale.approved_at
+            );
+
+          return `
+            <tr>
+
+              <td class="sales-number-cell">
+                ${index + 1}
+              </td>
+
+              <td class="sales-id-cell">
+                <strong>
+                  ${escapeHtml(
+                    sale.sale_number ||
+                    "—"
+                  )}
+                </strong>
+                <small>
+                  Invoice:
+                  ${escapeHtml(
+                    sale.invoice_number ||
+                    "—"
+                  )}
+                </small>
+              </td>
+
+              <td class="sales-date-cell">
+                <strong>
+                  ${escapeHtml(
+                    sale.payment_date ||
+                    "—"
+                  )}
+                </strong>
+              </td>
+
+              <td class="sales-customer-cell">
+                <strong>
+                  ${escapeHtml(
+                    sale.customer_name ||
+                    "—"
+                  )}
+                </strong>
+                <small>
+                  ${escapeHtml(
+                    sale.customer_email ||
+                    "—"
+                  )}
+                </small>
+                <small>
+                  ${escapeHtml(
+                    sale.customer_phone ||
+                    "—"
+                  )}
+                </small>
+              </td>
+
+              <td class="sales-product-cell">
+                <strong>
+                  ${escapeHtml(
+                    sale.product_name ||
+                    sale.product_code ||
+                    "—"
+                  )}
+                </strong>
+                <small>
+                  ${escapeHtml(typeLabel)}
+                  · Qty ${quantity}
+                </small>
+                <small>
+                  ${escapeHtml(
+                    sale.product_code ||
+                    ""
+                  )}
+                </small>
+              </td>
+
+              <td class="sales-payment-cell">
+                <strong>
+                  ${escapeHtml(
+                    sale.payment_method ||
+                    "—"
+                  )}
+                </strong>
+                <small>
+                  ${escapeHtml(
+                    sale.transaction_reference ||
+                    "No reference"
+                  )}
+                </small>
+              </td>
+
+              <td class="sales-amount-cell">
+                <strong>
+                  NPR ${money(
+                    sale.total_paid_npr
+                  )}
+                </strong>
+              </td>
+
+              <td class="sales-fulfilment-cell">
+                ${saleFulfilmentHtml(
+                  sale
+                )}
+              </td>
+
+              <td class="sales-approval-cell">
+                <strong>
+                  ${escapeHtml(
+                    approvalDate
+                  )}
+                </strong>
+                <small>
+                  Invoice:
+                  ${yesNo(
+                    sale.invoice_sent
+                  )}
+                </small>
+                <small>
+                  ${
+                    String(
+                      sale.product_type ||
+                      ""
+                    ).toLowerCase() ===
+                    "software"
+                      ? "Licence: " +
+                        yesNo(
+                          sale.licence_email_sent
+                        )
+                      : "Delivery: " +
+                        escapeHtml(
+                          sale.delivery_status ||
+                          "—"
+                        )
+                  }
+                </small>
+              </td>
+
+            </tr>
+          `;
+        }
+      ).join("");
+  }
+
+
   async function loadSales() {
     const body =
       $("salesTableBody");
@@ -2181,7 +2575,7 @@
 
     body.innerHTML = `
       <tr>
-        <td colspan="18">
+        <td colspan="9">
           Loading sales…
         </td>
       </tr>
@@ -2194,13 +2588,17 @@
         );
 
       allSales =
-        data.sales || [];
+        Array.isArray(data.sales)
+          ? data.sales
+          : [];
+
+      updateSalesMetrics();
 
       if (!allSales.length) {
         body.innerHTML = `
           <tr>
             <td
-              colspan="18"
+              colspan="9"
               class="table-empty"
             >
               No completed sales yet.
@@ -2208,188 +2606,15 @@
           </tr>
         `;
 
+        if ($("salesResultCount")) {
+          $("salesResultCount").textContent =
+            "0 sales";
+        }
+
         return;
       }
 
-      body.innerHTML =
-        allSales.map(
-          (sale, index) => `
-            <tr>
-
-              <td>
-                ${index + 1}
-              </td>
-
-              <td>
-                <strong>
-                  ${escapeHtml(
-                    sale.sale_number
-                  )}
-                </strong>
-
-                <br>
-
-                <small>
-                  ${escapeHtml(
-                    sale.product_name ||
-                    sale.product_code ||
-                    ""
-                  )}
-                </small>
-              </td>
-
-              <td>
-                ${escapeHtml(
-                  sale.invoice_number ||
-                  "—"
-                )}
-              </td>
-
-              <td>
-                ${escapeHtml(
-                  sale.customer_name
-                )}
-              </td>
-
-              <td>
-                ${escapeHtml(
-                  sale.customer_email
-                )}
-              </td>
-
-              <td>
-                ${escapeHtml(
-                  sale.customer_phone ||
-                  "—"
-                )}
-              </td>
-
-              <td>
-                ${escapeHtml(
-                  sale.payment_date ||
-                  "—"
-                )}
-              </td>
-
-              <td>
-                ${escapeHtml(
-                  sale.payment_method ||
-                  "—"
-                )}
-              </td>
-
-              <td>
-                ${escapeHtml(
-                  sale.transaction_reference ||
-                  "—"
-                )}
-              </td>
-
-              <td>
-                NPR ${money(
-                  sale.total_paid_npr
-                )}
-              </td>
-
-              <td>
-                ${
-                  sale.product_type ===
-                  "software"
-                    ? `
-                      <code>
-                        ${escapeHtml(
-                          sale.product_code ===
-                          "SOFTWARE-COMBO-7500"
-                            ? [
-                                sale.licence_key
-                                  ? "MM " + sale.licence_key
-                                  : "MM pending",
-                                (String(sale.notes || "").match(/COMBO_NBQ_KEY=(\S+)/) || [])[1]
-                                  ? "NBQ " + (String(sale.notes || "").match(/COMBO_NBQ_KEY=(\S+)/) || [])[1]
-                                  : "NBQ pending"
-                              ].join(" | ")
-                            : sale.product_code ===
-                              "NEPALI-BIBLE-QUIZ"
-                              ? (
-                                  sale.licence_key ||
-                                  "Quiz Worker"
-                                )
-                              : (
-                                  sale.licence_key ||
-                                  "Not issued"
-                                )
-                        )}
-                      </code>
-                    `
-                    : "N/A"
-                }
-              </td>
-
-              <td>
-                ${
-                  sale.product_type ===
-                  "software"
-                    ? statusBadge(
-                        sale.licence_status ||
-                        "not_issued"
-                      )
-                    : "N/A"
-                }
-              </td>
-
-              <td>
-                ${deviceLines(
-                  sale
-                )}
-              </td>
-
-              <td>
-                ${
-                  sale.product_type ===
-                  "software"
-                    ? Number(
-                        sale.reset_count ||
-                        0
-                      )
-                    : "N/A"
-                }
-              </td>
-
-              <td>
-                ${yesNo(
-                  sale.invoice_sent
-                )}
-              </td>
-
-              <td>
-                ${
-                  sale.product_type ===
-                  "software"
-                    ? yesNo(
-                        sale.licence_email_sent
-                      )
-                    : "N/A"
-                }
-              </td>
-
-              <td>
-                ${escapeHtml(
-                  formatDate(
-                    sale.approved_at
-                  )
-                )}
-              </td>
-
-              <td>
-                ${escapeHtml(
-                  sale.notes ||
-                  "—"
-                )}
-              </td>
-
-            </tr>
-          `
-        ).join("");
+      renderSales();
 
     } catch (error) {
       console.error(error);
@@ -2397,7 +2622,7 @@
       body.innerHTML = `
         <tr>
           <td
-            colspan="18"
+            colspan="9"
             class="table-empty"
           >
             Failed to load sales.
