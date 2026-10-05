@@ -3482,12 +3482,12 @@ body{
 }
 
 .home-hero-grid{
-  grid-template-columns:minmax(0,1.18fr) minmax(280px,.72fr);
-  gap:64px;
+  grid-template-columns:minmax(0,1fr);
+  gap:0;
 }
 
 .home-hero-copy{
-  max-width:760px;
+  max-width:900px;
   margin:0;
 }
 
