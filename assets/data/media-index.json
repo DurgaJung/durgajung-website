@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-06T03:22:06.540199+00:00",
+  "generated_at": "2026-10-06T03:23:40.547581+00:00",
   "count": 140,
   "items": [
     {
@@ -1277,9 +1277,9 @@
       "name": "2026-10-06-philippians-4-6.jpg",
       "format": "JPG",
       "category": "verse-daily",
-      "bytes": 6142,
-      "width": 128,
-      "height": 128,
+      "bytes": 18932,
+      "width": 256,
+      "height": 256,
       "jpeg_fallback": null
     },
     {
@@ -1287,9 +1287,9 @@
       "name": "2026-10-06-philippians-4-6.webp",
       "format": "WEBP",
       "category": "verse-daily",
-      "bytes": 1880,
-      "width": 128,
-      "height": 128,
+      "bytes": 6228,
+      "width": 256,
+      "height": 256,
       "jpeg_fallback": "/assets/images/verse-daily/2026-10-06-philippians-4-6.jpg"
     },
     {
