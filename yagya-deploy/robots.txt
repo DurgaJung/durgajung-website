@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://yagya-farms.durgajung-nits.workers.dev/sitemap.xml
