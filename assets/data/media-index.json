@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-10-06T03:28:02.943910+00:00",
-  "count": 140,
+  "generated_at": "2026-10-07T03:57:54.258750+00:00",
+  "count": 141,
   "items": [
     {
       "path": "/assets/images/Durga_Jung_Kunwar_Signature_Transparent.png",
@@ -1298,6 +1298,16 @@
       "format": "SVG",
       "category": "verse-daily",
       "bytes": 1819,
+      "width": null,
+      "height": null,
+      "jpeg_fallback": null
+    },
+    {
+      "path": "/assets/images/verse-daily/2026-10-07-john-8-12.svg",
+      "name": "2026-10-07-john-8-12.svg",
+      "format": "SVG",
+      "category": "verse-daily",
+      "bytes": 2502,
       "width": null,
       "height": null,
       "jpeg_fallback": null
