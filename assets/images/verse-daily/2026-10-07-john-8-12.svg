@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1200" role="img" aria-labelledby="title desc">
+<title id="title">Light breaking through darkness</title>
+<desc id="desc">A radiant sunrise pours light across a dark landscape and an open path, illustrating John 8:12.</desc>
+<defs>
+  <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#07131f"/>
+    <stop offset=".42" stop-color="#183a52"/>
+    <stop offset=".68" stop-color="#b46a3e"/>
+    <stop offset="1" stop-color="#f3c978"/>
+  </linearGradient>
+  <radialGradient id="sunGlow" cx="50%" cy="50%" r="50%">
+    <stop offset="0" stop-color="#fffdf0"/>
+    <stop offset=".18" stop-color="#fff0a6" stop-opacity=".98"/>
+    <stop offset=".48" stop-color="#ffd267" stop-opacity=".55"/>
+    <stop offset="1" stop-color="#ffc45d" stop-opacity="0"/>
+  </radialGradient>
+  <linearGradient id="beam" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#fff6c8" stop-opacity=".72"/>
+    <stop offset="1" stop-color="#ffd47b" stop-opacity=".08"/>
+  </linearGradient>
+  <linearGradient id="path" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#f7d993"/>
+    <stop offset="1" stop-color="#c78c4f"/>
+  </linearGradient>
+</defs>
+
+<rect width="1200" height="1200" fill="url(#sky)"/>
+<circle cx="600" cy="420" r="330" fill="url(#sunGlow)"/>
+<circle cx="600" cy="420" r="72" fill="#fff7c4"/>
+
+<path d="M600 445 L170 1200 H1030 Z" fill="url(#beam)" opacity=".62"/>
+
+<path d="M0 660 190 500 360 625 520 500 660 610 835 470 1010 610 1200 505V1200H0Z" fill="#10283a"/>
+<path d="M0 780 210 625 390 750 560 610 740 745 930 615 1200 735V1200H0Z" fill="#183a40"/>
+<path d="M0 890 220 770 410 865 600 735 790 865 1010 760 1200 850V1200H0Z" fill="#23483f"/>
+
+<path d="M550 1200c8-175 46-307 103-395 47-72 67-139 62-205 69 99 49 190-22 279-68 85-105 191-116 321Z" fill="url(#path)"/>
+
+<g opacity=".28" fill="#fff3bc">
+  <path d="M600 70 625 330 575 330Z"/>
+  <path d="M925 180 690 365 665 322Z"/>
+  <path d="M275 180 535 322 510 365Z"/>
+  <path d="M1070 455 735 438 735 392Z"/>
+  <path d="M130 455 465 392 465 438Z"/>
+</g>
+
+<g transform="translate(520 560)" fill="#0a1b24">
+  <rect x="72" y="0" width="16" height="168" rx="3"/>
+  <rect x="22" y="46" width="116" height="15" rx="3"/>
+</g>
+
+<g fill="#0b2026">
+  <path d="M110 1025 165 850 220 1025h-34l42 105H102l42-105Z"/>
+  <path d="M955 1010 1010 835 1065 1010h-34l42 105H947l42-105Z"/>
+  <path d="M275 1100 320 955 365 1100h-28l35 88H268l35-88Z"/>
+</g>
+</svg>
