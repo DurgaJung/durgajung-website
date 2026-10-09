@@ -108,13 +108,13 @@
       menuButton.setAttribute("data-legacy-ready", "1");
       menuButton.onclick = function () {
         var open = (" " + navLinks.className + " ").indexOf(" open ") !== -1;
-        navLinks.className = open ? navLinks.className.replace(/\\bopen\\b/g, "") : navLinks.className + " open";
+        navLinks.className = open ? navLinks.className.replace(/\bopen\b/g, "") : navLinks.className + " open";
         menuButton.setAttribute("aria-expanded", open ? "false" : "true");
       };
       links = navLinks.getElementsByTagName("a");
       each(links, function (link) {
         link.onclick = function () {
-          navLinks.className = navLinks.className.replace(/\\bopen\\b/g, "");
+          navLinks.className = navLinks.className.replace(/\bopen\b/g, "");
           menuButton.setAttribute("aria-expanded", "false");
         };
       });
