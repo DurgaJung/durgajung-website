@@ -101,6 +101,28 @@
     var navLinks = document.querySelector(".nav-links");
     var menuButton = document.querySelector(".menu-btn");
     var bar, buttons, links, filterButtons, sections, searchInput, activeLanguage;
+    function applyBookFilters() {
+      var query = searchInput ? String(searchInput.value || "").toLowerCase() : "";
+      var visible = 0;
+      each(sections || [], function (section) {
+        var matchesLanguage = section.getAttribute("data-book-language") === activeLanguage;
+        var cards = section.querySelectorAll(".book-card");
+        var sectionVisible = 0;
+        each(cards, function (card) {
+          var matchesQuery = !query || String(card.textContent || "").toLowerCase().indexOf(query) !== -1;
+          card.style.display = matchesLanguage && matchesQuery ? "" : "none";
+          if (matchesLanguage && matchesQuery) { visible += 1; sectionVisible += 1; }
+        });
+        section.style.display = matchesLanguage && sectionVisible ? "" : "none";
+      });
+      each(filterButtons || [], function (button) {
+        var selected = button.getAttribute("data-book-filter") === activeLanguage;
+        button.className = selected ? "is-active" : "";
+        button.setAttribute("aria-pressed", selected ? "true" : "false");
+      });
+      var count = document.getElementById("book-search-count");
+      if (count) count.textContent = visible + " books";
+    }
     var navEnglish = ["Home", "About Me", "Ministry", "Books & Translations", "Sermons", "Software Projects", "Gallery", "Contact"];
     var navNepali = ["गृहपृष्ठ", "मेरो बारेमा", "सेवकाई", "पुस्तक तथा अनुवाद", "प्रवचनहरू", "सफ्टवेयर परियोजनाहरू", "ग्यालरी", "सम्पर्क"];
 
@@ -169,11 +191,8 @@
         };
         var heading = document.querySelector(".page-hero h1");
         if (heading && pageHeadings[pageFile]) heading.textContent = pageHeadings[pageFile][isNepali ? 1 : 0];
-        activeLanguage = isNepali ? "hindi" : "nepali";
-        if (filterButtons && filterButtons.length) {
-          activeLanguage = "nepali";
-          applyBookFilters();
-        }
+        activeLanguage = isNepali ? "nepali" : "hindi";
+        if (filterButtons && filterButtons.length) applyBookFilters();
       }
 
       each(buttons, function (button) {
@@ -189,28 +208,6 @@
     searchInput = document.getElementById("book-catalog-search");
     if (filterButtons.length && sections.length) {
       activeLanguage = "nepali";
-      function applyBookFilters() {
-        var query = searchInput ? String(searchInput.value || "").toLowerCase() : "";
-        var visible = 0;
-        each(sections, function (section) {
-          var matchesLanguage = section.getAttribute("data-book-language") === activeLanguage;
-          var cards = section.querySelectorAll(".book-card");
-          var sectionVisible = 0;
-          each(cards, function (card) {
-            var matchesQuery = !query || String(card.textContent || "").toLowerCase().indexOf(query) !== -1;
-            card.style.display = matchesLanguage && matchesQuery ? "" : "none";
-            if (matchesLanguage && matchesQuery) { visible += 1; sectionVisible += 1; }
-          });
-          section.style.display = matchesLanguage && sectionVisible ? "" : "none";
-        });
-        each(filterButtons, function (button) {
-          var selected = button.getAttribute("data-book-filter") === activeLanguage;
-          button.className = selected ? "is-active" : "";
-          button.setAttribute("aria-pressed", selected ? "true" : "false");
-        });
-        var count = document.getElementById("book-search-count");
-        if (count) count.textContent = visible + " books";
-      }
       each(filterButtons, function (button) {
         button.onclick = function () {
           activeLanguage = button.getAttribute("data-book-filter");
