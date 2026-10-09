@@ -3786,9 +3786,13 @@ body{
   .menu-btn { display: block; }
 }
 .book-cover {
-  min-height: 300px;
+  height: 360px;
+  min-height: 360px;
+  padding: 20px;
+  aspect-ratio: auto;
 }
 .book-cover > img {
+  height: 100%;
   min-height: 250px;
 }
 .site-language-bar {
