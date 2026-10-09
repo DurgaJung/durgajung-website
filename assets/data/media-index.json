@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-10-07T14:56:00.097788+00:00",
-  "count": 142,
+  "generated_at": "2026-10-09T05:27:09.528529+00:00",
+  "count": 144,
   "items": [
     {
       "path": "/assets/images/Durga_Jung_Kunwar_Signature_Transparent.png",
@@ -1321,6 +1321,26 @@
       "width": 1024,
       "height": 1024,
       "jpeg_fallback": "/assets/images/verse-daily/2026-10-07-john-8-12.jpg"
+    },
+    {
+      "path": "/assets/images/verse-daily/2026-10-09-romans-12-12.jpg",
+      "name": "2026-10-09-romans-12-12.jpg",
+      "format": "JPG",
+      "category": "verse-daily",
+      "bytes": 7230,
+      "width": 128,
+      "height": 128,
+      "jpeg_fallback": null
+    },
+    {
+      "path": "/assets/images/verse-daily/2026-10-09-romans-12-12.webp",
+      "name": "2026-10-09-romans-12-12.webp",
+      "format": "WEBP",
+      "category": "verse-daily",
+      "bytes": 1986,
+      "width": 128,
+      "height": 128,
+      "jpeg_fallback": "/assets/images/verse-daily/2026-10-09-romans-12-12.jpg"
     },
     {
       "path": "/assets/images/verse-themes/guidance.svg",
