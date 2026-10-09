@@ -75,7 +75,7 @@
 
     for (i = 0; i < images.length; i += 1) {
       src = images[i].getAttribute("src") || "";
-      if (/\\.webp([?#].*)?$/i.test(src) &&
+      if (/\.webp([?#].*)?$/i.test(src) &&
           (!webpSupported || (images[i].complete && images[i].naturalWidth === 0))) {
         useJpegFallback(images[i]);
       }
