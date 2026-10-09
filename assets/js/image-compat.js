@@ -1,12 +1,26 @@
-(() => {
+(function () {
   "use strict";
 
-  const attempted = new WeakSet();
+  /*
+   * Legacy Safari compatibility:
+   * iPad 2 is limited to iOS 9.3.x, whose Safari cannot decode WebP.
+   * Keep this file ES5-only so the fallback itself runs on older iPads.
+   */
+  var attempted = [];
+
+  function hasAttempted(img) {
+    var i;
+    for (i = 0; i < attempted.length; i += 1) {
+      if (attempted[i] === img) return true;
+    }
+    return false;
+  }
 
   function jpegFallbackUrl(value) {
-    if (!value) return null;
+    var source, match;
 
-    const source = String(value);
+    if (!value) return null;
+    source = String(value);
 
     if (/lessons-from-the-lives-of-the-twelve-disciples-hi-hd\.webp([?#].*)?$/i.test(source)) {
       return source.replace(
@@ -16,40 +30,60 @@
     }
 
     if (/verse-themes\/psalm-46-1-refuge\.webp([?#].*)?$/i.test(source)) {
-      return source.replace(
-        /psalm-46-1-refuge\.webp/i,
-        "refuge.svg"
-      );
+      return source.replace(/psalm-46-1-refuge\.webp/i, "refuge.svg");
     }
 
-    const match = source.match(/^(.*)\.webp([?#].*)?$/i);
+    match = source.match(/^(.*)\.webp([?#].*)?$/i);
     if (!match) return null;
     return match[1] + ".jpg" + (match[2] || "");
   }
 
   function useJpegFallback(img) {
-    if (!img || attempted.has(img)) return;
-    const source = img.currentSrc || img.getAttribute("src") || "";
-    const fallback = jpegFallbackUrl(source);
+    var source, fallback;
+
+    if (!img || hasAttempted(img)) return;
+
+    source = img.getAttribute("src") || "";
+    if (img.currentSrc && /\.webp([?#].*)?$/i.test(img.currentSrc)) {
+      source = img.currentSrc;
+    }
+
+    fallback = jpegFallbackUrl(source);
     if (!fallback) return;
 
-    attempted.add(img);
+    attempted.push(img);
     img.removeAttribute("srcset");
-    img.src = fallback;
+    img.removeAttribute("sizes");
+    img.setAttribute("src", fallback);
   }
 
-  document.addEventListener("error", (event) => {
-    const target = event.target;
-    if (target && target.tagName === "IMG") {
-      useJpegFallback(target);
-    }
-  }, true);
+  function checkImages() {
+    var images = document.getElementsByTagName("img");
+    var i, src;
 
-  window.addEventListener("DOMContentLoaded", () => {
-    document.querySelectorAll("img[src$='.webp'], img[src*='.webp?']").forEach((img) => {
-      if (img.complete && img.naturalWidth === 0) {
-        useJpegFallback(img);
+    for (i = 0; i < images.length; i += 1) {
+      src = images[i].getAttribute("src") || "";
+      if (/\.webp([?#].*)?$/i.test(src) &&
+          images[i].complete && images[i].naturalWidth === 0) {
+        useJpegFallback(images[i]);
       }
-    });
-  }, { once: true });
+    }
+  }
+
+  if (document.addEventListener) {
+    document.addEventListener("error", function (event) {
+      var target = event.target || event.srcElement;
+      if (target && String(target.tagName).toLowerCase() === "img") {
+        useJpegFallback(target);
+      }
+    }, true);
+
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", checkImages, false);
+    } else {
+      checkImages();
+    }
+  } else if (window.attachEvent) {
+    window.attachEvent("onload", checkImages);
+  }
 })();
