@@ -25,7 +25,7 @@
     if (/lessons-from-the-lives-of-the-twelve-disciples-hi-hd\.webp([?#].*)?$/i.test(source)) {
       return source.replace(
         /lessons-from-the-lives-of-the-twelve-disciples-hi-hd\.webp/i,
-        "lessons-from-the-lives-of-the-twelve-disciples-hi.jpg"
+        "lessons-from-the-lives-of-the-twelve-disciples-hi.png"
       );
     }
 
