@@ -57,14 +57,26 @@
     img.setAttribute("src", fallback);
   }
 
+  function supportsWebP() {
+    var canvas, data;
+    try {
+      canvas = document.createElement("canvas");
+      if (!canvas.getContext || !canvas.getContext("2d")) return false;
+      data = canvas.toDataURL("image/webp");
+      return data.indexOf("data:image/webp") === 0;
+    } catch (error) {
+      return false;
+    }
+  }
+
   function checkImages() {
     var images = document.getElementsByTagName("img");
-    var i, src;
+    var i, src, webpSupported = supportsWebP();
 
     for (i = 0; i < images.length; i += 1) {
       src = images[i].getAttribute("src") || "";
-      if (/\.webp([?#].*)?$/i.test(src) &&
-          images[i].complete && images[i].naturalWidth === 0) {
+      if (/\\.webp([?#].*)?$/i.test(src) &&
+          (!webpSupported || (images[i].complete && images[i].naturalWidth === 0))) {
         useJpegFallback(images[i]);
       }
     }
