@@ -3777,3 +3777,44 @@ body{
   object-fit:cover;
   object-position:center top;
 }
+
+
+/* Legacy iPad Safari: explicit dimensions and controls without modern CSS features. */
+@media (max-width: 1100px) {
+  .nav-links { display: none; }
+  .nav-links.open { display: flex; }
+  .menu-btn { display: block; }
+}
+.book-cover {
+  min-height: 300px;
+}
+.book-cover > img {
+  min-height: 250px;
+}
+.site-language-bar {
+  position: relative;
+  z-index: 51;
+  padding: 9px 0;
+  background: #f7f3eb;
+  border-bottom: 1px solid #e4d7bf;
+  text-align: right;
+}
+.site-language-label {
+  margin-right: 10px;
+  color: #6f4a0f;
+  font-weight: 700;
+}
+.site-language-btn {
+  margin: 2px 3px;
+  padding: 7px 12px;
+  border: 1px solid #986719;
+  border-radius: 5px;
+  background: #fff;
+  color: #6f4a0f;
+  font-weight: 700;
+  cursor: pointer;
+}
+.site-language-btn.is-active {
+  background: #986719;
+  color: #fff;
+}
