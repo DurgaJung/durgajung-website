@@ -1,25 +1,25 @@
 {
-  "date": "2026-10-09",
-  "ad_date": "October 9, 2026",
-  "bs_date": "२३ असोज २०८३",
+  "date": "2026-10-10",
+  "ad_date": "October 10, 2026",
+  "bs_date": "२४ असोज २०८३",
   "title": "Verse of the Day / आजको बाइबल पद",
-  "reference": "रोमी १२:१२",
-  "verse": "आफ्‍नो आशामा आनन्‍द गर, सङ्कष्‍टमा धैर्य धारण गर, प्रार्थनामा निरन्‍तर लागिरहो।",
+  "reference": "याकूब १:५",
+  "verse": "तर यदि तिमीहरूमध्ये कसैलाई बुद्धिको घटी छ भने, उसले परमेश्‍वरसँग मागोस्, जसले सबैलाई उदारचित्तले दिनुहुन्छ, र हप्काउनुहुन्‍न, अनि त्‍यसलाई त्‍यो दिइनेछ।",
   "version": "NNRV",
   "source": "Bible.com / Nepal Bible Society",
-  "source_url": "https://www.bible.com/bible/1483/ROM.12.12.NNRV",
-  "english_reference": "Romans 12:12",
-  "english_verse": "Be joyful in hope, patient in affliction, faithful in prayer.",
+  "source_url": "https://www.bible.com/bible/1483/JAS.1.5.NNRV",
+  "english_reference": "James 1:5",
+  "english_verse": "If any of you lacks wisdom, you should ask God, who gives generously to all without finding fault, and it will be given to you.",
   "english_version": "NIV",
-  "english_source_url": "https://www.bible.com/bible/111/ROM.12.12.NIV",
-  "image": "/assets/images/verse-daily/2026-10-09-romans-12-12.webp",
+  "english_source_url": "https://www.bible.com/bible/111/JAS.1.5.NIV",
+  "image": "/assets/images/verse-daily/2026-10-10-james-1-5.webp",
   "know_more_nepali": [
-    "रोमी १२:१२ ले ख्रीष्टियन जीवनका तीन आपसमा जोडिएका अभ्यास सिकाउँछ: आशामा आनन्दित हुनु, सङ्कष्टमा धैर्य राख्नु, र प्रार्थनामा निरन्तर रहनु। आशा भनेको सबै कुरा सजिलै हुन्छ भन्ने प्रत्याभूति होइन; यो परमेश्वरका प्रतिज्ञा र ख्रीष्टमा भएको आशामा भरोसा राख्दै वर्तमान कठिनाइको सामना गर्नु हो।",
-    "आज समस्या तुरुन्तै हट्नेछ भन्ने निष्कर्ष ननिकाली, कठिनाइबीच पनि विश्वासयोग्य रहनुहोस्। प्रार्थनामा परमेश्वरसामु आफ्नो अवस्था राख्नुहोस्, आवश्यक सहयोग खोज्नुहोस्, र सही कुरा गर्न धैर्यपूर्वक अघि बढ्नुहोस्।"
+    "याकूब १:५ ले बुद्धिको अभाव स्वीकार गरेर परमेश्वरसँग माग्न प्रोत्साहन दिन्छ। यहाँको बुद्धि केवल जानकारी होइन; परीक्षा र कठिन परिस्थितिमा परमेश्वरको इच्छाअनुसार सही निर्णय गर्न आवश्यक समझ र विवेक हो। परमेश्वर उदारतासाथ दिनुहुन्छ र माग्ने व्यक्तिलाई अपमानित गर्नुहुन्न।",
+    "यस पदले हरेक निर्णय तुरुन्तै स्पष्ट हुनेछ वा कठिनाइ हट्नेछ भन्ने प्रतिज्ञा गर्दैन। प्रार्थनासँगै धर्मशास्त्रको शिक्षामा विचार गर्नुहोस्, परिपक्व विश्वासीहरूको सल्लाह लिनुहोस्, तथ्यहरू जाँच्नुहोस्, र जिम्मेवारीपूर्वक निर्णय गर्नुहोस्।"
   ],
   "know_more_english": [
-    "Romans 12:12 connects three practices of Christian life: rejoicing in hope, enduring affliction patiently, and remaining faithful in prayer. Hope does not guarantee that everything will become easy; it means facing present hardship while trusting God's promises and the hope found in Christ.",
-    "Do not conclude that today's problem must disappear immediately. Remain faithful even amid difficulty: bring your situation to God in prayer, seek appropriate support, and keep taking patient, responsible steps toward what is right."
+    "James 1:5 encourages believers to acknowledge their need for wisdom and ask God for it. Wisdom here is more than information; it is discernment for making faithful decisions amid trials and difficult circumstances. God gives generously and does not shame those who ask.",
+    "This verse does not promise that every decision will become immediately obvious or that hardship will disappear. Alongside prayer, consider Scripture, seek counsel from mature believers, examine the facts, and make a responsible decision."
   ],
   "history": [
     "भजनसंग्रह २३:१",
@@ -32,6 +32,7 @@
     "भजनसंग्रह ११९:१०५",
     "फिलिप्पी ४:६",
     "यूहन्‍ना ८:१२",
-    "रोमी १२:१२"
+    "रोमी १२:१२",
+    "याकूब १:५"
   ]
 }
