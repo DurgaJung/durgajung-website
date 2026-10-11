@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-10-10T03:26:07.340079+00:00",
-  "count": 146,
+  "generated_at": "2026-10-11T03:31:24.416193+00:00",
+  "count": 148,
   "items": [
     {
       "path": "/assets/images/Durga_Jung_Kunwar_Signature_Transparent.png",
@@ -1361,6 +1361,26 @@
       "width": 256,
       "height": 256,
       "jpeg_fallback": "/assets/images/verse-daily/2026-10-10-james-1-5.jpg"
+    },
+    {
+      "path": "/assets/images/verse-daily/2026-10-11-proverbs-16-3.jpg",
+      "name": "2026-10-11-proverbs-16-3.jpg",
+      "format": "JPG",
+      "category": "verse-daily",
+      "bytes": 6753,
+      "width": 128,
+      "height": 128,
+      "jpeg_fallback": null
+    },
+    {
+      "path": "/assets/images/verse-daily/2026-10-11-proverbs-16-3.webp",
+      "name": "2026-10-11-proverbs-16-3.webp",
+      "format": "WEBP",
+      "category": "verse-daily",
+      "bytes": 1742,
+      "width": 128,
+      "height": 128,
+      "jpeg_fallback": "/assets/images/verse-daily/2026-10-11-proverbs-16-3.jpg"
     },
     {
       "path": "/assets/images/verse-themes/guidance.svg",
