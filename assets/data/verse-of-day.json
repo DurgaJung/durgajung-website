@@ -1,25 +1,25 @@
 {
-  "date": "2026-10-11",
-  "ad_date": "October 11, 2026",
-  "bs_date": "२५ असोज २०८३",
+  "date": "2026-10-12",
+  "ad_date": "October 12, 2026",
+  "bs_date": "२६ असोज २०८३",
   "title": "Verse of the Day / आजको बाइबल पद",
-  "reference": "हितोपदेश १६:३",
-  "verse": "तैंले गर्ने जुनसुकै कुरा परमप्रभुलाई सुम्‍पिदे, र तेरा योजनाहरू सफल हुनेछन्‌।",
+  "reference": "मीका ६:८",
+  "verse": "ए मानिस, जे असल छ, त्‍यो उहाँले तँलाई देखाउनुभएको छ। र परमप्रभुले तँबाट के चाहनुहुन्‍छ? केवल यति, ठीकसित काम गर्नू र कृपालाई प्रेम गर्नू र तेरा परमेश्‍वरसित विनम्र भएर हिँड्‌नू।",
   "version": "NNRV",
   "source": "Bible.com / Nepal Bible Society",
-  "source_url": "https://www.bible.com/bible/1483/PRO.16.3.NNRV",
-  "english_reference": "Proverbs 16:3",
-  "english_verse": "Commit to the LORD whatever you do, and he will establish your plans.",
+  "source_url": "https://www.bible.com/bible/1483/MIC.6.8.NNRV",
+  "english_reference": "Micah 6:8",
+  "english_verse": "He has shown you, O mortal, what is good. And what does the LORD require of you? To act justly and to love mercy and to walk humbly with your God.",
   "english_version": "NIV",
-  "english_source_url": "https://www.bible.com/bible/111/PRO.16.3.NIV",
-  "image": "/assets/images/verse-daily/2026-10-11-proverbs-16-3.webp",
+  "english_source_url": "https://www.bible.com/bible/111/MIC.6.8.NIV",
+  "image": "/assets/images/verse-daily/2026-10-12-micah-6-8.svg",
   "know_more_nepali": [
-    "हितोपदेश १६:३ ले आफ्ना काम र योजनाहरू परमप्रभुलाई सुम्पन सिकाउँछ। यसको अर्थ जिम्मेवारी त्याग्नु होइन; आफ्नो उद्देश्य, निर्णय र परिश्रमलाई परमेश्वरको शिक्षाको अधीनमा राख्नु हो। विश्वासले हाम्रो प्राथमिकता र काम गर्ने तरिकालाई उहाँको इच्छासँग मिलाउन बोलाउँछ।",
-    "यस पदलाई हरेक योजनामा भौतिक सफलता वा आफूले चाहेको परिणाम निश्चित हुने प्रतिज्ञाका रूपमा बुझ्नु हुँदैन। योजना बनाउँदा धर्मशास्त्रको शिक्षामा विचार गर्नुहोस्, तथ्य र सम्भावित जोखिम जाँच्नुहोस्, बुद्धिमानी सल्लाह लिनुहोस्, र परिणाम परमेश्वरलाई सुम्पँदै इमानदारीपूर्वक काम गर्नुहोस्।"
+    "मीका ६:८ को सन्दर्भमा परमेश्वरले औपचारिक धार्मिक कर्मकाण्डभन्दा न्यायपूर्ण व्यवहार, करुणाप्रतिको प्रेम र परमेश्वरसँग नम्र चालचलनको अपेक्षा गर्नुहुन्छ। यो पद मीका ६:६–७ मा उठाइएको बाहिरी भेटीको प्रश्नको उत्तर हो; परमेश्वरको इच्छा बुझ्नु भनेको उहाँको चरित्रअनुसार दैनिक जीवन जिउनु पनि हो।",
+    "यस पदले अरूको पीडा बेवास्ता गरेर केवल व्यक्तिगत भक्तिलाई पर्याप्त ठान्न दिँदैन। आफ्ना निर्णयमा निष्पक्षता अपनाउनुहोस्, दयालाई कमजोरी नठान्नुहोस्, र आफ्नो सीमा तथा अरूप्रतिको जिम्मेवारी स्वीकार्दै नम्र रहनुहोस्। न्याय र करुणा दुवैलाई व्यवहारमा उतार्नु नै यसको व्यावहारिक चुनौती हो।"
   ],
   "know_more_english": [
-    "Proverbs 16:3 teaches us to commit our work and plans to the Lord. This does not mean abandoning responsibility; it means placing our motives, decisions, and efforts under God's instruction. Faith calls us to align our priorities and ways of working with his will.",
-    "This verse should not be treated as a guarantee of material success or of getting the outcome we want. As we plan, consider Scripture, examine the facts and risks, seek wise counsel, and work with integrity while entrusting the results to God."
+    "In context, Micah 6:8 answers the question about what God requires beyond outward religious offerings: just conduct, a love of mercy, and a humble walk with God. It calls for everyday life shaped by God's character, not merely religious performance.",
+    "The verse challenges us not to treat private devotion as a substitute for concern for others. Practice fairness in decisions, show mercy without dismissing accountability, and remain humble about your own limits and responsibilities. Justice and compassion belong together in faithful living."
   ],
   "history": [
     "भजनसंग्रह २३:१",
@@ -34,6 +34,7 @@
     "यूहन्‍ना ८:१२",
     "रोमी १२:१२",
     "याकूब १:५",
-    "हितोपदेश १६:३"
+    "हितोपदेश १६:३",
+    "मीका ६:८"
   ]
 }
