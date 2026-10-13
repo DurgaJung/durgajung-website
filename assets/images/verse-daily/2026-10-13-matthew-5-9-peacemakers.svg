@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="640" viewBox="0 0 640 640">
+<defs>
+ <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#9fc8e5"/><stop offset=".62" stop-color="#f8dfb2"/><stop offset="1" stop-color="#fff3d9"/></linearGradient>
+ <linearGradient id="lake" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#8cb8c4"/><stop offset="1" stop-color="#426f82"/></linearGradient>
+ <linearGradient id="hill" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#6d9b87"/><stop offset="1" stop-color="#264e49"/></linearGradient>
+</defs>
+<rect width="640" height="640" fill="url(#sky)"/>
+<circle cx="485" cy="155" r="54" fill="#fff5cf" opacity=".96"/>
+<path d="M0 330 104 220 176 285 274 182 378 298 477 215 640 310V640H0Z" fill="#9aafa8"/>
+<path d="M0 374 104 300 197 355 310 258 426 356 532 287 640 348V640H0Z" fill="#557c75"/>
+<path d="M0 425 132 365 251 414 369 344 498 414 640 375V640H0Z" fill="url(#hill)"/>
+<path d="M0 474Q150 448 280 478T640 461V640H0Z" fill="url(#lake)"/>
+<path d="M470 480 510 480 560 640 420 640Z" fill="#f8dca0" opacity=".62"/>
+<path d="M0 570Q145 520 260 560T640 545V640H0Z" fill="#244a43" opacity=".55"/>
+<!-- two people joining hands as a symbol of reconciliation -->
+<g stroke-linecap="round" stroke-linejoin="round">
+ <circle cx="245" cy="366" r="27" fill="#9b6447"/>
+ <path d="M218 399Q245 385 272 399L291 489H202Z" fill="#f5eee0"/>
+ <path d="M223 485 212 558M269 485 281 558" stroke="#293b40" stroke-width="20"/>
+ <path d="M220 411 276 443 320 432" fill="none" stroke="#f5eee0" stroke-width="20"/>
+ <circle cx="393" cy="366" r="27" fill="#80543e"/>
+ <path d="M366 399Q393 385 420 399L438 489H349Z" fill="#2f6376"/>
+ <path d="M370 485 357 558M416 485 429 558" stroke="#293b40" stroke-width="20"/>
+ <path d="M419 411 365 443 320 432" fill="none" stroke="#2f6376" stroke-width="20"/>
+ <path d="M305 430 320 440 336 430" fill="none" stroke="#b97b50" stroke-width="17"/>
+</g>
+<g fill="#f7e7b7" opacity=".75"><circle cx="92" cy="160" r="3"/><circle cx="146" cy="126" r="2"/><circle cx="374" cy="115" r="3"/><circle cx="556" cy="245" r="2"/></g>
+</svg>
