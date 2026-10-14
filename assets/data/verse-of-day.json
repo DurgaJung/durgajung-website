@@ -1,25 +1,25 @@
 {
-  "date": "2026-10-13",
-  "ad_date": "October 13, 2026",
-  "bs_date": "२७ असोज २०८३",
+  "date": "2026-10-14",
+  "ad_date": "October 14, 2026",
+  "bs_date": "२८ असोज २०८३",
   "title": "Verse of the Day / आजको बाइबल पद",
-  "reference": "मत्ती ५:९",
-  "verse": "धन्‍य मेलमिलाप गराउनेहरू, किनभने तिनीहरू परमेश्‍वरका छोराहरू कहलाइनेछन्‌।",
+  "reference": "भजनसंग्रह १२१:१",
+  "verse": "पर्वतहरूतिर म आफ्‍ना आँखा उचाल्‍छु। मेरो गुहार कहाँबाट आउँछ?",
   "version": "NNRV",
   "source": "Bible.com / Nepal Bible Society",
-  "source_url": "https://www.bible.com/ne/bible/1483/MAT.5.NNRV",
-  "english_reference": "Matthew 5:9",
-  "english_verse": "Blessed are the peacemakers, for they will be called children of God.",
+  "source_url": "https://www.bible.com/ne/bible/1483/PSA.121.1.NNRV",
+  "english_reference": "Psalm 121:1",
+  "english_verse": "I lift up my eyes to the mountains— where does my help come from?",
   "english_version": "NIV",
-  "english_source_url": "https://www.bible.com/bible/111/MAT.5.9.NIV",
-  "image": "/assets/images/verse-daily/2026-10-13-matthew-5-9-peacemakers.svg",
+  "english_source_url": "https://www.bible.com/bible/111/PSA.121.1.NIV",
+  "image": "/assets/images/verse-daily/2026-10-14-psalm-121-1.svg",
   "know_more_nepali": [
-    "मत्ती ५:९ येशूको पहाडी उपदेशको अंश हो। यहाँ मेलमिलाप गराउने व्यक्ति भनेको केवल झगडा टार्ने व्यक्ति होइन; सत्यलाई बेवास्ता नगरी सम्बन्धमा न्याय, क्षमा र शान्तिका लागि काम गर्ने व्यक्ति हो। यस्तो कामले परमेश्वरको चरित्र झल्काउँछ।",
-    "मेलमिलापको प्रयास गर्दा अन्यायलाई ढाकछोप गर्नु वा हानिकारक व्यवहार सहिरहनु आवश्यक छैन। आवश्यक परे स्पष्ट सीमा राख्दै, सम्बन्धित पक्षलाई ध्यानपूर्वक सुन्दै र निष्पक्ष समाधान खोज्दै अघि बढ्न सकिन्छ। शान्ति निर्माण धैर्य, साहस र जिम्मेवारी माग्ने अभ्यास हो।"
+    "भजनसंग्रह १२१ तीर्थयात्राको गीत हो। यात्रुका आँखाले अगाडि देखिएका पर्वततिर हेर्दा प्रश्न उठ्छ—वास्तविक सहायता कहाँबाट आउँछ? अर्को पदले सहायता आकाश र पृथ्वीका सृष्टिकर्ता परमप्रभुबाट आउँछ भनी स्पष्ट गर्छ। यसले परमेश्वरमाथिको भरोसालाई सृष्टिकर्ताको पहिचानसँग जोड्छ।",
+    "यो पदले कठिनाइ हराउने वा हरेक परिस्थिति हाम्रो इच्छाअनुसार बदलिने प्रतिज्ञा गर्दैन। बरु अनिश्चित यात्रामा आफ्नो आशाको स्रोत सम्झन निम्तो दिन्छ। विश्वासले व्यावहारिक सावधानी, बुद्धिमानी निर्णय र आवश्यक सहयोग खोज्नुलाई हटाउँदैन; यी सबैबीच परमेश्वरतर्फ दृष्टि राख्न सिकाउँछ।"
   ],
   "know_more_english": [
-    "Matthew 5:9 belongs to Jesus’ Sermon on the Mount. A peacemaker does more than avoid arguments: without ignoring truth, they work toward justice, forgiveness, and peace in relationships. Such conduct reflects God’s character.",
-    "Seeking peace does not require concealing injustice or tolerating harmful behavior. It can involve setting clear boundaries, listening carefully to those involved, and pursuing a fair resolution. Peacemaking is a practice that calls for patience, courage, and responsibility."
+    "Psalm 121 is a song for pilgrims on a journey. Looking toward the mountains, the traveler asks where true help comes from. The next verse answers that help comes from the Lord, the Maker of heaven and earth, grounding trust in God's identity as Creator.",
+    "This verse does not promise that difficulties will disappear or every circumstance will change as we wish. It invites travelers in uncertainty to remember the source of their hope. Faith does not replace practical care, wise decisions, or seeking needed help; it teaches us to keep looking to God amid them."
   ],
   "history": [
     "भजनसंग्रह २३:१",
@@ -36,6 +36,7 @@
     "याकूब १:५",
     "हितोपदेश १६:३",
     "मीका ६:८",
-    "मत्ती ५:९"
+    "मत्ती ५:९",
+    "भजनसंग्रह १२१:१"
   ]
 }
