@@ -56,8 +56,10 @@ jobs:
               errors.append(f"Image file does not exist: {image_rel}")
           else:
               raw = image_path.read_bytes()
-              if len(raw) < 100 or raw[:4] != b"RIFF" or raw[8:12] != b"WEBP":
-                  errors.append(f"Image is empty or not a valid WebP: {image_rel}")
+              is_webp = len(raw) >= 100 and raw[:4] == b"RIFF" and raw[8:12] == b"WEBP"
+              is_svg = len(raw) >= 100 and b"<svg" in raw[:1000]
+              if not (is_webp or is_svg):
+                  errors.append(f"Image is empty or neither valid WebP nor SVG: {image_rel}")
 
           def fetch(url):
               req = urllib.request.Request(url, headers={"User-Agent": "DailyVerseWatchdog/1.0"})
@@ -87,8 +89,10 @@ jobs:
               req = urllib.request.Request(live_image, headers={"User-Agent": "DailyVerseWatchdog/1.0"})
               with urllib.request.urlopen(req, timeout=20) as response:
                   image_bytes = response.read()
-                  if response.status != 200 or image_bytes[:4] != b"RIFF" or image_bytes[8:12] != b"WEBP":
-                      errors.append("Public verse image failed HTTP/WebP validation.")
+                  is_webp = len(image_bytes) >= 100 and image_bytes[:4] == b"RIFF" and image_bytes[8:12] == b"WEBP"
+                  is_svg = len(image_bytes) >= 100 and b"<svg" in image_bytes[:1000]
+                  if response.status != 200 or not (is_webp or is_svg):
+                      errors.append("Public verse image failed HTTP/image validation (expected WebP or SVG).")
           except Exception as exc:
               errors.append(f"Public website verification failed: {exc}")
 
@@ -110,7 +114,7 @@ jobs:
             const body = [
               "The scheduled Daily Verse watchdog detected a stale or broken daily verse.",
               "",
-              "Please repair `assets/data/verse-of-day.json`, verify the Bible.com wording and BS date, ensure the referenced WebP is valid, and confirm the public deployment.",
+              "Please repair `assets/data/verse-of-day.json`, verify the Bible.com wording and BS date, ensure the referenced image is a valid WebP or SVG, and confirm the public deployment.",
               "",
               "Workflow run: " + context.serverUrl + "/" + context.repo.owner + "/" + context.repo.repo + "/actions/runs/" + context.runId
             ].join("\n");
