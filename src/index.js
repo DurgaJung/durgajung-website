@@ -105,10 +105,8 @@ function isComboPack(row) {
 
 
 function comboOfferActive() {
-  return (
-    Date.now() <=
-    COMBO_OFFER_ENDS_AT
-  );
+  // The combo offer has been permanently discontinued for new orders.
+  return false;
 }
 
 
@@ -1901,7 +1899,7 @@ async function ensureSoftwareCatalogue(
       description:
         "Church projection and presentation software",
       price_npr:
-        5000,
+        7000,
       version:
         "1.0.2",
       cover_image_url:
@@ -1919,7 +1917,7 @@ async function ensureSoftwareCatalogue(
       description:
         "Professional bilingual Bible quiz and projection software",
       price_npr:
-        3500,
+        4000,
       version:
         "1.0.2",
       cover_image_url:
@@ -1935,7 +1933,7 @@ async function ensureSoftwareCatalogue(
       product_name:
         "Mero Mandali & Nepali Bible Combo Pack",
       description:
-        "Special offer until 10 October 2026: Mero Mandali and Nepali Bible Quiz together for NPR 7,500",
+        "Discontinued product; unavailable for new orders.",
       price_npr:
         7500,
       version:
@@ -2032,9 +2030,39 @@ async function ensureSoftwareCatalogue(
       }
     } else if (
       item.product_code ===
+        "MERO-MANDALI" &&
+      (
+        product.status !== "active" ||
+        Number(product.price_npr) !== item.price_npr
+      )
+    ) {
+      await env.ADMIN_DB
+        .prepare(`
+          UPDATE products
+          SET
+            status = 'active',
+            product_name = ?,
+            description = ?,
+            price_npr = ?,
+            cover_image_url = ?,
+            updated_at = CURRENT_TIMESTAMP
+          WHERE id = ?
+        `)
+        .bind(
+          item.product_name,
+          item.description,
+          item.price_npr,
+          item.cover_image_url,
+          product.id
+        )
+        .run();
+    } else if (
+      item.product_code ===
         "NEPALI-BIBLE-QUIZ" &&
-      product.status !==
-        "active"
+      (
+        product.status !== "active" ||
+        Number(product.price_npr) !== item.price_npr
+      )
     ) {
       await env.ADMIN_DB
         .prepare(`
