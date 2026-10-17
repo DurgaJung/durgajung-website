@@ -1,27 +1,28 @@
 {
-  "date": "2026-10-16",
-  "ad_date": "October 16, 2026",
-  "bs_date": "३० असोज २०८३",
+  "date": "2026-10-17",
+  "ad_date": "October 17, 2026",
+  "bs_date": "३१ असोज २०८३",
   "title": "Verse of the Day / आजको बाइबल पद",
-  "reference": "याकूब १:१९",
-  "verse": "मेरा प्रिय भाइहरू, यो कुरा जान: प्रत्‍येक मानिस सुन्‍नमा छिटो, बोल्‍नमा ढिलो र रिसाउनमा धीमा हुनुपर्छ।",
+  "reference": "कलस्सी ३:१२",
+  "verse": "यसकारण परमेश्‍वरका चुनिएकाहरू, पवित्र र प्रिय भएर तिमीहरूले करुणा, दया, दीनता, नम्रता र धैर्य धारण गर।",
   "version": "NNRV",
   "source": "Bible.com / Nepal Bible Society",
-  "source_url": "https://www.bible.com/ne/bible/1483/JAS.1.19.NNRV",
-  "english_reference": "James 1:19",
-  "english_verse": "My dear brothers and sisters, take note of this: Everyone should be quick to listen, slow to speak and slow to become angry",
+  "source_url": "https://www.bible.com/bible/1483/COL.3.12",
+  "english_reference": "Colossians 3:12",
+  "english_verse": "Therefore, as God’s chosen people, holy and dearly loved, clothe yourselves with compassion, kindness, humility, gentleness and patience.",
   "english_version": "NIV",
-  "english_source_url": "https://www.bible.com/bible/111/JAS.1.19.NIV",
+  "english_source_url": "https://www.bible.com/bible/111/COL.3.12.NIV",
   "image": "/assets/images/gallery/ministry-fellowship.webp",
   "know_more_nepali": [
-    "याकूबले विश्वासको व्यवहारिक पक्ष देखाउँदै सुन्ने, बोल्ने र रिसाउने हाम्रो बानीलाई अनुशासनमा राख्न आग्रह गर्छन्। अरूको कुरा ध्यानपूर्वक सुन्नु भनेको सहमत हुनु मात्र होइन; उनीहरूको कुरा बुझ्न समय दिनु र जवाफ दिनुअघि विचार गर्नु हो।",
-    "यो पदले सत्य बोल्न वा अन्यायको सामना गर्न नहुने भन्दैन। यसले आवेगमा प्रतिक्रिया दिनुको सट्टा धैर्य, नम्रता र आत्मसंयम अपनाउन सिकाउँछ। रिस उठ्दा केही समय रोकिएर तथ्य बुझ्नु, सम्मानपूर्वक बोल्नु र आवश्यक परेपछि मात्र जवाफ दिनु यस पदको व्यवहारिक प्रयोग हो।"
+    "पावलले कलस्सीका विश्वासीहरूलाई ख्रीष्टमा परमेश्वरका चुनिएका, पवित्र र प्रिय मानिसका रूपमा नयाँ जीवनअनुसार व्यवहार गर्न बोलाउँछन्। करुणा र दयाले अरूको पीडा देखेर संवेदनशील हुन, दीनता र नम्रताले आफूलाई अरूभन्दा माथि नराख्न, र धैर्यले कठिन सम्बन्धमा पनि संयमित रहन सिकाउँछन्।",
+    "यी गुणहरू केवल मनमा राख्ने भावना होइनन्; दैनिक व्यवहारमा देखिनुपर्छ—कसैको कुरा ध्यानपूर्वक सुन्नु, आवश्यक पर्दा सहयोग गर्नु, गल्ती हुँदा नम्रतापूर्वक सच्याउनु र असहमतिमा पनि सम्मान कायम राख्नु। पदले अन्यायलाई बेवास्ता गर्न भन्दैन; सत्य र उचित सीमासहित दयालु व्यवहार गर्न आह्वान गर्छ।"
   ],
   "know_more_english": [
-    "James connects faith with the everyday discipline of listening, speaking, and anger. Listening carefully does not require agreement; it means giving another person room to be understood and thinking before responding.",
-    "This verse does not forbid telling the truth or confronting injustice. It calls for patience, humility, and self-control rather than impulsive reactions. When anger rises, pause, understand the facts, speak respectfully, and respond when you can do so thoughtfully."
+    "Paul calls the Colossian believers to live in a way that fits their identity as God’s chosen, holy, and dearly loved people in Christ. Compassion and kindness respond to others’ needs; humility resists self-importance; gentleness shapes how we treat people; and patience helps us remain steady in difficult relationships.",
+    "These qualities are not merely private feelings; they become visible in everyday actions—listening carefully, offering practical help, correcting with humility, and maintaining respect amid disagreement. The verse does not require ignoring injustice; it calls for kindness practiced alongside truth and appropriate boundaries."
   ],
   "history": [
+    "कलस्सी ३:१२",
     "याकूब १:१९",
     "हितोपदेश १६:९",
     "भजनसंग्रह २३:१",
@@ -38,7 +39,6 @@
     "याकूब १:५",
     "हितोपदेश १६:३",
     "मीका ६:८",
-    "मत्ती ५:९",
-    "भजनसंग्रह १२१:१"
+    "मत्ती ५:९"
   ]
 }
