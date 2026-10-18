@@ -247,8 +247,7 @@
     }
 
     .home-rotating-banner .social-banner-link svg {
-      width: 42px;
-      height: 42px;
+      width: 42px;      height: 42px;
       filter: drop-shadow(0 4px 7px rgba(0,0,0,.18));
     }
 
@@ -497,8 +496,7 @@
 
       body[data-site-language="np"] .home-rotating-banner .daily-verse-layout {
         grid-template-columns: 92px minmax(0, 1fr);
-        gap: 10px;
-      }
+        gap: 10px;      }
 
       body[data-site-language="np"] .home-rotating-banner .daily-verse-image {
         width: 92px;
@@ -747,8 +745,7 @@
 
     .home-rotating-banner .book-cover-link:hover,
     .home-rotating-banner .book-cover-link:focus-visible {
-      transform: translateY(-3px) scale(1.045);
-      filter: brightness(1.06);
+      transform: translateY(-3px) scale(1.045);      filter: brightness(1.06);
       outline: none;
     }
 
@@ -997,8 +994,7 @@
       margin: 0;
       font-family: "Noto Sans Devanagari", "Nirmala UI", Mangal, Arial, sans-serif;
       font-size: clamp(21px, 2.3vw, 33px);
-      font-weight: 900;
-      line-height: 1.2;
+      font-weight: 900;      line-height: 1.2;
       text-shadow: 0 2px 5px rgba(0,0,0,.25);
     }
 
@@ -1247,7 +1243,6 @@
       .home-rotating-banner .book-title {
         font-size: clamp(17px, 4.7vw, 22px);
       }
-
       .home-rotating-banner .book-subtitle {
         font-size: 11px;
       }
@@ -1304,6 +1299,10 @@
   </style>
 
   <script src="/assets/js/image-compat.js?v=ipad-compat-20261009e"></script>
+  <style id="hide-daily-verse-dates">
+    /* Dates are intentionally omitted from the daily verse display so stale content cannot show a misleading date. */
+    .daily-verse-date { display: none !important; }
+  </style>
 </head>
 
 <body>
@@ -1497,8 +1496,7 @@
             class="banner-buy-btn"
             href="/software.html#purchase-nepali-bible-quiz"
             aria-label="Buy Nepali Bible Quiz for NPR 3,500"
-          >Buy Now</a>
-        </div>
+          >Buy Now</a>        </div>
       </article>
 
       <article class="banner-slide social-contact-promo product-ad">
@@ -1748,7 +1746,6 @@
 
       </div>
     </section>
-
     <!-- =====================================================
          EXPLORE
          ===================================================== -->
@@ -1997,8 +1994,7 @@
             </a>
           </div>
 
-          <div class="home-upcoming-copy">
-            <span class="home-tag home-tag-gold" data-en="Upcoming Book" data-np="आगामी पुस्तक">Upcoming Book</span>
+          <div class="home-upcoming-copy">            <span class="home-tag home-tag-gold" data-en="Upcoming Book" data-np="आगामी पुस्तक">Upcoming Book</span>
             <h2>बाइबलीय निर्णय लिनु</h2>
             <h3>Making Biblical Decisions</h3>
             <p
@@ -2247,8 +2243,7 @@
                   ></textarea>
 
                   <p class="comment-help">
-                    Maximum 2,000 characters.
-                    Your email address is not displayed publicly.
+                    Maximum 2,000 characters.                    Your email address is not displayed publicly.
                   </p>
 
                 </div>
@@ -2497,8 +2492,7 @@
       }
     }
 
-    function startComboHeartbeat() {
-      if (heartbeatTimer || !comboOffer) return;
+    function startComboHeartbeat() {      if (heartbeatTimer || !comboOffer) return;
 
       heartbeatTimer = window.setInterval(function () {
         heartbeatStep = (heartbeatStep + 1) % 10;
