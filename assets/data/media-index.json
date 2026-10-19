@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-10-15T03:26:45.203442+00:00",
-  "count": 153,
+  "generated_at": "2026-10-19T04:00:01.704234+00:00",
+  "count": 154,
   "items": [
     {
       "path": "/assets/images/Durga_Jung_Kunwar_Signature_Transparent.png",
@@ -1428,6 +1428,16 @@
       "format": "SVG",
       "category": "verse-daily",
       "bytes": 1776,
+      "width": null,
+      "height": null,
+      "jpeg_fallback": null
+    },
+    {
+      "path": "/assets/images/verse-of-day/2026-10-19-proverbs-18-10.svg",
+      "name": "2026-10-19-proverbs-18-10.svg",
+      "format": "SVG",
+      "category": "verse-of-day",
+      "bytes": 1645,
       "width": null,
       "height": null,
       "jpeg_fallback": null
