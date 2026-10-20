@@ -1,0 +1,91 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#233e57"/>
+      <stop offset=".42" stop-color="#e58e58"/>
+      <stop offset=".68" stop-color="#f8c77c"/>
+      <stop offset="1" stop-color="#d9a96e"/>
+    </linearGradient>
+    <radialGradient id="sunGlow">
+      <stop offset="0" stop-color="#fff8d6" stop-opacity=".95"/>
+      <stop offset=".32" stop-color="#ffe4a1" stop-opacity=".55"/>
+      <stop offset="1" stop-color="#ffd58c" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="distantHill" x1="0" y1="0" x2="0" y2="1">
+      <stop stop-color="#7d8068"/>
+      <stop offset="1" stop-color="#485c4d"/>
+    </linearGradient>
+    <linearGradient id="field" x1="0" y1="0" x2=".2" y2="1">
+      <stop stop-color="#9d9a54"/>
+      <stop offset=".45" stop-color="#5d673b"/>
+      <stop offset="1" stop-color="#282f24"/>
+    </linearGradient>
+    <linearGradient id="soil" x1="0" y1="0" x2="0" y2="1">
+      <stop stop-color="#6b482e"/>
+      <stop offset="1" stop-color="#241e1a"/>
+    </linearGradient>
+    <linearGradient id="leaf" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#a6c85a"/>
+      <stop offset=".5" stop-color="#4c8b42"/>
+      <stop offset="1" stop-color="#245538"/>
+    </linearGradient>
+    <linearGradient id="leafLight" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#d0df83"/>
+      <stop offset="1" stop-color="#5b9b4a"/>
+    </linearGradient>
+    <filter id="blur"><feGaussianBlur stdDeviation="30"/></filter>
+    <filter id="soft"><feGaussianBlur stdDeviation="5"/></filter>
+  </defs>
+  <rect width="1024" height="1024" fill="url(#sky)"/>
+  <circle cx="690" cy="390" r="250" fill="url(#sunGlow)"/>
+  <circle cx="690" cy="390" r="74" fill="#fff0b8" opacity=".88"/>
+  <g fill="#fff0d5" opacity=".16" filter="url(#soft)">
+    <ellipse cx="214" cy="284" rx="180" ry="35"/>
+    <ellipse cx="810" cy="236" rx="150" ry="26"/>
+  </g>
+  <path d="M0 535 L120 435 208 470 320 390 425 465 546 414 650 468 760 396 875 458 1024 390 V730 H0Z" fill="#6f7762" opacity=".52"/>
+  <path d="M0 596 Q140 480 268 548 T520 532 T785 508 T1024 542 V770 H0Z" fill="url(#distantHill)"/>
+  <path d="M0 645 Q170 564 310 610 T590 596 T820 582 T1024 603 V1024 H0Z" fill="url(#field)"/>
+  <g fill="none" stroke-linecap="round">
+    <path d="M-80 730 Q260 610 520 650 T1110 625" stroke="#d6b56d" stroke-width="5" opacity=".42"/>
+    <path d="M-80 790 Q260 675 520 710 T1110 684" stroke="#c8a35e" stroke-width="5" opacity=".38"/>
+    <path d="M-80 860 Q260 744 520 770 T1110 750" stroke="#b28d50" stroke-width="5" opacity=".34"/>
+    <path d="M-80 930 Q260 812 520 835 T1110 818" stroke="#a37d48" stroke-width="5" opacity=".30"/>
+  </g>
+  <g opacity=".78" fill="#4d713c">
+    <path d="M120 666 q-16-35 3-58 q22 31 9 59z"/>
+    <path d="M157 659 q-4-34 21-48 q10 31-8 51z"/>
+    <path d="M855 629 q-10-31 12-48 q17 27 2 49z"/>
+    <path d="M890 630 q3-31 27-39 q5 28-15 42z"/>
+    <path d="M723 660 q-5-25 14-39 q13 24-2 40z"/>
+  </g>
+  <path d="M0 837 Q220 775 425 825 T1024 804 V1024 H0Z" fill="url(#soil)"/>
+  <g opacity=".25" fill="#d4a16c">
+    <ellipse cx="120" cy="904" rx="7" ry="3"/><ellipse cx="224" cy="870" rx="5" ry="2"/>
+    <ellipse cx="818" cy="912" rx="8" ry="3"/><ellipse cx="912" cy="854" rx="6" ry="2"/>
+    <ellipse cx="706" cy="969" rx="7" ry="3"/><ellipse cx="324" cy="958" rx="5" ry="2"/>
+    <ellipse cx="552" cy="883" rx="4" ry="2"/><ellipse cx="64" cy="978" rx="7" ry="2"/>
+  </g>
+  <g transform="translate(512 812)">
+    <ellipse cx="0" cy="18" rx="128" ry="36" fill="#181a17" opacity=".46" filter="url(#soft)"/>
+    <path d="M0 34 C-5 -35 -7 -93 0 -161" fill="none" stroke="#356e3c" stroke-width="17" stroke-linecap="round"/>
+    <path d="M-1 -56 C-88 -62 -134 -121 -122 -177 C-62 -171 -12 -132 -1 -56Z" fill="url(#leaf)"/>
+    <path d="M-5 -67 C-55 -99 -85 -132 -112 -164" fill="none" stroke="#c5d978" stroke-width="4" opacity=".78"/>
+    <path d="M2 -92 C16 -161 69 -213 139 -218 C147 -148 92 -99 2 -92Z" fill="url(#leafLight)"/>
+    <path d="M12 -103 C55 -142 91 -176 132 -205" fill="none" stroke="#dce9a0" stroke-width="4" opacity=".75"/>
+    <path d="M0 -137 C-33 -183 -29 -231 5 -268 C43 -225 34 -179 0 -137Z" fill="url(#leaf)"/>
+    <path d="M1 -151 L4 -250" fill="none" stroke="#d5e68a" stroke-width="4" opacity=".7"/>
+    <path d="M-5 -7 C-59 -24 -91 -17 -112 8 C-77 34 -36 30 -5 -7Z" fill="url(#leafLight)"/>
+    <path d="M-12 -1 L-99 8" fill="none" stroke="#d6e48b" stroke-width="3" opacity=".7"/>
+    <path d="M7 -25 C47 -57 92 -54 116 -27 C87 5 44 4 7 -25Z" fill="url(#leaf)"/>
+    <path d="M17 -23 L104 -29" fill="none" stroke="#b5d36e" stroke-width="3" opacity=".7"/>
+    <path d="M-12 34 Q0 4 13 34 Q3 49 -12 34Z" fill="#7d5a35"/>
+  </g>
+  <g fill="#c6a06b" opacity=".62">
+    <ellipse cx="385" cy="865" rx="19" ry="5" transform="rotate(-18 385 865)"/>
+    <ellipse cx="650" cy="872" rx="22" ry="6" transform="rotate(14 650 872)"/>
+    <ellipse cx="438" cy="918" rx="14" ry="4" transform="rotate(10 438 918)"/>
+    <ellipse cx="587" cy="932" rx="16" ry="4" transform="rotate(-13 587 932)"/>
+  </g>
+  <rect width="1024" height="1024" fill="none" stroke="#fff5df" stroke-opacity=".10" stroke-width="20"/>
+</svg>
