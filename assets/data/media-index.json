@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-10-19T04:00:01.704234+00:00",
-  "count": 154,
+  "generated_at": "2026-10-20T03:29:13.080591+00:00",
+  "count": 155,
   "items": [
     {
       "path": "/assets/images/Durga_Jung_Kunwar_Signature_Transparent.png",
@@ -1438,6 +1438,16 @@
       "format": "SVG",
       "category": "verse-of-day",
       "bytes": 1645,
+      "width": null,
+      "height": null,
+      "jpeg_fallback": null
+    },
+    {
+      "path": "/assets/images/verse-of-day/2026-10-20-galatians-6-9.svg",
+      "name": "2026-10-20-galatians-6-9.svg",
+      "format": "SVG",
+      "category": "verse-of-day",
+      "bytes": 5315,
       "width": null,
       "height": null,
       "jpeg_fallback": null
