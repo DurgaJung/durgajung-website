@@ -1,24 +1,25 @@
 {
   "title": "Verse of the Day / आजको बाइबल पद",
-  "reference": "हितोपदेश १८:१०",
-  "verse": "परमप्रभुको नाउँ एक बलियो धरहरा हो, धर्मीहरू त्‍यहाँ दगुर्दै जान्‍छन्‌ र सुरक्षित हुन्‍छन्‌।",
+  "reference": "गलाती 6:9",
+  "verse": "भलाइ गर्ने काममा हामी नथाकौं, किनभने यदि हिम्मत हारेनौं भने ठीक समयमा हामी कटनी गर्नेछौं।",
   "version": "NNRV",
   "source": "Bible.com / Nepal Bible Society",
-  "source_url": "https://www.bible.com/ne/bible/1483/PRO.18.10.NNRV",
-  "english_reference": "Proverbs 18:10",
-  "english_verse": "The name of the LORD is a fortified tower; the righteous run to it and are safe.",
+  "source_url": "https://www.bible.com/ne/bible/1483/GAL.6.9.NNRV",
+  "english_reference": "Galatians 6:9",
+  "english_verse": "Let us not become weary in doing good, for at the proper time we will reap a harvest if we do not give up.",
   "english_version": "NIV",
-  "english_source_url": "https://www.bible.com/bible/111/PRO.18.10.NIV",
-  "image": "/assets/images/verse-of-day/2026-10-19-proverbs-18-10.svg",
+  "english_source_url": "https://www.bible.com/bible/111/GAL.6.9.NIV",
+  "image": "/assets/images/verse-of-day/2026-10-20-galatians-6-9.svg",
   "know_more_nepali": [
-    "हितोपदेश १८:१० मा परमप्रभुको नाउँलाई बलियो धरहरासँग तुलना गरिएको छ। प्राचीन सहरमा धरहरा शरण, निगरानी र सुरक्षाको महत्वपूर्ण स्थान हुन्थ्यो। यस चित्रले परमेश्वरको चरित्र र उहाँमाथिको भरोसालाई जोड दिन्छ।",
-    "यस पदलाई विश्वासीले कहिल्यै दुःख, अन्याय वा शारीरिक जोखिम भोग्दैनन् भन्ने ग्यारेन्टीका रूपमा लिनु हुँदैन। यसको सन्देश परमेश्वरतर्फ फर्कनु, उहाँको सत्यमा भरोसा राख्नु र कठिन परिस्थितिमा पनि विवेकपूर्ण कदम चाल्नु हो।"
+    "गलाती ६:९ मा पावलले विश्वासीहरूलाई भलाइ गर्न निरन्तर लागिरहन आग्रह गर्छन्। यस अध्यायको सन्दर्भमा गल्तीमा परेकालाई नम्रतासाथ सच्याउनु, एक-अर्काको भार बोक्नु र सबैप्रति भलाइ गर्नु समावेश छ।",
+    "“ठीक समयमा कटनी” भन्ने वचनले तुरुन्तै सफलता वा सजिलो जीवनको प्रतिज्ञा गर्दैन। पावलको जोड थकान, ढिलाइ वा विरोधका बीच पनि सही काम नछोड्नुमा छ; परिणाम र समय परमेश्वरको हातमा छ।"
   ],
   "know_more_english": [
-    "Proverbs 18:10 compares the LORD’s name to a fortified tower. In an ancient city, a tower served as a place of refuge, watchfulness, and protection. The image emphasizes trust in God’s character.",
-    "This verse should not be treated as a guarantee that believers will never experience suffering, injustice, or physical danger. It calls people to turn to God, rely on his truth, and act wisely even in difficult circumstances."
+    "In Galatians 6:9, Paul urges believers to persevere in doing good. In the surrounding passage, this includes restoring others gently, carrying one another’s burdens, and doing good to everyone.",
+    "The promise of a harvest “at the proper time” is not a guarantee of immediate success or an easy life. Paul’s point is to keep doing what is right despite fatigue, delay, or opposition, while leaving the timing and outcome to God."
   ],
   "history": [
+    "गलाती 6:9",
     "हितोपदेश १८:१०",
     "मत्ती ११:२८",
     "भजनसंग्रह ५६:३",
@@ -37,10 +38,9 @@
     "यूहन्‍ना ८:१२",
     "रोमी १२:१२",
     "याकूब १:५",
-    "हितोपदेश १६:३",
-    "मीका ६:८"
+    "हितोपदेश १६:३"
   ],
-  "date": "2026-10-19",
-  "ad_date": "October 19, 2026",
-  "bs_date": "२ कार्तिक २०८३, सोमबार"
+  "date": "2026-10-20",
+  "ad_date": "October 20, 2026",
+  "bs_date": "३ कार्तिक २०८३, मङ्गलबार"
 }
