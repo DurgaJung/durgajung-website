@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-10-20T03:29:13.080591+00:00",
-  "count": 155,
+  "generated_at": "2026-10-22T03:15:42.551044+00:00",
+  "count": 156,
   "items": [
     {
       "path": "/assets/images/Durga_Jung_Kunwar_Signature_Transparent.png",
@@ -1448,6 +1448,16 @@
       "format": "SVG",
       "category": "verse-of-day",
       "bytes": 5315,
+      "width": null,
+      "height": null,
+      "jpeg_fallback": null
+    },
+    {
+      "path": "/assets/images/verse-of-day/2026-10-22-psalms-121-1-2.svg",
+      "name": "2026-10-22-psalms-121-1-2.svg",
+      "format": "SVG",
+      "category": "verse-of-day",
+      "bytes": 5460,
       "width": null,
       "height": null,
       "jpeg_fallback": null
