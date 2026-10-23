@@ -1,24 +1,25 @@
 {
   "title": "Verse of the Day / आजको बाइबल पद",
-  "reference": "भजनसंग्रह 121:1-2",
-  "verse": "पर्वतहरूतिर म आफ्‍ना आँखा उचाल्‍छु। मेरो गुहार कहाँबाट आउँछ? स्‍वर्ग र पृथ्‍वी सृजना गर्नुहुने परमप्रभुबाट मेरो गुहार आउँछ।",
+  "reference": "भजनसंग्रह 133:1",
+  "verse": "दाजुभाइहरू एकतामा बस्‍नु कति भलो र मनोहर कुरा हुन्‍छ।",
   "version": "NNRV",
   "source": "Bible.com / Nepal Bible Society",
-  "source_url": "https://www.bible.com/ne/bible/1483/PSA.121.1-2.NNRV",
-  "english_reference": "Psalms 121:1-2",
-  "english_verse": "I lift up my eyes to the mountains— where does my help come from? My help comes from the LORD, the Maker of heaven and earth.",
+  "source_url": "https://www.bible.com/ne/bible/1483/PSA.133.1.NNRV",
+  "english_reference": "Psalms 133:1",
+  "english_verse": "How good and pleasant it is when God’s people live together in unity!",
   "english_version": "NIV",
-  "english_source_url": "https://www.bible.com/bible/111/PSA.121.1-2.NIV",
-  "image": "/assets/images/verse-of-day/2026-10-22-psalms-121-1-2.svg",
+  "english_source_url": "https://www.bible.com/bible/111/PSA.133.1.NIV",
+  "image": "/assets/images/verse-of-day/2026-10-23-psalms-133-1.svg",
   "know_more_nepali": [
-    "भजनसंग्रह १२१ को आरम्भमा तीर्थयात्रीले पहाडतिर हेर्दै आफ्नो सहायता कहाँबाट आउँछ भनेर सोध्छन्। पद २ ले उत्तर स्पष्ट गर्छ: सहायता सृष्टिकर्ता परमप्रभुबाट आउँछ, पहाड वा मानवीय सामर्थ्यबाट होइन।",
-    "यस भजनले परमेश्वरको हेरचाहमा भरोसा गर्न सिकाउँछ; यसले यात्रामा कुनै कठिनाइ नआउने वा हरेक खतरा तुरुन्त हट्ने प्रतिज्ञा गर्दैन। यसको जोड सृष्टिकर्तामा निर्भर रहनु र उहाँको निरन्तर रेखदेखमा आशा राख्नु हो।"
+    "भजनसंग्रह १३३ दाऊदको यात्रागीत हो, जसले परमेश्वरका जनहरूबीचको एकतालाई सुन्दर र जीवनदायी कुराका रूपमा चित्रण गर्छ। यस पदको जोड केवल एकै ठाउँमा बस्नुमा होइन, साझा विश्वास र परस्पर सम्बन्धमा मेलमिलाप कायम राख्नुमा छ।",
+    "बाइबलीय एकता भनेको मतभेद लुकाउनु वा अन्याय सहनु होइन। यसको अर्थ सत्य र प्रेमका साथ एक-अर्काको भलाइ खोज्नु, विभाजन बढाउने व्यवहारबाट जोगिनु, र समुदायमा मेलमिलापका लागि जिम्मेवार कदम चाल्नु हो।"
   ],
   "know_more_english": [
-    "At the opening of Psalm 121, a pilgrim looks toward the mountains and asks where help will come from. Verse 2 answers that help comes from the LORD, the Creator of heaven and earth—not from the mountains or human strength.",
-    "The psalm teaches trust in God's care; it does not promise a trouble-free journey or the immediate removal of every danger. Its emphasis is on relying on the Creator and placing hope in his continuing watchfulness."
+    "Psalm 133 is a Song of Ascents attributed to David, portraying unity among God's people as good and life-giving. The verse is about more than sharing a location; it points to harmony within a community bound by a common faith and mutual relationships.",
+    "Biblical unity does not mean hiding disagreement or tolerating injustice. It means seeking one another's good in truth and love, resisting divisive conduct, and taking responsible steps toward reconciliation within the community."
   ],
   "history": [
+    "भजनसंग्रह 133:1",
     "भजनसंग्रह 121:1-2",
     "२ कोरिन्थी 4:16",
     "गलाती 6:9",
@@ -37,10 +38,9 @@
     "हितोपदेश ३:५",
     "भजनसंग्रह ११९:१०५",
     "फिलिप्पी ४:६",
-    "यूहन्‍ना ८:१२",
-    "रोमी १२:१२"
+    "यूहन्‍ना ८:१२"
   ],
-  "date": "2026-10-22",
-  "ad_date": "October 22, 2026",
-  "bs_date": "५ कार्तिक २०८३, बिहीबार"
+  "date": "2026-10-23",
+  "ad_date": "October 23, 2026",
+  "bs_date": "६ कार्तिक २०८३, शुक्रबार"
 }
