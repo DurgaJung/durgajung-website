@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-10-23T05:41:18.105603+00:00",
-  "count": 158,
+  "generated_at": "2026-10-24T03:12:23.205926+00:00",
+  "count": 160,
   "items": [
     {
       "path": "/assets/images/Durga_Jung_Kunwar_Signature_Transparent.png",
@@ -1481,6 +1481,26 @@
       "width": null,
       "height": null,
       "jpeg_fallback": null
+    },
+    {
+      "path": "/assets/images/verse-of-day/2026-10-24-1-peter-5-7.jpg",
+      "name": "2026-10-24-1-peter-5-7.jpg",
+      "format": "JPG",
+      "category": "verse-of-day",
+      "bytes": 15439,
+      "width": 180,
+      "height": 180,
+      "jpeg_fallback": null
+    },
+    {
+      "path": "/assets/images/verse-of-day/2026-10-24-1-peter-5-7.webp",
+      "name": "2026-10-24-1-peter-5-7.webp",
+      "format": "WEBP",
+      "category": "verse-of-day",
+      "bytes": 6284,
+      "width": 180,
+      "height": 180,
+      "jpeg_fallback": "/assets/images/verse-of-day/2026-10-24-1-peter-5-7.jpg"
     },
     {
       "path": "/assets/images/verse-themes/guidance.svg",
