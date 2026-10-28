@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-28T07:10:42.661120+00:00",
+  "generated_at": "2026-10-28T07:11:16.578161+00:00",
   "count": 168,
   "items": [
     {
@@ -1567,9 +1567,9 @@
       "name": "2026-10-28-psalm-15-1-2.jpg",
       "format": "JPG",
       "category": "verse-of-day",
-      "bytes": 7708,
-      "width": 128,
-      "height": 128,
+      "bytes": 2491,
+      "width": 64,
+      "height": 64,
       "jpeg_fallback": null
     },
     {
@@ -1577,9 +1577,9 @@
       "name": "2026-10-28-psalm-15-1-2.webp",
       "format": "WEBP",
       "category": "verse-of-day",
-      "bytes": 2127,
-      "width": 128,
-      "height": 128,
+      "bytes": 554,
+      "width": 64,
+      "height": 64,
       "jpeg_fallback": "/assets/images/verse-of-day/2026-10-28-psalm-15-1-2.jpg"
     },
     {
