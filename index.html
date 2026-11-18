@@ -1384,7 +1384,7 @@
       <article class="banner-slide verse-green is-active daily-verse-slide">
         <div class="daily-verse-inner">
           <div class="daily-verse-title">Verse of the Day / आजको बाइबल पद</div>
-          <div class="daily-verse-date" id="daily-verse-date" aria-label="October 27, 2026 AD; १० कार्तिक २०८३ बि.सं."><strong class="daily-verse-date-ad" id="daily-verse-date-ad" lang="en">📅 October 27, 2026 AD</strong><span class="daily-verse-date-divider" aria-hidden="true">│</span><strong class="daily-verse-date-bs" id="daily-verse-date-bs" lang="ne">१० कार्तिक २०८३ बि.सं.</strong></div>
+          
 
           <div class="daily-verse-layout">
             <div class="daily-verse-image-wrap">
@@ -2372,9 +2372,6 @@
         .then(function (data) {
           if (!data) return;
 
-          var dateWrap = document.getElementById("daily-verse-date");
-          var adDate = document.getElementById("daily-verse-date-ad");
-          var bsDate = document.getElementById("daily-verse-date-bs");
           var refNp = document.getElementById("daily-verse-reference-nepali");
           var refEn = document.getElementById("daily-verse-reference-english");
           var verseNp = document.getElementById("daily-verse-text-nepali");
@@ -2384,18 +2381,13 @@
           var dialogVerse = document.getElementById("daily-verse-dialog-verse");
           var explanation = document.getElementById("daily-verse-dialog-explanation");
 
-          if (adDate && data.ad_date) adDate.textContent = "📅 " + data.ad_date + " AD";
-          if (bsDate && data.bs_date) bsDate.textContent = data.bs_date + " बि.सं.";
-          if (dateWrap && data.ad_date && data.bs_date) {
-            dateWrap.setAttribute("aria-label", data.ad_date + " AD; " + data.bs_date + " बि.सं.");
-          }
           if (refNp && data.reference) refNp.textContent = data.reference + " · " + (data.version || "NNRV");
           if (refEn && data.english_reference) refEn.textContent = data.english_reference + " · " + (data.english_version || "NIV");
           if (verseNp && data.verse) verseNp.textContent = data.verse;
           if (verseEn && data.english_verse) verseEn.textContent = data.english_verse;
 
           if (image && data.image) {
-            image.src = data.image + "?v=" + encodeURIComponent(data.date || Date.now());
+            image.src = data.image + "?v=" + encodeURIComponent(Date.now());
             image.alt = "Verse of the Day illustration for " + (data.english_reference || data.reference || "today");
           }
           if (dialogImage && data.image) {
