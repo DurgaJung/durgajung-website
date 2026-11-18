@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675" role="img" aria-labelledby="title desc">
+<title id="title">Strength, love and self-control</title>
+<desc id="desc">A sunrise over mountain ridges, with a cross, a person standing in hope, an open Bible, flowers and a glowing lantern.</desc>
+<defs>
+ <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#142b5a"/><stop offset=".48" stop-color="#b96c67"/><stop offset="1" stop-color="#ffd38a"/></linearGradient>
+ <radialGradient id="sun"><stop stop-color="#fff8d8"/><stop offset=".48" stop-color="#ffdf9b"/><stop offset="1" stop-color="#f3a65e" stop-opacity="0"/></radialGradient>
+ <linearGradient id="ridge1" x2="0" y2="1"><stop stop-color="#526b91"/><stop offset="1" stop-color="#203e68"/></linearGradient>
+ <linearGradient id="ridge2" x2="0" y2="1"><stop stop-color="#304e73"/><stop offset="1" stop-color="#102b50"/></linearGradient>
+ <linearGradient id="ground" x2="0" y2="1"><stop stop-color="#294b48"/><stop offset="1" stop-color="#0e282d"/></linearGradient>
+ <linearGradient id="wood" x2="1" y2="0"><stop stop-color="#492919"/><stop offset=".5" stop-color="#a66d3b"/><stop offset="1" stop-color="#58331f"/></linearGradient>
+ <linearGradient id="pages" x2="0" y2="1"><stop stop-color="#fff8e6"/><stop offset="1" stop-color="#d7bd8d"/></linearGradient>
+ <filter id="glow"><feGaussianBlur stdDeviation="18"/></filter>
+ <filter id="shadow"><feDropShadow dx="0" dy="7" stdDeviation="9" flood-color="#06172c" flood-opacity=".45"/></filter>
+</defs>
+<rect width="1200" height="675" fill="url(#sky)"/>
+<circle cx="825" cy="286" r="190" fill="url(#sun)"/>
+<circle cx="825" cy="286" r="66" fill="#fff0c4" opacity=".92"/>
+<g fill="#fff4dc" opacity=".17"><path d="M0 220Q140 170 280 218T560 207T850 214T1200 184V310H0Z"/><path d="M0 300Q160 260 330 295T660 286T980 294T1200 270V360H0Z"/></g>
+<path d="M0 455 145 316 250 405 390 267 545 443 700 330 835 420 1000 282 1200 444V675H0Z" fill="url(#ridge1)"/>
+<path d="m145 316 42 45 40-12-35 35-60-20-30 25 43-73Zm245-49 48 60 43-13-34 42-60-18-34 23 37-94Zm610 15 51 61 47-13-39 45-63-23-30 22 34-92Z" fill="#d9dbe0" opacity=".48"/>
+<path d="M0 520 180 395 325 500 490 355 665 530 820 405 970 520 1100 395 1200 475V675H0Z" fill="url(#ridge2)"/>
+<path d="M0 566Q170 510 330 558T650 540T960 545T1200 510V675H0Z" fill="url(#ground)"/>
+<g opacity=".55" fill="#f9d89d"><path d="M430 515q90-55 180-4t185 0q-90 78-185 34t-180-30Z"/><path d="M700 470q75-40 160 0t160-5q-80 66-160 26t-160-21Z"/></g>
+<!-- Cross -->
+<g filter="url(#shadow)">
+ <path d="M230 88v385" stroke="#211b21" stroke-width="34" stroke-linecap="round"/>
+ <path d="M230 88v385" stroke="url(#wood)" stroke-width="27" stroke-linecap="round"/>
+ <path d="M132 188h198" stroke="#211b21" stroke-width="34" stroke-linecap="round"/>
+ <path d="M132 188h198" stroke="url(#wood)" stroke-width="27" stroke-linecap="round"/>
+ <path d="M220 194q-18 58 8 91t-3 72" fill="none" stroke="#f7ead2" stroke-width="15" stroke-linecap="round"/>
+ <path d="M240 194q-7 50 18 82t0 72" fill="none" stroke="#d8c8ad" stroke-width="7" stroke-linecap="round" opacity=".7"/>
+</g>
+<!-- Person looking toward sunrise -->
+<g transform="translate(660 355)" filter="url(#shadow)">
+ <circle cx="0" cy="0" r="21" fill="#171e2c"/>
+ <path d="M-27 26Q0 8 27 26L43 135H-43Z" fill="#1b2d43"/>
+ <path d="M-18 35  -72 8 -86 -34" fill="none" stroke="#1b2d43" stroke-width="15" stroke-linecap="round"/>
+ <path d="M18 35 72 7 91 -32" fill="none" stroke="#1b2d43" stroke-width="15" stroke-linecap="round"/>
+ <path d="M-86 -34 -95 -57M91 -32 101 -56" stroke="#171e2c" stroke-width="10" stroke-linecap="round"/>
+ <path d="M-25 133 -34 215M25 133 36 215" stroke="#171e2c" stroke-width="17" stroke-linecap="round"/>
+ <path d="M-46 215h24M25 215h24" stroke="#111c2d" stroke-width="12" stroke-linecap="round"/>
+ <path d="M-22 38h44l13 83h-70Z" fill="#344b62" opacity=".8"/>
+</g>
+<!-- Lantern -->
+<g transform="translate(410 498)" filter="url(#shadow)">
+ <ellipse cx="0" cy="70" rx="42" ry="9" fill="#091c27" opacity=".45"/>
+ <path d="M-25 0h50l-6 65h-38Z" fill="#263342" stroke="#d5a65c" stroke-width="4"/>
+ <path d="M-17 11h34l-4 43h-26Z" fill="#ffca68" opacity=".92"/>
+ <path d="M-15 10q15-28 30 0" fill="none" stroke="#d9ad69" stroke-width="5"/>
+ <path d="M-18 0q18-43 36 0" fill="none" stroke="#d9ad69" stroke-width="5"/>
+ <path d="M0 18q-15 17 0 30 15-13 0-30Z" fill="#fff4c7"/>
+</g>
+<!-- Open Bible foreground -->
+<g transform="translate(690 555)" filter="url(#shadow)">
+ <path d="M-270 12Q-135 -35 0 16Q135 -35 270 12L255 95Q125 54 0 99Q-125 54 -255 95Z" fill="#3d2a20"/>
+ <path d="M-260 5Q-132 -34 -6 14L-8 82Q-132 35 -253 83Z" fill="url(#pages)" stroke="#b38b58" stroke-width="4"/>
+ <path d="M8 14Q132 -34 260 5L253 83Q132 35 8 82Z" fill="url(#pages)" stroke="#b38b58" stroke-width="4"/>
+ <path d="M0 15v83" stroke="#8c6037" stroke-width="5"/>
+ <g stroke="#b49a70" stroke-width="2" opacity=".8"><path d="M-220 17q90-25 180 5M-220 32q90-25 180 5M-220 47q90-25 180 5M-220 62q90-25 180 5M35 22q90-30 185-5M35 37q90-30 185-5M35 52q90-30 185-5M35 67q90-30 185-5"/></g>
+ <path d="M-5 82q-3 22 13 39" fill="none" stroke="#a42f2c" stroke-width="7"/>
+</g>
+<!-- lilies -->
+<g transform="translate(100 570)" fill="#fff4dc" stroke="#d4b77d" stroke-width="2">
+ <path d="M0 0Q-48-42-25-73Q-3-50 0 0Q3-50 25-73Q48-42 0 0Q-38-6-54-35Q-20-43 0 0Q20-43 54-35Q38-6 0 0Z"/>
+ <circle r="8" fill="#d79a3c" stroke="none"/>
+ <path d="M0 0q-8 28-1 63" fill="none" stroke="#4b8a57" stroke-width="7"/>
+</g>
+<g transform="translate(1120 545) scale(.8)" fill="#fff4dc" stroke="#d4b77d" stroke-width="2">
+ <path d="M0 0Q-48-42-25-73Q-3-50 0 0Q3-50 25-73Q48-42 0 0Q-38-6-54-35Q-20-43 0 0Q20-43 54-35Q38-6 0 0Z"/>
+ <circle r="8" fill="#d79a3c" stroke="none"/>
+ <path d="M0 0q-8 28-1 63" fill="none" stroke="#4b8a57" stroke-width="7"/>
+</g>
+<rect x="24" y="24" width="1152" height="627" rx="22" fill="none" stroke="#f7d99d" stroke-width="2" opacity=".55"/>
+</svg>
