@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-11-18T04:55:54.423344+00:00",
-  "count": 170,
+  "generated_at": "2026-11-20T04:59:49.499014+00:00",
+  "count": 171,
   "items": [
     {
       "path": "/assets/images/Durga_Jung_Kunwar_Signature_Transparent.png",
@@ -1598,6 +1598,16 @@
       "format": "SVG",
       "category": "verse-of-day",
       "bytes": 5121,
+      "width": null,
+      "height": null,
+      "jpeg_fallback": null
+    },
+    {
+      "path": "/assets/images/verse-of-day/john-15-5.svg",
+      "name": "john-15-5.svg",
+      "format": "SVG",
+      "category": "verse-of-day",
+      "bytes": 4165,
       "width": null,
       "height": null,
       "jpeg_fallback": null
