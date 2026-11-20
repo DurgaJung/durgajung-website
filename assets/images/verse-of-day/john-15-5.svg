@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" role="img" aria-labelledby="title desc">
+<title id="title">The true vine</title><desc id="desc">A sunlit vineyard with a strong vine, green leaves and ripe grape clusters, symbolizing abiding in Christ.</desc>
+<defs>
+ <linearGradient id="sky" x2="0" y2="1"><stop stop-color="#f6dca5"/><stop offset=".58" stop-color="#f7edcf"/><stop offset="1" stop-color="#d6e2bd"/></linearGradient>
+ <linearGradient id="hill" x2="0" y2="1"><stop stop-color="#8b9c61"/><stop offset="1" stop-color="#435c3e"/></linearGradient>
+ <linearGradient id="wood" x2="1" y2="0"><stop stop-color="#533b2b"/><stop offset=".5" stop-color="#916744"/><stop offset="1" stop-color="#4b3428"/></linearGradient>
+ <radialGradient id="sun"><stop stop-color="#fff9d9"/><stop offset="1" stop-color="#f2c978" stop-opacity="0"/></radialGradient>
+ <linearGradient id="grape" x2="1" y2="1"><stop stop-color="#80639a"/><stop offset="1" stop-color="#382b59"/></linearGradient>
+ <filter id="soft"><feGaussianBlur stdDeviation="18"/></filter>
+</defs>
+<rect width="1200" height="800" fill="url(#sky)"/>
+<circle cx="930" cy="170" r="170" fill="url(#sun)"/><circle cx="930" cy="170" r="58" fill="#fff1c2" opacity=".82"/>
+<path d="M0 490 Q190 360 380 460 T760 430 T1200 390 V800 H0Z" fill="#b5bd83" opacity=".8"/>
+<path d="M0 560 Q220 450 440 540 T870 500 T1200 490 V800 H0Z" fill="url(#hill)"/>
+<g opacity=".38" stroke="#d8d5a2" stroke-width="5" fill="none"><path d="M0 620 Q300 520 600 625 T1200 575"/><path d="M0 690 Q300 590 600 695 T1200 645"/></g>
+<!-- vineyard rows -->
+<g stroke="#344b36" stroke-width="5" opacity=".42" fill="none"><path d="M0 800 L390 560 M180 800 L500 555 M420 800 L650 540 M760 800 L800 530 M1020 800 L960 520"/></g>
+<!-- central mature vine -->
+<path d="M610 800 C590 670 620 575 590 480 C565 390 615 315 580 220" fill="none" stroke="url(#wood)" stroke-width="34" stroke-linecap="round"/>
+<path d="M600 575 C480 520 420 430 360 330 M600 510 C720 440 780 360 850 270 M590 395 C500 330 470 260 455 190 M615 330 C710 280 740 205 750 145" fill="none" stroke="#62452f" stroke-width="18" stroke-linecap="round"/>
+<g fill="#557b45" stroke="#365d39" stroke-width="5">
+ <path d="M360 330 C260 250 280 155 385 190 C455 120 520 190 470 270 C460 345 400 375 360 330Z"/>
+ <path d="M850 270 C820 165 900 105 955 180 C1045 160 1080 245 1000 300 C955 365 880 345 850 270Z"/>
+ <path d="M455 190 C390 110 435 45 515 85 C580 40 635 115 570 175 C535 240 480 245 455 190Z"/>
+ <path d="M750 145 C700 60 760 10 825 55 C900 35 930 110 865 160 C825 220 775 205 750 145Z"/>
+ <path d="M500 470 C395 435 390 350 475 340 C530 275 605 340 560 415 C555 485 520 500 500 470Z"/>
+ <path d="M740 430 C730 335 810 300 855 365 C930 360 955 435 880 475 C825 525 765 490 740 430Z"/>
+ <path d="M610 250 C555 175 605 115 675 145 C740 115 780 190 710 240 C680 300 635 300 610 250Z"/>
+</g>
+<g stroke="#b6c98a" stroke-width="4" fill="none" opacity=".85"><path d="M360 330 Q395 265 385 190 M850 270 Q900 220 955 180 M455 190 Q500 145 515 85 M750 145 Q805 100 825 55 M500 470 Q510 410 475 340 M740 430 Q800 400 855 365"/></g>
+<!-- grape clusters -->
+<g fill="url(#grape)" stroke="#33264a" stroke-width="2">
+ <g><circle cx="330" cy="390" r="22"/><circle cx="365" cy="395" r="22"/><circle cx="347" cy="428" r="22"/><circle cx="383" cy="432" r="22"/><circle cx="365" cy="465" r="21"/><circle cx="400" cy="465" r="20"/></g>
+ <g><circle cx="890" cy="350" r="22"/><circle cx="925" cy="354" r="22"/><circle cx="908" cy="389" r="22"/><circle cx="943" cy="392" r="22"/><circle cx="925" cy="426" r="21"/><circle cx="960" cy="426" r="20"/></g>
+ <g><circle cx="700" cy="315" r="20"/><circle cx="733" cy="318" r="20"/><circle cx="716" cy="350" r="20"/><circle cx="749" cy="352" r="20"/><circle cx="733" cy="385" r="19"/></g>
+</g>
+<g fill="#d9c3e1" opacity=".65"><circle cx="324" cy="383" r="5"/><circle cx="884" cy="343" r="5"/><circle cx="694" cy="309" r="5"/></g>
+<path d="M0 760 Q250 710 500 755 T1000 735 T1200 750 V800 H0Z" fill="#314c37" opacity=".75"/>
+<g fill="#f8f1d9" opacity=".9"><path d="M100 160 q20 -35 40 0 q-20 35 -40 0 M150 200 q16 -28 32 0 q-16 28 -32 0"/></g>
+</svg>
